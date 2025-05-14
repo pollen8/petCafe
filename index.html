@@ -159,6 +159,13 @@
         tile.classList.add('grass');
         wood++;
         updateDisplay();
+
+        // Set a timeout to turn the tile back to wood after 30 seconds
+        setTimeout(() => {
+          mapData[tileIndex] = 'wood'; // Change the tile type back to wood
+          tile.classList.remove('grass');
+          tile.classList.add('wood');
+        }, 10000); // 30 seconds in milliseconds
       }
     }
   </script>
