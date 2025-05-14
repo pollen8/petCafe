@@ -121,7 +121,8 @@
     let wood = 100;
     let money = 0;
     let houseAvailable = false; // Track if a house is available for placement
-    let inventory = { house: 0 }; // Inventory object to track items
+    let inventory = { house: 1 }; // Inventory object to track items
+    let selectedItem = null; // Track the currently selected item
 
     function updateDisplay() {
       document.getElementById("wood-count").textContent = wood;
@@ -137,9 +138,29 @@
         if (count > 0) {
           const listItem = document.createElement("li");
           listItem.textContent = `${item.charAt(0).toUpperCase() + item.slice(1)}: ${count}`;
+          listItem.dataset.item = item; // Store the item type in a data attribute
+
+          // Add click event to select the item
+          listItem.addEventListener("click", () => {
+            selectInventoryItem(item, listItem);
+          });
+
           inventoryList.appendChild(listItem);
         }
       }
+    }
+
+    function selectInventoryItem(item, listItem) {
+      // Deselect previously selected item
+      const inventoryList = document.getElementById("inventory-list");
+      Array.from(inventoryList.children).forEach((child) => {
+        child.classList.remove("selected");
+      });
+
+      // Select the clicked item
+      listItem.classList.add("selected");
+      selectedItem = item; // Update the selected item
+      console.log(`Selected item: ${selectedItem}`);
     }
 
     updateInventoryUI(); // Initialize the inventory UI
@@ -230,6 +251,8 @@
 
       if (tileType === 'wood') {
         collectWood(tileIndex);
+      } else if (tileType === 'stone') {
+        collectStone(tileIndex);
       } else if (tileType === 'marketplace') {
         openShop();
       }
@@ -249,6 +272,19 @@
         tile.classList.remove('grass');
         tile.classList.add('wood');
       }, 30000); // 30 seconds in milliseconds
+    }
+
+    function collectStone(tileIndex) {
+      mapData[tileIndex] = 'grass'; // Change the tile type to grass
+      const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
+      tile.classList.remove('stone');
+      tile.classList.add('grass');
+      if (!inventory.stone) {
+        inventory.stone = 0; // Initialize stone in the inventory if not already present
+      }
+      inventory.stone++; // Add 1 stone to the inventory
+      updateInventoryUI();
+      console.log("Collected 1 stone!");
     }
 
     function sellWood() {
@@ -302,11 +338,17 @@
       if (
         x < mapWidth - 1 &&
         y < mapHeight - 1 &&
-        mapData[index] != 'marketplace' &&
-        mapData[index + 1] != 'marketplace' &&
-        mapData[index + mapWidth] != 'marketplace' &&
-        mapData[index + mapWidth + 1] != 'marketplace'
+        mapData[index] !== 'marketplace' &&
+        mapData[index + 1] !== 'marketplace' &&
+        mapData[index + mapWidth] !== 'marketplace' &&
+        mapData[index + mapWidth + 1] !== 'marketplace'
       ) {
+        // Ensure the selected item is a house
+        if (selectedItem !== "house") {
+          alert("You must select a house from the inventory to place it!");
+          return;
+        }
+
         if (inventory.house > 0) {
           // Update the map data
           mapData[index] = 'house';
@@ -327,6 +369,7 @@
 
           inventory.house -= 1; // Remove a house from the inventory
           updateInventoryUI();
+          selectedItem = null; // Deselect the item after placing
           console.log("House placed successfully!");
         } else {
           console.log("You don't have any houses in your inventory!");
@@ -335,6 +378,46 @@
         console.log("Not enough space to place the house!");
       }
     }
+
+    // Create a ghost house element
+    const ghostHouse = document.createElement("div");
+    ghostHouse.id = "ghost-house";
+    ghostHouse.style.display = "none"; // Initially hidden
+    ghostHouse.style.position = "absolute";
+    ghostHouse.style.width = `${tileSize * 2}px`;
+    ghostHouse.style.height = `${tileSize * 2}px`;
+    ghostHouse.style.backgroundColor = "rgba(165, 42, 42, 0.5)"; // Semi-transparent brown
+    ghostHouse.style.pointerEvents = "none"; // Prevent interaction
+    ghostHouse.style.zIndex = "1000";
+    gameContainer.appendChild(ghostHouse);
+
+    // Show ghost house on mouse move
+    gameContainer.addEventListener("mousemove", (event) => {
+      if (selectedItem === "house") {
+        const rect = gameContainer.getBoundingClientRect();
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
+
+        // Calculate the top-left corner of the 2x2 house placement
+        const gridX = Math.floor(mouseX / tileSize);
+        const gridY = Math.floor(mouseY / tileSize);
+
+        if (gridX < mapWidth - 1 && gridY < mapHeight - 1) {
+          ghostHouse.style.display = "block";
+          ghostHouse.style.left = `${gridX * tileSize}px`;
+          ghostHouse.style.top = `${gridY * tileSize}px`;
+        } else {
+          ghostHouse.style.display = "none"; // Hide if out of bounds
+        }
+      } else {
+        ghostHouse.style.display = "none"; // Hide if no house is selected
+      }
+    });
+
+    // Hide ghost house on mouse leave
+    gameContainer.addEventListener("mouseleave", () => {
+      ghostHouse.style.display = "none";
+    });
   </script>
 
 </body>
