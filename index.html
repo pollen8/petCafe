@@ -105,9 +105,10 @@
     const gameContainer = document.getElementById("game");
 
     // Render the tiles
-    mapData.forEach(type => {
+    mapData.forEach((type, index) => {
       const tile = document.createElement("div");
       tile.classList.add("tile", type);
+      tile.dataset.index = index; // Store the index of the tile
       gameContainer.appendChild(tile);
     });
 
@@ -136,6 +137,9 @@
         case "ArrowRight":
           if (characterX < mapWidth - 1) characterX++;
           break;
+        case "Enter":
+          collectWood();
+          break;
       }
       updateCharacterPosition();
     });
@@ -144,6 +148,18 @@
       const character = document.getElementById("character");
       character.style.top = `${characterY * tileSize}px`;
       character.style.left = `${characterX * tileSize}px`;
+    }
+
+    function collectWood() {
+      const tileIndex = characterY * mapWidth + characterX;
+      if (mapData[tileIndex] === 'wood') {
+        mapData[tileIndex] = 'grass'; // Change the tile type to grass
+        const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
+        tile.classList.remove('wood');
+        tile.classList.add('grass');
+        wood++;
+        updateDisplay();
+      }
     }
   </script>
 
