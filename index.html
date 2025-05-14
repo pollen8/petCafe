@@ -72,6 +72,14 @@
     <p><strong>Money:</strong> $<span id="money">0</span></p>
   </div>
 
+  <div id="shop-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: black; padding: 20px; border: 2px solid black; z-index: 1000;">
+    <h2>Shop</h2>
+    <p>Choose an option:</p>
+    <button id="sell-wood-btn">Sell Wood ($5 per wood)</button>
+    <button id="buy-house-btn">Buy House (50 coins)</button>
+    <button id="close-shop-btn">Close</button>
+  </div>
+
   <script>
     let wood = 0;
     let money = 0;
@@ -196,13 +204,15 @@
 
     function openShop() {
       console.log("Opening shop...");
-      const choice = prompt(
-        "Welcome to the shop! Choose an option:\n1. Sell wood ($5 per wood)\n2. Buy a house (50 coins)"
-      );
+      const shopModal = document.getElementById("shop-modal");
+      shopModal.style.display = "block";
 
-      if (choice === "1") {
+      document.getElementById("sell-wood-btn").addEventListener("click", () => {
         sellWood();
-      } else if (choice === "2") {
+        shopModal.style.display = "none";
+      });
+
+      document.getElementById("buy-house-btn").addEventListener("click", () => {
         if (money >= 50) {
           const confirmPurchase = confirm("Do you want to buy a house for 50 coins?");
           if (confirmPurchase) {
@@ -214,9 +224,12 @@
         } else {
           alert("You don't have enough money to buy a house!");
         }
-      } else {
-        alert("Invalid choice. Please try again.");
-      }
+        shopModal.style.display = "none";
+      });
+
+      document.getElementById("close-shop-btn").addEventListener("click", () => {
+        shopModal.style.display = "none";
+      });
     }
 
     function placeHouse(index) {
