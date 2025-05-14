@@ -16,8 +16,8 @@
 
     #game {
       display: grid;
-      grid-template-columns: repeat(10, 32px);
-      grid-template-rows: repeat(10, 32px);
+      grid-template-columns: repeat(20, 32px);
+      grid-template-rows: repeat(20, 32px);
       gap: 0;
       margin: 20px auto;
       width: 320px;
@@ -55,6 +55,11 @@
       border: 2px solid black;
     }
 
+    .tile.house {
+      background-color: brown;
+      border: 2px solid black;
+    }
+
   </style>
 </head>
 <body>
@@ -70,14 +75,15 @@
   <script>
     let wood = 0;
     let money = 0;
+    let houseAvailable = false; // Track if a house is available for placement
 
     function updateDisplay() {
       document.getElementById("wood-count").textContent = wood;
       document.getElementById("money").textContent = money;
     }
 
-    const mapWidth = 10;
-    const mapHeight = 10;
+    const mapWidth = 20;
+    const mapHeight = 20;
 
     // Simple tile map array using types
     const tileTypes = ['grass', 'wood', 'stone'];
@@ -103,6 +109,13 @@
       tile.classList.add("tile", type);
       tile.dataset.index = index; // Store the index of the tile
       gameContainer.appendChild(tile);
+
+      // Add double-click event for placing a house
+      tile.addEventListener("dblclick", () => {
+        if (houseAvailable) {
+          placeHouse(index);
+        }
+      });
     });
 
     // Add the character
@@ -150,7 +163,7 @@
       if (tileType === 'wood') {
         collectWood(tileIndex);
       } else if (tileType === 'marketplace') {
-        sellWood();
+        openShop();
       }
     }
 
@@ -178,6 +191,68 @@
         alert("You sold 1 wood for $5!");
       } else {
         alert("You have no wood to sell!");
+      }
+    }
+
+    function openShop() {
+      console.log("Opening shop...");
+      const choice = prompt(
+        "Welcome to the shop! Choose an option:\n1. Sell wood ($5 per wood)\n2. Buy a house (50 coins)"
+      );
+
+      if (choice === "1") {
+        sellWood();
+      } else if (choice === "2") {
+        if (money >= 50) {
+          const confirmPurchase = confirm("Do you want to buy a house for 50 coins?");
+          if (confirmPurchase) {
+            money -= 50;
+            houseAvailable = true; // Allow house placement
+            updateDisplay();
+            alert("You bought a house! Double-click on a tile to place it.");
+          }
+        } else {
+          alert("You don't have enough money to buy a house!");
+        }
+      } else {
+        alert("Invalid choice. Please try again.");
+      }
+    }
+
+    function placeHouse(index) {
+      const x = index % mapWidth;
+      const y = Math.floor(index / mapWidth);
+
+      // Check if there's enough space for a 2x2 house
+      if (
+        x < mapWidth - 1 &&
+        y < mapHeight - 1 &&
+        mapData[index] === 'grass' &&
+        mapData[index + 1] === 'grass' &&
+        mapData[index + mapWidth] === 'grass' &&
+        mapData[index + mapWidth + 1] === 'grass'
+      ) {
+        // Update the map data
+        mapData[index] = 'house';
+        mapData[index + 1] = 'house';
+        mapData[index + mapWidth] = 'house';
+        mapData[index + mapWidth + 1] = 'house';
+
+        // Update the tiles visually
+        const tile1 = gameContainer.querySelector(`[data-index="${index}"]`);
+        const tile2 = gameContainer.querySelector(`[data-index="${index + 1}"]`);
+        const tile3 = gameContainer.querySelector(`[data-index="${index + mapWidth}"]`);
+        const tile4 = gameContainer.querySelector(`[data-index="${index + mapWidth + 1}"]`);
+
+        [tile1, tile2, tile3, tile4].forEach((tile) => {
+          tile.classList.remove('grass');
+          tile.classList.add('house');
+        });
+
+        houseAvailable = false; // Reset house availability
+        alert("House placed successfully!");
+      } else {
+        alert("Not enough space to place the house!");
       }
     }
   </script>
