@@ -113,26 +113,28 @@
     <h2>Shop</h2>
     <p>Choose an option:</p>
     <button id="sell-wood-btn">Sell Wood ($5 per wood)</button>
+    <button id="sell-stone-btn">Sell Stone ($5 per stone)</button>
     <button id="buy-house-btn">Buy House (50 coins)</button>
     <button id="close-shop-btn">Close</button>
+  </div>
+
+  <div id="controls">
+    <button onclick="saveGame()">Save Game</button>
+    <button onclick="loadGame()">Load Game</button>
   </div>
 
   <script>
     let wood = 100;
     let money = 0;
+    let character = null; // Track the character element
     let houseAvailable = false; // Track if a house is available for placement
-    let inventory = { house: 1 }; // Inventory object to track items
+    let inventory = { house: 1, wood: 0, stone: 0 }; // Inventory object to track items
     let selectedItem = null; // Track the currently selected item
-
-    function updateDisplay() {
-      document.getElementById("wood-count").textContent = wood;
-      document.getElementById("money").textContent = money;
-    }
 
     function updateInventoryUI() {
       const inventoryList = document.getElementById("inventory-list");
       inventoryList.innerHTML = ""; // Clear the current inventory list
-
+console.log('inventory', inventory)
       // Populate the inventory list with current items
       for (const [item, count] of Object.entries(inventory)) {
         if (count > 0) {
@@ -170,7 +172,7 @@
 
     // Simple tile map array using types
     const tileTypes = ['grass', 'wood', 'stone'];
-    const mapData = [];
+    let mapData = [];
 
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
@@ -208,11 +210,7 @@
     });
 
     // Add the character
-    const character = document.createElement("div");
-    character.id = "character";
-    character.style.gridColumnStart = 1;
-    character.style.gridRowStart = 1;
-    gameContainer.appendChild(character);
+addCharacter()
 
     let characterX = 0;
     let characterY = 0;
@@ -239,8 +237,17 @@
       updateCharacterPosition();
     });
 
+    function addCharacter() {
+      character = document.createElement("div");
+      character.id = "character";
+      character.style.gridColumnStart = 1;
+      character.style.gridRowStart = 1;
+      gameContainer.appendChild(character);
+    }
+
     function updateCharacterPosition() {
-      const character = document.getElementById("character");
+      console.log("Character position:", characterX, characterY, character);
+      // const character = document.getElementById("character");
       character.style.top = `${characterY * tileSize}px`;
       character.style.left = `${characterX * tileSize}px`;
     }
@@ -263,15 +270,10 @@
       const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
       tile.classList.remove('wood');
       tile.classList.add('grass');
-      wood++;
-      updateDisplay();
 
-      // Set a timeout to turn the tile back to wood after 30 seconds
-      setTimeout(() => {
-        mapData[tileIndex] = 'wood'; // Change the tile type back to wood
-        tile.classList.remove('grass');
-        tile.classList.add('wood');
-      }, 30000); // 30 seconds in milliseconds
+      inventory.wood++; // Add 1 wood to the inventory
+      updateInventoryUI();
+      console.log("Collected 1 wood!");
     }
 
     function collectStone(tileIndex) {
@@ -288,13 +290,24 @@
     }
 
     function sellWood() {
-      if (wood > 0) {
-        wood--;
+      if (inventory.wood > 0) {
+        inventory.wood--; // Decrease wood count in the inventory
         money += 5;
-        updateDisplay();
+        updateInventoryUI();
         alert("You sold 1 wood for $5!");
       } else {
         alert("You have no wood to sell!");
+      }
+    }
+
+    function sellStone() {
+      if (inventory.stone > 0) {
+        inventory.stone--; // Decrease stone count in the inventory
+        money += 5;
+        updateInventoryUI();
+        alert("You sold 1 stone for $5!");
+      } else {
+        alert("You have no stone to sell!");
       }
     }
 
@@ -305,6 +318,11 @@
       // Handle Sell Wood button
       document.getElementById("sell-wood-btn").addEventListener("click", () => {
         sellWood();
+      });
+
+      // Handle Sell Stone button
+      document.getElementById("sell-stone-btn").addEventListener("click", () => {
+        sellStone();
       });
 
       // Handle Buy House button
@@ -418,6 +436,56 @@
     gameContainer.addEventListener("mouseleave", () => {
       ghostHouse.style.display = "none";
     });
+
+    function saveGame() {
+      const gameState = {
+        inventory,
+        money,
+        mapData,
+        characterX,
+        characterY, // Save the character's position
+      };
+      localStorage.setItem("gameState", JSON.stringify(gameState));
+      alert("Game saved successfully!");
+    }
+
+    function loadGame() {
+      const savedState = localStorage.getItem("gameState");
+      if (savedState) {
+        const gameState = JSON.parse(savedState);
+        inventory = gameState.inventory;
+        money = gameState.money;
+        mapData = gameState.mapData;
+        characterX = gameState.characterX;
+        characterY = gameState.characterY; // Load the character's position
+        console.log("Loaded game state:", gameState);
+        // Update the UI with the loaded state
+        updateInventoryUI();
+        renderMap();
+        addCharacter();
+        updateCharacterPosition()
+        alert("Game loaded successfully!");
+      } else {
+        alert("No saved game found!");
+      }
+    }
+
+    function renderMap() {
+      gameContainer.innerHTML = ""; // Clear the current map
+      mapData.forEach((type, index) => {
+        const tile = document.createElement("div");
+        tile.classList.add("tile", type);
+        tile.dataset.index = index; // Store the index of the tile
+        gameContainer.appendChild(tile);
+
+        // Add double-click event for placing a house
+        tile.addEventListener("dblclick", () => {
+          if (inventory.house > 0) {
+            placeHouse(index);
+          }
+        });
+      });
+    }
   </script>
 
 </body>
