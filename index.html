@@ -61,6 +61,36 @@
     }
 
   </style>
+  <style>
+    #inventory {
+      margin-top: 20px;
+      padding: 10px;
+      background: #444;
+      color: white;
+      border: 2px solid #222;
+      width: 320px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    #inventory h2 {
+      margin: 0 0 10px 0;
+      text-align: center;
+    }
+
+    #inventory-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    #inventory-list li {
+      margin: 5px 0;
+      padding: 5px;
+      background: #555;
+      border: 1px solid #333;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
@@ -70,6 +100,13 @@
   <div id="status">
     <p><strong>Wood:</strong> <span id="wood-count">0</span></p>
     <p><strong>Money:</strong> $<span id="money">0</span></p>
+  </div>
+
+  <div id="inventory">
+    <h2>Inventory</h2>
+    <ul id="inventory-list">
+      <!-- Inventory items will be dynamically added here -->
+    </ul>
   </div>
 
   <div id="shop-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: black; padding: 20px; border: 2px solid black; z-index: 1000;">
@@ -84,11 +121,28 @@
     let wood = 100;
     let money = 0;
     let houseAvailable = false; // Track if a house is available for placement
+    let inventory = { house: 0 }; // Inventory object to track items
 
     function updateDisplay() {
       document.getElementById("wood-count").textContent = wood;
       document.getElementById("money").textContent = money;
     }
+
+    function updateInventoryUI() {
+      const inventoryList = document.getElementById("inventory-list");
+      inventoryList.innerHTML = ""; // Clear the current inventory list
+
+      // Populate the inventory list with current items
+      for (const [item, count] of Object.entries(inventory)) {
+        if (count > 0) {
+          const listItem = document.createElement("li");
+          listItem.textContent = `${item.charAt(0).toUpperCase() + item.slice(1)}: ${count}`;
+          inventoryList.appendChild(listItem);
+        }
+      }
+    }
+
+    updateInventoryUI(); // Initialize the inventory UI
 
     const mapWidth = 20;
     const mapHeight = 20;
@@ -120,7 +174,13 @@
 
       // Add double-click event for placing a house
       tile.addEventListener("dblclick", () => {
-        if (houseAvailable) {
+        console.log("Double-clicked tile index:", index);
+        if (inventory.house > 0) {
+          console.log("You can place a house here!");
+        } else {
+          console.log("You need to buy a house first!");
+        }
+        if (inventory.house > 0) {
           placeHouse(index);
         }
       });
@@ -203,7 +263,6 @@
     }
 
     function openShop() {
-      console.log("Opening shop...");
       const shopModal = document.getElementById("shop-modal");
       shopModal.style.display = "block";
 
@@ -214,21 +273,25 @@
 
       // Handle Buy House button
       document.getElementById("buy-house-btn").addEventListener("click", () => {
-        if (money >= 50) {
-            money -= 50;
-            houseAvailable = true; // Allow house placement
-            updateDisplay();
-            alert("You bought a house! Double-click on a tile to place it.");
-        } else {
-          alert("You don't have enough money to buy a house!");
-        }
-        // Do not close the shop modal after buying a house
+        buyHouse();
       });
 
       // Handle Close button
       document.getElementById("close-shop-btn").addEventListener("click", () => {
         shopModal.style.display = "none";
       });
+    }
+
+    function buyHouse() {
+      if (money >= 50) {
+        money -= 50;
+        inventory.house += 1; // Add a house to the inventory
+        updateDisplay();
+        updateInventoryUI();
+        alert("You bought a house! Double-click on a tile to place it.");
+      } else {
+        alert("You don't have enough money to buy a house!");
+      }
     }
 
     function placeHouse(index) {
@@ -239,32 +302,37 @@
       if (
         x < mapWidth - 1 &&
         y < mapHeight - 1 &&
-        mapData[index] === 'grass' &&
-        mapData[index + 1] === 'grass' &&
-        mapData[index + mapWidth] === 'grass' &&
-        mapData[index + mapWidth + 1] === 'grass'
+        mapData[index] != 'marketplace' &&
+        mapData[index + 1] != 'marketplace' &&
+        mapData[index + mapWidth] != 'marketplace' &&
+        mapData[index + mapWidth + 1] != 'marketplace'
       ) {
-        // Update the map data
-        mapData[index] = 'house';
-        mapData[index + 1] = 'house';
-        mapData[index + mapWidth] = 'house';
-        mapData[index + mapWidth + 1] = 'house';
+        if (inventory.house > 0) {
+          // Update the map data
+          mapData[index] = 'house';
+          mapData[index + 1] = 'house';
+          mapData[index + mapWidth] = 'house';
+          mapData[index + mapWidth + 1] = 'house';
 
-        // Update the tiles visually
-        const tile1 = gameContainer.querySelector(`[data-index="${index}"]`);
-        const tile2 = gameContainer.querySelector(`[data-index="${index + 1}"]`);
-        const tile3 = gameContainer.querySelector(`[data-index="${index + mapWidth}"]`);
-        const tile4 = gameContainer.querySelector(`[data-index="${index + mapWidth + 1}"]`);
+          // Update the tiles visually
+          const tile1 = gameContainer.querySelector(`[data-index="${index}"]`);
+          const tile2 = gameContainer.querySelector(`[data-index="${index + 1}"]`);
+          const tile3 = gameContainer.querySelector(`[data-index="${index + mapWidth}"]`);
+          const tile4 = gameContainer.querySelector(`[data-index="${index + mapWidth + 1}"]`);
 
-        [tile1, tile2, tile3, tile4].forEach((tile) => {
-          tile.classList.remove('grass');
-          tile.classList.add('house');
-        });
+          [tile1, tile2, tile3, tile4].forEach((tile) => {
+            tile.classList.remove('grass');
+            tile.classList.add('house');
+          });
 
-        houseAvailable = false; // Reset house availability
-        alert("House placed successfully!");
+          inventory.house -= 1; // Remove a house from the inventory
+          updateInventoryUI();
+          console.log("House placed successfully!");
+        } else {
+          console.log("You don't have any houses in your inventory!");
+        }
       } else {
-        alert("Not enough space to place the house!");
+        console.log("Not enough space to place the house!");
       }
     }
   </script>
