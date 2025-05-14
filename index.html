@@ -81,7 +81,7 @@
   </div>
 
   <script>
-    let wood = 0;
+    let wood = 100;
     let money = 0;
     let houseAvailable = false; // Track if a house is available for placement
 
@@ -207,26 +207,25 @@
       const shopModal = document.getElementById("shop-modal");
       shopModal.style.display = "block";
 
+      // Handle Sell Wood button
       document.getElementById("sell-wood-btn").addEventListener("click", () => {
         sellWood();
-        shopModal.style.display = "none";
       });
 
+      // Handle Buy House button
       document.getElementById("buy-house-btn").addEventListener("click", () => {
         if (money >= 50) {
-          const confirmPurchase = confirm("Do you want to buy a house for 50 coins?");
-          if (confirmPurchase) {
             money -= 50;
             houseAvailable = true; // Allow house placement
             updateDisplay();
             alert("You bought a house! Double-click on a tile to place it.");
-          }
         } else {
           alert("You don't have enough money to buy a house!");
         }
-        shopModal.style.display = "none";
+        // Do not close the shop modal after buying a house
       });
 
+      // Handle Close button
       document.getElementById("close-shop-btn").addEventListener("click", () => {
         shopModal.style.display = "none";
       });
