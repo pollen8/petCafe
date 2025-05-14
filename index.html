@@ -91,6 +91,14 @@
       text-align: center;
     }
   </style>
+  <style>
+    #bobin {
+      background-color: blue;
+      border: 2px solid white;
+      position: absolute;
+      transition: top 0.5s, left 0.5s; /* Smooth movement */
+    }
+  </style>
 </head>
 <body>
 
@@ -209,13 +217,18 @@ console.log('inventory', inventory)
       });
     });
 
-    // Add the character
-addCharacter()
 
     let characterX = 0;
     let characterY = 0;
     const tileSize = 32; // Size of each tile in pixels
 
+    let bobinX = 0;
+    let bobinY = 0;
+    const bobinCapacity = { wood: 0, stone: 0 }; // Bobin's capacity for items
+
+    // Add the character
+addCharacter();
+addBobin();
     document.addEventListener("keydown", (event) => {
       switch (event.key) {
         case "ArrowUp":
@@ -486,6 +499,60 @@ addCharacter()
         });
       });
     }
+
+
+    function addBobin() {
+      const bobin = document.createElement("div");
+      bobin.id = "bobin";
+      bobin.style.width = `${tileSize}px`;
+      bobin.style.height = `${tileSize}px`;
+      bobin.style.backgroundColor = "blue"; // Bobin's color
+      bobin.style.position = "absolute";
+      bobin.style.zIndex = "10";
+      bobin.style.top = `${bobinY * tileSize}px`;
+      bobin.style.left = `${bobinX * tileSize}px`;
+      gameContainer.appendChild(bobin);
+    }
+
+    function moveBobin() {
+      const collectibleTiles = mapData
+        .map((type, index) => ({ type, index }))
+        .filter(({ type }) => type === "wood" || type === "stone");
+
+      if (collectibleTiles.length > 0) {
+        const randomTile = collectibleTiles[Math.floor(Math.random() * collectibleTiles.length)];
+        const tileIndex = randomTile.index;
+        bobinX = tileIndex % mapWidth;
+        bobinY = Math.floor(tileIndex / mapWidth);
+
+        // Update Bobin's position
+        const bobin = document.getElementById("bobin");
+        bobin.style.top = `${bobinY * tileSize}px`;
+        bobin.style.left = `${bobinX * tileSize}px`;
+
+        // Collect the item
+        if (randomTile.type === "wood" && bobinCapacity.wood < 10) {
+          collectForBobin(tileIndex, "wood");
+        } else if (randomTile.type === "stone" && bobinCapacity.stone < 10) {
+          collectForBobin(tileIndex, "stone");
+        }
+      }
+    }
+
+    function collectForBobin(tileIndex, itemType) {
+      mapData[tileIndex] = "grass"; // Change the tile type to grass
+      const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
+      tile.classList.remove(itemType);
+      tile.classList.add("grass");
+
+      bobinCapacity[itemType]++; // Add to Bobin's capacity
+      inventory[itemType]++; // Add to the player's inventory
+      updateInventoryUI();
+      console.log(`Bobin collected 1 ${itemType}!`);
+    }
+
+    // Start Bobin's movement every 5 seconds
+    setInterval(moveBobin, 5000);
   </script>
 
 </body>
