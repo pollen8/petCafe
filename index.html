@@ -112,9 +112,29 @@
     }
 
     .bunny {
-      border: 2px solid black;
+      width: 32px;
+      height: 32px;
+      background: url('./Running.png') no-repeat;
+      background-size: auto; /* Ensure the sprite sheet is not stretched */
+      position: absolute;
       z-index: 10; /* Lower z-index to place bunnies below the player */
       transition: top 0.5s, left 0.5s; /* Smooth movement */
+      animation: bunnyRun 2.4s steps(8) infinite; /* Animation for running */
+    }
+
+    @keyframes bunnyRun {
+      from {
+        background-position: 0px; /* Start at the first frame */
+      }
+      to {
+        background-position: -256px; /* Move to the last frame (8 frames * 32px) */
+      }
+    }
+  </style>
+  <style>
+    .tile.craftingBench {
+      background-color: rgba(201, 98, 18, 0.775);
+      border: 2px solid rgb(25, 95, 106);
     }
   </style>
 </head>
@@ -154,14 +174,14 @@
     let money = 0;
     let character = null; // Track the character element
     let houseAvailable = false; // Track if a house is available for placement
-    let inventory = { house: 1, wood: 0, stone: 0 }; // Inventory object to track items
+    let inventory = { house: 1, wood: 0, stone: 0, craftingBench: 1 }; // Add crafting bench to inventory
     let selectedItem = null; // Track the currently selected item
 
     function updateInventoryUI() {
-      document.getElementById('money').textContent = money; // Update money display
+      document.getElementById("money").textContent = money; // Update money display
       const inventoryList = document.getElementById("inventory-list");
       inventoryList.innerHTML = ""; // Clear the current inventory list
-console.log('inventory', inventory)
+
       // Populate the inventory list with current items
       for (const [item, count] of Object.entries(inventory)) {
         if (count > 0) {
@@ -428,6 +448,34 @@ addBobin();
       }
     }
 
+    function placeCraftingBench(index) {
+      const x = index % mapWidth;
+      const y = Math.floor(index / mapWidth);
+
+      // Ensure the selected item is a crafting bench
+      if (selectedItem !== "craftingBench") {
+        alert("You must select a crafting bench from the inventory to place it!");
+        return;
+      }
+
+      if (mapData[index] === "grass") {
+        // Update the map data
+        mapData[index] = "craftingBench";
+
+        // Update the tile visually
+        const tile = gameContainer.querySelector(`[data-index="${index}"]`);
+        tile.classList.remove("grass");
+        tile.classList.add("craftingBench");
+
+        inventory.craftingBench--; // Remove the crafting bench from the inventory
+        updateInventoryUI();
+        selectedItem = null; // Deselect the item after placing
+        console.log("Crafting bench placed successfully!");
+      } else {
+        console.log("You cannot place a crafting bench here!");
+      }
+    }
+
     // Create a ghost house element
     const ghostHouse = document.createElement("div");
     ghostHouse.id = "ghost-house";
@@ -509,15 +557,16 @@ addBobin();
         tile.dataset.index = index; // Store the index of the tile
         gameContainer.appendChild(tile);
 
-        // Add double-click event for placing a house
+        // Add double-click event for placing items
         tile.addEventListener("dblclick", () => {
-          if (inventory.house > 0) {
+          if (selectedItem === "house" && inventory.house > 0) {
             placeHouse(index);
+          } else if (selectedItem === "craftingBench" && inventory.craftingBench > 0) {
+            placeCraftingBench(index);
           }
         });
       });
     }
-
 
     function addBobin() {
       const bobin = document.createElement("div");
@@ -585,7 +634,6 @@ addBobin();
       bunny.style.width = `${tileSize}px`;
       bunny.style.height = `${tileSize}px`;
       bunny.style.borderRadius = "50%"; // Make it a circle
-      bunny.style.backgroundColor = "white"; // Bunny color
       bunny.style.position = "absolute";
       bunny.style.zIndex = "10";
       bunny.style.top = `${bunnyY * tileSize}px`;
