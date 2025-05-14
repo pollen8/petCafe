@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Item Collector Game</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    button { margin: 5px; padding: 10px; }
+    #status { margin-top: 20px; }
+  </style>
+   <style>
+    body {
+      font-family: sans-serif;
+      background: #333;
+      color: white;
+    }
+
+    #game {
+      display: grid;
+      grid-template-columns: repeat(10, 32px);
+      grid-template-rows: repeat(10, 32px);
+      gap: 0;
+      margin: 20px auto;
+      width: 320px;
+    }
+
+    .tile {
+      width: 32px;
+      height: 32px;
+      image-rendering: pixelated;
+    }
+
+    .grass { background: url('grass.png'); }
+    .wood { background: url('wood.png'); }
+    .stone { background: url('stone.png'); }
+
+    /* Fallback styles if no images yet */
+    .tile.grass { background-color: #4caf50; }
+    .tile.wood { background-color: #795548; }
+    .tile.stone { background-color: #9e9e9e; }
+
+  </style>
+</head>
+<body>
+
+  <h1>Item Collector Game</h1>
+  <div id="game"></div>
+  <button onclick="collectItem()">Collect Wood</button>
+  <button onclick="sellItem()">Sell Wood</button>
+
+  <div id="status">
+    <p><strong>Wood:</strong> <span id="wood-count">0</span></p>
+    <p><strong>Money:</strong> $<span id="money">0</span></p>
+  </div>
+
+  <script>
+    let wood = 0;
+    let money = 0;
+
+    function collectItem() {
+      wood++;
+      updateDisplay();
+    }
+
+    function sellItem() {
+      if (wood > 0) {
+        wood--;
+        money += 5;
+        updateDisplay();
+      } else {
+        alert("You have no wood to sell!");
+      }
+    }
+
+    function updateDisplay() {
+      document.getElementById("wood-count").textContent = wood;
+      document.getElementById("money").textContent = money;
+    }
+
+    const mapWidth = 10;
+    const mapHeight = 10;
+
+    // Simple tile map array using types
+    const tileTypes = ['grass', 'wood', 'stone'];
+    const mapData = [];
+
+    for (let y = 0; y < mapHeight; y++) {
+      for (let x = 0; x < mapWidth; x++) {
+        const tileType = tileTypes[Math.floor(Math.random() * tileTypes.length)];
+        mapData.push(tileType);
+      }
+    }
+
+    const gameContainer = document.getElementById("game");
+
+    // Render the tiles
+    mapData.forEach(type => {
+      const tile = document.createElement("div");
+      tile.classList.add("tile", type);
+      gameContainer.appendChild(tile);
+    });
+  </script>
+
+</body>
+</html>
