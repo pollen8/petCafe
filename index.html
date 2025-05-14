@@ -50,14 +50,17 @@
       transition: top 0.1s, left 0.1s; /* Smooth movement */
     }
 
+    .tile.marketplace {
+      background-color: gold;
+      border: 2px solid black;
+    }
+
   </style>
 </head>
 <body>
 
   <h1>Item Collector Game</h1>
   <div id="game"></div>
-  <button onclick="collectItem()">Collect Wood</button>
-  <button onclick="sellItem()">Sell Wood</button>
 
   <div id="status">
     <p><strong>Wood:</strong> <span id="wood-count">0</span></p>
@@ -67,21 +70,6 @@
   <script>
     let wood = 0;
     let money = 0;
-
-    function collectItem() {
-      wood++;
-      updateDisplay();
-    }
-
-    function sellItem() {
-      if (wood > 0) {
-        wood--;
-        money += 5;
-        updateDisplay();
-      } else {
-        alert("You have no wood to sell!");
-      }
-    }
 
     function updateDisplay() {
       document.getElementById("wood-count").textContent = wood;
@@ -97,8 +85,13 @@
 
     for (let y = 0; y < mapHeight; y++) {
       for (let x = 0; x < mapWidth; x++) {
-        const tileType = tileTypes[Math.floor(Math.random() * tileTypes.length)];
-        mapData.push(tileType);
+        if (y === 0 && x === mapWidth - 1) {
+          // Place the marketplace in the top-right corner
+          mapData.push('marketplace');
+        } else {
+          const tileType = tileTypes[Math.floor(Math.random() * tileTypes.length)];
+          mapData.push(tileType);
+        }
       }
     }
 
@@ -138,7 +131,7 @@
           if (characterX < mapWidth - 1) characterX++;
           break;
         case "Enter":
-          collectWood();
+          interactWithTile();
           break;
       }
       updateCharacterPosition();
@@ -150,22 +143,41 @@
       character.style.left = `${characterX * tileSize}px`;
     }
 
-    function collectWood() {
+    function interactWithTile() {
       const tileIndex = characterY * mapWidth + characterX;
-      if (mapData[tileIndex] === 'wood') {
-        mapData[tileIndex] = 'grass'; // Change the tile type to grass
-        const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
-        tile.classList.remove('wood');
-        tile.classList.add('grass');
-        wood++;
-        updateDisplay();
+      const tileType = mapData[tileIndex];
 
-        // Set a timeout to turn the tile back to wood after 30 seconds
-        setTimeout(() => {
-          mapData[tileIndex] = 'wood'; // Change the tile type back to wood
-          tile.classList.remove('grass');
-          tile.classList.add('wood');
-        }, 10000); // 30 seconds in milliseconds
+      if (tileType === 'wood') {
+        collectWood(tileIndex);
+      } else if (tileType === 'marketplace') {
+        sellWood();
+      }
+    }
+
+    function collectWood(tileIndex) {
+      mapData[tileIndex] = 'grass'; // Change the tile type to grass
+      const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
+      tile.classList.remove('wood');
+      tile.classList.add('grass');
+      wood++;
+      updateDisplay();
+
+      // Set a timeout to turn the tile back to wood after 30 seconds
+      setTimeout(() => {
+        mapData[tileIndex] = 'wood'; // Change the tile type back to wood
+        tile.classList.remove('grass');
+        tile.classList.add('wood');
+      }, 30000); // 30 seconds in milliseconds
+    }
+
+    function sellWood() {
+      if (wood > 0) {
+        wood--;
+        money += 5;
+        updateDisplay();
+        alert("You sold 1 wood for $5!");
+      } else {
+        alert("You have no wood to sell!");
       }
     }
   </script>
