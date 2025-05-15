@@ -1,60 +1,73 @@
 const bunnies = []; // Array to store bunny positions
+import Sprite from "./sprite.js";
+import {
+  gameContainer,
+  mapWidth,
+  mapHeight,
+  mapData,
+  tileSize,
+} from "./map.js";
+function addBunny(tileIndex) {
+  const bunnyX = Math.floor(tileIndex % mapWidth) * tileSize;
+  const bunnyY = Math.floor(tileIndex / mapWidth) * tileSize;
 
-function addBunny() {
-  const bunny = document.createElement("div");
-  bunny.classList.add("bunny");
-  const randomIndex = Math.floor(Math.random() * mapData.length);
+  const bunny = new Sprite({
+    container: gameContainer,
+    width: 32,
+    height: 32,
+    spriteSheet: "./Running.png", // Path to the sprite sheet
+    frames: 8, // Number of frames in the sprite sheet
+    frameDuration: 300, // Duration of each frame in milliseconds
+    zIndex: 10,
+    position: { x: bunnyX, y: bunnyY }, // Initial position
+  });
 
-  const bunnyX = randomIndex % mapWidth;
-  const bunnyY = Math.floor(randomIndex / mapWidth);
+  bunnies.push(bunny);
 
-  bunny.style.width = `${tileSize}px`;
-  bunny.style.height = `${tileSize}px`;
-  bunny.style.borderRadius = "50%"; // Make it a circle
-  bunny.style.position = "absolute";
-  bunny.style.zIndex = "10";
-  bunny.style.top = `${bunnyY * tileSize}px`;
-  bunny.style.left = `${bunnyX * tileSize}px`;
+  // Assign a random movement interval for this bunny
+  const randomDelay = Math.random() * 2000 + 1000; // Random delay between 1s and 3s
+  setInterval(() => moveBunny(bunny), randomDelay);
+}
 
-  gameContainer.appendChild(bunny);
-  bunnies.push({ element: bunny, x: bunnyX, y: bunnyY });
+function moveBunny(bunny) {
+  const directions = [
+    { dx: 0, dy: -1 }, // Up
+    { dx: 0, dy: 1 },  // Down
+    { dx: -1, dy: 0 }, // Left
+    { dx: 1, dy: 0 },  // Right
+  ];
+
+  const validMoves = directions.filter(({ dx, dy }) => {
+    const newX = bunny.position.x + tileSize * dx;
+    const newY = bunny.position.y + tileSize * dy;
+    return (
+      newX >= 0 &&
+      newX < mapWidth * tileSize &&
+      newY >= 0 &&
+      newY < mapHeight * tileSize
+    );
+  });
+
+  if (validMoves.length > 0) {
+    const move = validMoves[Math.floor(Math.random() * validMoves.length)];
+    const newX = bunny.position.x + tileSize * move.dx;
+    const newY = bunny.position.y + tileSize * move.dy;
+    bunny.setPosition(newX, newY);
+  }
 }
 
 function moveBunnies() {
   bunnies.forEach((bunny) => {
-    const directions = [
-      { dx: 0, dy: -1 }, // Up
-      { dx: 0, dy: 1 },  // Down
-      { dx: -1, dy: 0 }, // Left
-      { dx: 1, dy: 0 },  // Right
-    ];
-
-    const validMoves = directions.filter(({ dx, dy }) => {
-      const newX = bunny.x + dx;
-      const newY = bunny.y + dy;
-      return newX >= 0 && newX < mapWidth && newY >= 0 && newY < mapHeight;
-    });
-
-    if (validMoves.length > 0) {
-      const move = validMoves[Math.floor(Math.random() * validMoves.length)];
-      bunny.x += move.dx;
-      bunny.y += move.dy;
-
-      // Update bunny's position
-      bunny.element.style.left = `${bunny.x * tileSize}px`;
-      bunny.element.style.top = `${bunny.y * tileSize}px`;
-    }
+    moveBunny(bunny);
   });
 }
 
-function generateBunnies(count) {
+export function generateBunnies(count) {
   for (let i = 0; i < count; i++) {
-    addBunny();
+    const randomIndex = Math.floor(Math.random() * mapData.length);
+    addBunny(randomIndex);
   }
 }
 
 // Start bunny movement every 2 seconds
 setInterval(moveBunnies, 2000);
-
-// Generate 5 bunnies at the start of the game
-generateBunnies(5);
