@@ -139,5 +139,6 @@ export const game = new Game();
 
 // Generate and set the first map
 game.generateMap();
+game.generateMap(8, 10); // Generate a second map with different dimensions
 game.setCurrentMap(0);
 
