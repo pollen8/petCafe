@@ -3,17 +3,6 @@ let bobinY = 0;
 const bobinCapacity = { wood: 0, stone: 0 }; // Bobin's capacity for items
 import Sprite from './sprite.js';
 import { gameContainer, mapData, mapWidth, tileSize } from './map.js';
-// export function addBobin() {
-//   const bobin = document.createElement("div");
-//   bobin.id = "bobin";
-//   bobin.style.width = `${tileSize}px`;
-//   bobin.style.height = `${tileSize}px`;
-//   bobin.style.backgroundColor = "blue"; // Bobin's color
-//   bobin.style.position = "absolute";
-//   bobin.style.zIndex = "10";
-//   bobin.style.top = `${bobinY * tileSize}px`;
-//   bobin.style.left = `${bobinX * tileSize}px`;
-//   gameContainer.appendChild(bobin);
 
  export const bobin = new Sprite({
     container: gameContainer,
@@ -25,7 +14,6 @@ import { gameContainer, mapData, mapWidth, tileSize } from './map.js';
     zIndex: 10,
     position: { x: 5 * tileSize, y: 5  * tileSize}, // Initial position
   });
-// }
 
 function moveBobin() {
   const collectibleTiles = mapData
@@ -39,10 +27,7 @@ function moveBobin() {
     bobinY = Math.floor(tileIndex / mapWidth);
 
     // Update Bobin's position
-    // const bobin = document.getElementById("bobin");
     bobin.setPosition(bobinX * tileSize, bobinY * tileSize);
-    // bobin.style.top = `${bobinY * tileSize}px`;
-    // bobin.style.left = `${bobinX * tileSize}px`;
 
     // Collect the item
     if (randomTile.type === "wood" && bobinCapacity.wood < 10) {

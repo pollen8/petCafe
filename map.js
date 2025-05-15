@@ -60,6 +60,64 @@ gameContainer.addEventListener("mousemove", (event) => {
   updateDragGhost(event);
 });
 
+// Handle dropping an item on the map
+function dropItemOnMap(index) {
+  const selectedItem = inventory.selectedItem;
+
+  if (selectedItem && selectedItem.isDragging) {
+    const dragGhost = selectedItem.dragGhost;
+    const ghostWidth = dragGhost.width;
+    const ghostHeight = dragGhost.height;
+
+    const x = index % mapWidth;
+    const y = Math.floor(index / mapWidth);
+
+    // Check if there's enough space for the item
+    if (
+      x + ghostWidth <= mapWidth &&
+      y + ghostHeight <= mapHeight &&
+      canPlaceItem(x, y, ghostWidth, ghostHeight)
+    ) {
+      // Update the map data for the entire area covered by the item
+      for (let dy = 0; dy < ghostHeight; dy++) {
+        for (let dx = 0; dx < ghostWidth; dx++) {
+          const tileIndex = (y + dy) * mapWidth + (x + dx);
+          mapData[tileIndex] = selectedItem.type;
+
+          // Update the tile visually
+          const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
+          if (tile) {
+            tile.classList.remove("grass");
+            tile.classList.add(selectedItem.type);
+          }
+        }
+      }
+
+      // Remove the item from the inventory
+      inventory.getItem(selectedItem.type).remove(1);
+
+      // Stop dragging
+      selectedItem.setDragging(false);
+      dragGhostElement.style.display = "none";
+
+      console.log(`${selectedItem.type} placed on the map at index ${index}`);
+    } else {
+      console.log("Not enough space to place the item!");
+    }
+  }
+}
+
+// Helper function to check if the item can be placed
+function canPlaceItem(x, y, width, height) {
+  for (let dy = 0; dy < height; dy++) {
+    for (let dx = 0; dx < width; dx++) {
+      const tileIndex = (y + dy) * mapWidth + (x + dx);
+    
+    }
+  }
+  return true;
+}
+
 // Render the tiles
 mapData.forEach((type, index) => {
   const tile = document.createElement("div");
@@ -67,16 +125,9 @@ mapData.forEach((type, index) => {
   tile.dataset.index = index; // Store the index of the tile
   gameContainer.appendChild(tile);
 
-  // Add double-click event for placing items
-  tile.addEventListener("dblclick", () => {
-    if (inventory.selectedItem?.type === "house" && inventory.selectedItem.amount > 0) {
-      placeHouse(index);
-    } else if (
-      inventory.selectedItem?.type === "craftingBench" &&
-      inventory.selectedItem.amount > 0
-    ) {
-      placeCraftingBench(index);
-    }
+  // Add click event for dropping items
+  tile.addEventListener("click", () => {
+    dropItemOnMap(index);
   });
 });
 
@@ -88,16 +139,9 @@ export function renderMap() {
     tile.dataset.index = index; // Store the index of the tile
     gameContainer.appendChild(tile);
 
-    // Add double-click event for placing items
-    tile.addEventListener("dblclick", () => {
-      if (inventory.selectedItem?.type === "house" && inventory.selectedItem.amount > 0) {
-        placeHouse(index);
-      } else if (
-        inventory.selectedItem?.type === "craftingBench" &&
-        inventory.selectedItem.amount > 0
-      ) {
-        placeCraftingBench(index);
-      }
+    // Add click event for dropping items
+    tile.addEventListener("click", () => {
+      dropItemOnMap(index);
     });
   });
 }
