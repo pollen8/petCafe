@@ -1,15 +1,27 @@
 import { InventoryItem } from "./inventoryItem.js";
+
 export class Inventory {
   constructor(
     initialInventory = {
-      house: new InventoryItem("house", 1),
+      house: new InventoryItem("house", 1, { width: 2, height: 2 }),
       wood: new InventoryItem("wood", 10),
-      stone: new InventoryItem('stone', 5),
-      craftingBench: new InventoryItem('craftingBench', 1),
+      stone: new InventoryItem("stone", 5),
+      craftingBench: new InventoryItem("craftingBench", 1, { width: 1, height: 1 }),
     }
   ) {
     this.inventory = initialInventory; // Initialize inventory
     this.selectedItem = null; // Track the currently selected item
+
+    // Add event listener to the inventory list
+    const inventoryList = document.getElementById("inventory-list");
+    inventoryList.addEventListener("click", (event) => {
+      const listItem = event.target.closest("li");
+      console.log("Clicked on list item:", listItem);
+      if (listItem) {
+        const itemType = listItem.dataset.item;
+        this.selectInventoryItem(this.inventory[itemType], listItem);
+      }
+    });
   }
 
   // Update the inventory UI
@@ -26,11 +38,6 @@ export class Inventory {
           item.type
         }: ${item.amount}`;
         listItem.dataset.item = item.type; // Store the item type in a data attribute
-
-        // Add click event to select the item
-        listItem.addEventListener("click", () => {
-          this.selectInventoryItem(item, listItem);
-        });
 
         inventoryList.appendChild(listItem);
       }
@@ -76,7 +83,12 @@ export class Inventory {
     // Select the clicked item
     listItem.classList.add("selected");
     this.selectedItem = item; // Update the selected item
-    console.log(`Selected item: ${this.selectedItem}`);
+    Object.values(this.inventory).forEach((i) => {
+      i.setDragging(false); // Reset dragging state for all items
+    }
+    );
+    this.selectedItem.setDragging(true); // Set the item as being dragged
+    console.log(`Selected item: ${this.selectedItem}`, this.selectedItem);
   }
 }
 
