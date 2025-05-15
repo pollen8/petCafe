@@ -1,13 +1,9 @@
 const bunnies = []; // Array to store bunny positions
 import Sprite from "./sprite.js";
-import {
-  mapWidth,
-  mapHeight,
-  mapData,
-  tileSize,
-} from "./map.js";
-import { gameContainer } from './game.js';
+import { gameContainer, game, tileSize } from "./game.js";
 function addBunny(tileIndex) {
+  const { mapWidth } = game.getCurrentMap(); // Assuming you have a method to get the tile size
+
   const bunnyX = Math.floor(tileIndex % mapWidth) * tileSize;
   const bunnyY = Math.floor(tileIndex / mapWidth) * tileSize;
 
@@ -32,11 +28,12 @@ function addBunny(tileIndex) {
 function moveBunny(bunny) {
   const directions = [
     { dx: 0, dy: -1 }, // Up
-    { dx: 0, dy: 1 },  // Down
+    { dx: 0, dy: 1 }, // Down
     { dx: -1, dy: 0 }, // Left
-    { dx: 1, dy: 0 },  // Right
+    { dx: 1, dy: 0 }, // Right
   ];
 
+  const { mapWidth, mapHeight } = game.getCurrentMap(); // Assuming you have a method to get the tile size
   const validMoves = directions.filter(({ dx, dy }) => {
     const newX = bunny.position.x + tileSize * dx;
     const newY = bunny.position.y + tileSize * dy;
@@ -63,6 +60,7 @@ function moveBunnies() {
 }
 
 export function generateBunnies(count) {
+  const mapData = game.getCurrentMap().getMap(); // Get the map data
   for (let i = 0; i < count; i++) {
     const randomIndex = Math.floor(Math.random() * mapData.length);
     addBunny(randomIndex);

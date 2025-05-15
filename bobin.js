@@ -2,8 +2,9 @@ let bobinX = 0;
 let bobinY = 0;
 const bobinCapacity = { wood: 0, stone: 0 }; // Bobin's capacity for items
 import Sprite from './sprite.js';
-import { mapData, mapWidth, tileSize } from './map.js';
-import { gameContainer } from './game.js';
+import { gameContainer, game, tileSize } from './game.js';
+
+
  export const bobin = new Sprite({
     container: gameContainer,
     width: 32,
@@ -16,10 +17,12 @@ import { gameContainer } from './game.js';
   });
 
 function moveBobin() {
+  const mapData = game.getCurrentMap().getMap();
   const collectibleTiles = mapData
     .map((type, index) => ({ type, index }))
     .filter(({ type }) => type === "wood" || type === "stone");
 
+    const mapWidth = game.getCurrentMap().mapWidth
   if (collectibleTiles.length > 0) {
     const randomTile = collectibleTiles[Math.floor(Math.random() * collectibleTiles.length)];
     const tileIndex = randomTile.index;
@@ -39,6 +42,7 @@ function moveBobin() {
 }
 
 function collectForBobin(tileIndex, itemType) {
+  const mapData = game.getCurrentMap().getMap();
   mapData[tileIndex] = "grass"; // Change the tile type to grass
   const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
   tile.classList.remove(itemType);

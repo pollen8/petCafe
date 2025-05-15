@@ -1,4 +1,4 @@
-import { tileSize, mapWidth, mapHeight } from './map.js';
+import {game} from './game.js';
 class Sprite {
   constructor({
     container,
@@ -65,9 +65,10 @@ class Sprite {
 
   // Get the current tile index based on the sprite's position
   getTileIndex() {
+    const tileSize = game.getCurrentMap().tileSize; // Assuming you have a method to get the tile size
     const tileX = Math.floor(this.position.x / tileSize);
     const tileY = Math.floor(this.position.y / tileSize);
-    return tileY * mapWidth + tileX;
+    return tileY * game.getCurrentMap().mapWidth + tileX;
   }
 }
 

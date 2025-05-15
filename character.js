@@ -1,12 +1,6 @@
 import Sprite from "./sprite.js";
-import {openShop} from "./shop.js";
-import {
-  mapData,
-  mapHeight,
-  mapWidth,
-  tileSize,
-} from "./map.js";
-import { gameContainer  } from "./game.js";
+import { openShop } from "./shop.js";
+import {game,  gameContainer, tileSize } from "./game.js";
 import { inventory } from "./inventory.js";
 export const character = new Sprite({
   container: gameContainer,
@@ -20,8 +14,7 @@ export const character = new Sprite({
   position: { x: 0, y: 0 }, // Initial position
 });
 
-
-class Purse{
+class Purse {
   constructor(initialMoney) {
     this.money = initialMoney;
   }
@@ -45,6 +38,7 @@ class Purse{
 export const purse = new Purse(0);
 
 document.addEventListener("keydown", (event) => {
+  const { mapWidth, mapHeight } = game.getCurrentMap(); // Assuming you have a method to get the tile size
   switch (event.key) {
     case "ArrowUp":
       if (character.position.y > 0) {
@@ -78,7 +72,7 @@ document.addEventListener("keydown", (event) => {
         );
       }
       break;
-      case " ":
+    case " ":
     case "Enter":
       interactWithTile();
       break;
@@ -87,6 +81,7 @@ document.addEventListener("keydown", (event) => {
 
 function interactWithTile() {
   const tileIndex = character.getTileIndex();
+  const mapData = game.getCurrentMap().getMap();
   const tileType = mapData[tileIndex];
 
   if (tileType === "marketplace") {
