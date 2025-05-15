@@ -26,8 +26,8 @@ export function openShop() {
 }
 
 function sellItem(type) {
-  console.log("Selling ...", inventory.wood);
-  if (inventory.getItem(type) > 0) {
+  console.log("Selling ...", inventory.getItem(type));
+  if (inventory.getItem(type).getAmount() > 0) {
     inventory.removeItem(type); // Decrease wood count in the inventory
     purse.addMoney(5); // Increase money by 5
   }

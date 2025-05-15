@@ -27,9 +27,7 @@ class Purse{
   }
 
   addMoney(amount) {
-    console.log("Adding money ...", amount);
     this.money += amount;
-    console.log("Current money:", this.money);
   }
 
   removeMoney(amount) {
@@ -47,8 +45,6 @@ class Purse{
 export const purse = new Purse(0);
 
 document.addEventListener("keydown", (event) => {
-  event.stopPropagation();
-  event.preventDefault();
   switch (event.key) {
     case "ArrowUp":
       if (character.position.y > 0) {
@@ -82,6 +78,7 @@ document.addEventListener("keydown", (event) => {
         );
       }
       break;
+      case " ":
     case "Enter":
       interactWithTile();
       break;
@@ -90,7 +87,6 @@ document.addEventListener("keydown", (event) => {
 
 function interactWithTile() {
   const tileIndex = character.getTileIndex();
-  console.log("Tile Index:", tileIndex);
   const tileType = mapData[tileIndex];
 
   if (tileType === "marketplace") {

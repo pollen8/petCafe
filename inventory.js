@@ -1,5 +1,13 @@
+import { InventoryItem } from "./inventoryItem.js";
 export class Inventory {
-  constructor(initialInventory = { house: 1, wood: 10, stone: 5, craftingBench: 1 }) {
+  constructor(
+    initialInventory = {
+      house: new InventoryItem("house", 1),
+      wood: new InventoryItem("wood", 10),
+      stone: new InventoryItem('stone', 5),
+      craftingBench: new InventoryItem('craftingBench', 1),
+    }
+  ) {
     this.inventory = initialInventory; // Initialize inventory
     this.selectedItem = null; // Track the currently selected item
   }
@@ -11,11 +19,13 @@ export class Inventory {
     inventoryList.innerHTML = ""; // Clear the current inventory list
 
     // Populate the inventory list with current items
-    for (const [item, count] of Object.entries(this.inventory)) {
-      if (count > 0) {
+    for (const [k, item ] of Object.entries(this.inventory)) {
+      if (item.amount > 0) {
         const listItem = document.createElement("li");
-        listItem.textContent = `${item.charAt(0).toUpperCase() + item.slice(1)}: ${count}`;
-        listItem.dataset.item = item; // Store the item type in a data attribute
+        listItem.textContent = `${
+          item.type
+        }: ${item.amount}`;
+        listItem.dataset.item = item.type; // Store the item type in a data attribute
 
         // Add click event to select the item
         listItem.addEventListener("click", () => {
@@ -34,18 +44,22 @@ export class Inventory {
   // Add an item to the inventory
   addItem(item) {
     if (this.inventory[item] !== undefined) {
-      this.inventory[item]++;
+      this.inventory[item].add(1);
     } else {
-      this.inventory[item] = 1; // Add new item to inventory
+      this.inventory[item] = new InventoryItem(type, 1); // Add new item to inventory
     }
-    console.log(`Added ${item} to inventory. Current count: ${this.inventory[item]}`);
+    console.log(
+      `Added ${item} to inventory. Current count: ${this.inventory[item].amount}`
+    );
   }
 
   // Remove an item from the inventory
   removeItem(item) {
-    if (this.inventory[item] > 0) {
-      this.inventory[item]--;
-      console.log(`Removed ${item} from inventory. Current count: ${this.inventory[item]}`);
+    if (this.inventory[item].getAmount() > 0) {
+      this.inventory[item].remove(1);
+      console.log(
+        `Removed ${item} from inventory. Current count: ${this.inventory[item].amount}`
+      );
     } else {
       console.log(`No ${item} left in inventory to remove.`);
     }

@@ -216,32 +216,8 @@
       } from "./map.js";
       import { character, purse } from "./character.js"; // Import the character function
       import { inventory } from "./inventory.js"; // Import the inventory function
-      let wood = 100;
-      let houseAvailable = false; // Track if a house is available for placement
       let selectedItem = null; // Track the currently selected item
 
-      // function collectWood(tileIndex) {
-      //   mapData[tileIndex] = "grass"; // Change the tile type to grass
-      //   const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
-      //   tile.classList.remove("wood");
-      //   tile.classList.add("grass");
-
-      //   inventory.wood++; // Add 1 wood to the inventory
-      //   console.log("Collected 1 wood!");
-      // }
-
-      // function collectStone(tileIndex) {
-      //   mapData[tileIndex] = "grass"; // Change the tile type to grass
-      //   const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
-      //   tile.classList.remove("stone");
-      //   tile.classList.add("grass");
-      //   if (!inventory.stone) {
-      //     inventory.stone = 0; // Initialize stone in the inventory if not already present
-      //   }
-      //   inventory.stone++; // Add 1 stone to the inventory
-      //   // updateInventoryUI();
-      //   console.log("Collected 1 stone!");
-      // }
 
       function placeHouse(index) {
         const x = index % mapWidth;
