@@ -1,537 +1,551 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Item Collector Game</title>
-  <style>
-    body { font-family: Arial; padding: 20px; }
-    button { margin: 5px; padding: 10px; }
-    #status { margin-top: 20px; }
-  </style>
-   <style>
-    body {
-      font-family: sans-serif;
-      background: #333;
-      color: white;
-    }
-
-    #game {
-      display: grid;
-      grid-template-columns: repeat(20, 32px);
-      grid-template-rows: repeat(20, 32px);
-      gap: 0;
-      margin: 20px auto;
-      width: 320px;
-      position: relative; /* Ensure the game container is the reference for absolute positioning */
-    }
-
-    .tile {
-      width: 32px;
-      height: 32px;
-      image-rendering: pixelated;
-    }
-
-    .grass { background: url('grass.png'); }
-    .wood { background: url('wood.png'); }
-    .stone { background: url('stone.png'); }
-
-    /* Fallback styles if no images yet */
-    .tile.grass { background-color: #4caf50; }
-    .tile.wood { background-color: #795548; }
-    .tile.stone { background-color: #9e9e9e; }
-
-    #character {
-      width: 32px;
-      height: 32px;
-      background-color: rgb(150, 100, 232);
-      z-index: 20; /* Higher z-index to place the player above the bunnies */
-      position: absolute; /* Position the character absolutely */
-      top: 0; /* Start at the top */
-      left: 0; /* Start at the left */
-      transition: top 0.1s, left 0.1s; /* Smooth movement */
-    }
-
-    .tile.marketplace {
-      background-color: gold;
-      border: 2px solid black;
-    }
-
-    .tile.house {
-      background-color: brown;
-      border: 2px solid black;
-    }
-
-  </style>
-  <style>
-    #inventory {
-      margin-top: 20px;
-      padding: 10px;
-      background: #444;
-      color: white;
-      border: 2px solid #222;
-      width: 320px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    #inventory h2 {
-      margin: 0 0 10px 0;
-      text-align: center;
-    }
-
-    #inventory-list {
-      list-style: none;
-      padding: 0;
-    }
-
-    #inventory-list li {
-      margin: 5px 0;
-      padding: 5px;
-      background: #555;
-      border: 1px solid #333;
-      text-align: center;
-    }
-  </style>
-  <style>
-    #bobin {
-      background-color: blue;
-      border: 2px solid white;
-      position: absolute;
-      transition: top 0.5s, left 0.5s; /* Smooth movement */
-    }
-  </style>
-  <style>
-    #character {
-      width: 32px;
-      height: 32px;
-      background-color: rgb(150, 100, 232);
-      z-index: 20; /* Higher z-index to place the player above the bunnies */
-      position: absolute;
-      top: 0;
-      left: 0;
-      transition: top 0.1s, left 0.1s; /* Smooth movement */
-    }
-
-    .bunny {
-      width: 32px;
-      height: 32px;
-      background: url('./Running.png') no-repeat;
-      background-size: auto; /* Ensure the sprite sheet is not stretched */
-      position: absolute;
-      z-index: 10; /* Lower z-index to place bunnies below the player */
-      transition: top 0.5s, left 0.5s; /* Smooth movement */
-      animation: bunnyRun 2.4s steps(8) infinite; /* Animation for running */
-    }
-
-    @keyframes bunnyRun {
-      from {
-        background-position: 0px; /* Start at the first frame */
+  <head>
+    <title>Item Collector Game</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
       }
-      to {
-        background-position: -256px; /* Move to the last frame (8 frames * 32px) */
+      button {
+        margin: 5px;
+        padding: 10px;
       }
-    }
-  </style>
-  <style>
-    .tile.craftingBench {
-      background-color: rgba(201, 98, 18, 0.775);
-      border: 2px solid rgb(25, 95, 106);
-    }
-  </style>
-  <!-- <script type="module" src="sprite.js"></script>
-  <script type="module" src="bobin.js"></script>
-  <script type="module"  src="bunny.js"></script> -->
-</head>
-<body>
+      #status {
+        margin-top: 20px;
+      }
+    </style>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: #333;
+        color: white;
+      }
 
-  <h1>Item Collector Game</h1>
-  <div id="game"></div>
+      #game {
+        display: grid;
+        grid-template-columns: repeat(20, 32px);
+        grid-template-rows: repeat(20, 32px);
+        gap: 0;
+        margin: 20px auto;
+        width: 320px;
+        position: relative; /* Ensure the game container is the reference for absolute positioning */
+      }
 
-  <div id="status">
-    <p><strong>Wood:</strong> <span id="wood-count">0</span></p>
-    <p><strong>Money:</strong> $<span id="money">0</span></p>
-  </div>
+      .tile {
+        width: 32px;
+        height: 32px;
+        image-rendering: pixelated;
+      }
 
-  <div id="inventory">
-    <h2>Inventory</h2>
-    <ul id="inventory-list">
-      <!-- Inventory items will be dynamically added here -->
-    </ul>
-  </div>
+      .grass {
+        background: url("grass.png");
+      }
+      .wood {
+        background: url("wood.png");
+      }
+      .stone {
+        background: url("stone.png");
+      }
 
-  <div id="shop-modal" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; color: black; padding: 20px; border: 2px solid black; z-index: 1000;">
-    <h2>Shop</h2>
-    <p>Choose an option:</p>
-    <button id="sell-wood-btn">Sell Wood ($5 per wood)</button>
-    <button id="sell-stone-btn">Sell Stone ($5 per stone)</button>
-    <button id="buy-house-btn">Buy House (50 coins)</button>
-    <button id="close-shop-btn">Close</button>
-  </div>
+      /* Fallback styles if no images yet */
+      .tile.grass {
+        background-color: #4caf50;
+      }
+      .tile.wood {
+        background-color: #795548;
+      }
+      .tile.stone {
+        background-color: #9e9e9e;
+      }
 
-  <div id="controls">
-    <button onclick="saveGame()">Save Game</button>
-    <button onclick="loadGame()">Load Game</button>
-  </div>
+      #character {
+        width: 32px;
+        height: 32px;
+        background-color: rgb(150, 100, 232);
+        z-index: 20; /* Higher z-index to place the player above the bunnies */
+        position: absolute; /* Position the character absolutely */
+        top: 0; /* Start at the top */
+        left: 0; /* Start at the left */
+        transition: top 0.1s, left 0.1s; /* Smooth movement */
+      }
 
-  <script type="module">
-    import { generateBunnies } from './bunny.js'; // Import the bunny generation function
-    import {bobin} from './bobin.js'; // Import the bobin function
-import {mapWidth, mapHeight, gameContainer, tileSize} from './map.js';
-    // import { addCharacter } from './sprite.js'; // Import the character function
-    let wood = 100;
-    let money = 0;
-    let character = null; // Track the character element
-    let houseAvailable = false; // Track if a house is available for placement
-    let inventory = { house: 1, wood: 0, stone: 0, craftingBench: 1 }; // Add crafting bench to inventory
-    let selectedItem = null; // Track the currently selected item
+      .tile.marketplace {
+        background-color: gold;
+        border: 2px solid black;
+      }
 
-    function updateInventoryUI() {
-      document.getElementById("money").textContent = money; // Update money display
-      const inventoryList = document.getElementById("inventory-list");
-      inventoryList.innerHTML = ""; // Clear the current inventory list
+      .tile.house {
+        background-color: brown;
+        border: 2px solid black;
+      }
+    </style>
+    <style>
+      #inventory {
+        margin-top: 20px;
+        padding: 10px;
+        background: #444;
+        color: white;
+        border: 2px solid #222;
+        width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+      }
 
-      // Populate the inventory list with current items
-      for (const [item, count] of Object.entries(inventory)) {
-        if (count > 0) {
-          const listItem = document.createElement("li");
-          listItem.textContent = `${item.charAt(0).toUpperCase() + item.slice(1)}: ${count}`;
-          listItem.dataset.item = item; // Store the item type in a data attribute
+      #inventory h2 {
+        margin: 0 0 10px 0;
+        text-align: center;
+      }
 
-          // Add click event to select the item
-          listItem.addEventListener("click", () => {
-            selectInventoryItem(item, listItem);
-          });
+      #inventory-list {
+        list-style: none;
+        padding: 0;
+      }
 
-          inventoryList.appendChild(listItem);
+      #inventory-list li {
+        margin: 5px 0;
+        padding: 5px;
+        background: #555;
+        border: 1px solid #333;
+        text-align: center;
+      }
+    </style>
+    <style>
+      #bobin {
+        background-color: blue;
+        border: 2px solid white;
+        position: absolute;
+        transition: top 0.5s, left 0.5s; /* Smooth movement */
+      }
+    </style>
+    <style>
+      #character {
+        width: 32px;
+        height: 32px;
+        background-color: rgb(150, 100, 232);
+        z-index: 20; /* Higher z-index to place the player above the bunnies */
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: top 0.1s, left 0.1s; /* Smooth movement */
+      }
+
+      .bunny {
+        width: 32px;
+        height: 32px;
+        background: url("./Running.png") no-repeat;
+        background-size: auto; /* Ensure the sprite sheet is not stretched */
+        position: absolute;
+        z-index: 10; /* Lower z-index to place bunnies below the player */
+        transition: top 0.5s, left 0.5s; /* Smooth movement */
+        animation: bunnyRun 2.4s steps(8) infinite; /* Animation for running */
+      }
+
+      @keyframes bunnyRun {
+        from {
+          background-position: 0px; /* Start at the first frame */
+        }
+        to {
+          background-position: -256px; /* Move to the last frame (8 frames * 32px) */
         }
       }
-    }
-
-    function selectInventoryItem(item, listItem) {
-      // Deselect previously selected item
-      const inventoryList = document.getElementById("inventory-list");
-      Array.from(inventoryList.children).forEach((child) => {
-        child.classList.remove("selected");
-      });
-
-      // Select the clicked item
-      listItem.classList.add("selected");
-      selectedItem = item; // Update the selected item
-      console.log(`Selected item: ${selectedItem}`);
-    }
-
-    let characterX = 0;
-    let characterY = 0;
-
-    // Add the character
-addCharacter();
-// addBobin(gameContainer);
-    document.addEventListener("keydown", (event) => {
-      switch (event.key) {
-        case "ArrowUp":
-          if (characterY > 0) characterY--;
-          break;
-        case "ArrowDown":
-          if (characterY < mapHeight - 1) characterY++;
-          break;
-        case "ArrowLeft":
-          if (characterX > 0) characterX--;
-          break;
-        case "ArrowRight":
-          if (characterX < mapWidth - 1) characterX++;
-          break;
-        case "Enter":
-          interactWithTile();
-          break;
+    </style>
+    <style>
+      .tile.craftingBench {
+        background-color: rgba(201, 98, 18, 0.775);
+        border: 2px solid rgb(25, 95, 106);
       }
-      updateCharacterPosition();
-    });
+    </style>
+    <!-- <script type="module" src="sprite.js"></script>
+  <script type="module" src="bobin.js"></script>
+  <script type="module"  src="bunny.js"></script> -->
+  </head>
+  <body>
+    <h1>Item Collector Game</h1>
+    <div id="game"></div>
 
-    function addCharacter() {
-      character = document.createElement("div");
-      character.id = "character";
-      character.style.gridColumnStart = 1;
-      character.style.gridRowStart = 1;
-      gameContainer.appendChild(character);
-    }
+    <div id="status">
+      <p><strong>Wood:</strong> <span id="wood-count">0</span></p>
+      <p><strong>Money:</strong> $<span id="money">0</span></p>
+    </div>
 
-    function updateCharacterPosition() {
-      console.log("Character position:", characterX, characterY, character);
-      // const character = document.getElementById("character");
-      character.style.top = `${characterY * tileSize}px`;
-      character.style.left = `${characterX * tileSize}px`;
-    }
+    <div id="inventory">
+      <h2>Inventory</h2>
+      <ul id="inventory-list">
+        <!-- Inventory items will be dynamically added here -->
+      </ul>
+    </div>
 
-    function interactWithTile() {
-      const tileIndex = characterY * mapWidth + characterX;
-      const tileType = mapData[tileIndex];
+    <div
+      id="shop-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        color: black;
+        padding: 20px;
+        border: 2px solid black;
+        z-index: 1000;
+      "
+    >
+      <h2>Shop</h2>
+      <p>Choose an option:</p>
+      <button id="sell-wood-btn">Sell Wood ($5 per wood)</button>
+      <button id="sell-stone-btn">Sell Stone ($5 per stone)</button>
+      <button id="buy-house-btn">Buy House (50 coins)</button>
+      <button id="close-shop-btn">Close</button>
+    </div>
 
-      if (tileType === 'wood') {
-        collectWood(tileIndex);
-      } else if (tileType === 'stone') {
-        collectStone(tileIndex);
-      } else if (tileType === 'marketplace') {
-        openShop();
+    <div id="controls">
+      <button onclick="saveGame()">Save Game</button>
+      <button onclick="loadGame()">Load Game</button>
+    </div>
+
+    <script type="module">
+      import { generateBunnies } from "./bunny.js"; // Import the bunny generation function
+      import { bobin } from "./bobin.js"; // Import the bobin function
+      import { mapWidth, mapHeight, gameContainer, tileSize } from "./map.js";
+      import { character } from "./character.js"; // Import the character function
+      let wood = 100;
+      let money = 0;
+      let houseAvailable = false; // Track if a house is available for placement
+      let inventory = { house: 1, wood: 0, stone: 0, craftingBench: 1 }; // Add crafting bench to inventory
+      let selectedItem = null; // Track the currently selected item
+
+      function updateInventoryUI() {
+        document.getElementById("money").textContent = money; // Update money display
+        const inventoryList = document.getElementById("inventory-list");
+        inventoryList.innerHTML = ""; // Clear the current inventory list
+
+        // Populate the inventory list with current items
+        for (const [item, count] of Object.entries(inventory)) {
+          if (count > 0) {
+            const listItem = document.createElement("li");
+            listItem.textContent = `${
+              item.charAt(0).toUpperCase() + item.slice(1)
+            }: ${count}`;
+            listItem.dataset.item = item; // Store the item type in a data attribute
+
+            // Add click event to select the item
+            listItem.addEventListener("click", () => {
+              selectInventoryItem(item, listItem);
+            });
+
+            inventoryList.appendChild(listItem);
+          }
+        }
       }
-    }
 
-    function collectWood(tileIndex) {
-      mapData[tileIndex] = 'grass'; // Change the tile type to grass
-      const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
-      tile.classList.remove('wood');
-      tile.classList.add('grass');
+      function selectInventoryItem(item, listItem) {
+        // Deselect previously selected item
+        const inventoryList = document.getElementById("inventory-list");
+        Array.from(inventoryList.children).forEach((child) => {
+          child.classList.remove("selected");
+        });
 
-      inventory.wood++; // Add 1 wood to the inventory
-      // updateInventoryUI();
-      console.log("Collected 1 wood!");
-    }
-
-    function collectStone(tileIndex) {
-      mapData[tileIndex] = 'grass'; // Change the tile type to grass
-      const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
-      tile.classList.remove('stone');
-      tile.classList.add('grass');
-      if (!inventory.stone) {
-        inventory.stone = 0; // Initialize stone in the inventory if not already present
+        // Select the clicked item
+        listItem.classList.add("selected");
+        selectedItem = item; // Update the selected item
+        console.log(`Selected item: ${selectedItem}`);
       }
-      inventory.stone++; // Add 1 stone to the inventory
-      // updateInventoryUI();
-      console.log("Collected 1 stone!");
-    }
 
-    function sellWood() {
-      if (inventory.wood > 0) {
-        inventory.wood--; // Decrease wood count in the inventory
-        money += 5;
+      let characterX = 0;
+      let characterY = 0;
+
+      function interactWithTile() {
+        const tileIndex = characterY * mapWidth + characterX;
+        const tileType = mapData[tileIndex];
+
+        if (tileType === "wood") {
+          collectWood(tileIndex);
+        } else if (tileType === "stone") {
+          collectStone(tileIndex);
+        } else if (tileType === "marketplace") {
+          openShop();
+        }
+      }
+
+      function collectWood(tileIndex) {
+        mapData[tileIndex] = "grass"; // Change the tile type to grass
+        const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
+        tile.classList.remove("wood");
+        tile.classList.add("grass");
+
+        inventory.wood++; // Add 1 wood to the inventory
         // updateInventoryUI();
-        alert("You sold 1 wood for $5!");
-      } else {
-        alert("You have no wood to sell!");
+        console.log("Collected 1 wood!");
       }
-    }
 
-    function sellStone() {
-      if (inventory.stone > 0) {
-        inventory.stone--; // Decrease stone count in the inventory
-        money += 5;
+      function collectStone(tileIndex) {
+        mapData[tileIndex] = "grass"; // Change the tile type to grass
+        const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
+        tile.classList.remove("stone");
+        tile.classList.add("grass");
+        if (!inventory.stone) {
+          inventory.stone = 0; // Initialize stone in the inventory if not already present
+        }
+        inventory.stone++; // Add 1 stone to the inventory
         // updateInventoryUI();
-        alert("You sold 1 stone for $5!");
-      } else {
-        alert("You have no stone to sell!");
+        console.log("Collected 1 stone!");
       }
-    }
 
-    function openShop() {
-      const shopModal = document.getElementById("shop-modal");
-      shopModal.style.display = "block";
-
-      // Handle Sell Wood button
-      document.getElementById("sell-wood-btn").addEventListener("click", () => {
-        sellWood();
-      });
-
-      // Handle Sell Stone button
-      document.getElementById("sell-stone-btn").addEventListener("click", () => {
-        sellStone();
-      });
-
-      // Handle Buy House button
-      document.getElementById("buy-house-btn").addEventListener("click", () => {
-        buyHouse();
-      });
-
-      // Handle Close button
-      document.getElementById("close-shop-btn").addEventListener("click", () => {
-        shopModal.style.display = "none";
-      });
-    }
-
-    function buyHouse() {
-      if (money >= 50) {
-        money -= 50;
-        inventory.house += 1; // Add a house to the inventory
-        // updateInventoryUI();
-        alert("You bought a house! Double-click on a tile to place it.");
-      } else {
-        alert("You don't have enough money to buy a house!");
+      function sellWood() {
+        if (inventory.wood > 0) {
+          inventory.wood--; // Decrease wood count in the inventory
+          money += 5;
+          // updateInventoryUI();
+          alert("You sold 1 wood for $5!");
+        } else {
+          alert("You have no wood to sell!");
+        }
       }
-    }
 
-    function placeHouse(index) {
-      const x = index % mapWidth;
-      const y = Math.floor(index / mapWidth);
+      function sellStone() {
+        if (inventory.stone > 0) {
+          inventory.stone--; // Decrease stone count in the inventory
+          money += 5;
+          // updateInventoryUI();
+          alert("You sold 1 stone for $5!");
+        } else {
+          alert("You have no stone to sell!");
+        }
+      }
 
-      // Check if there's enough space for a 2x2 house
-      if (
-        x < mapWidth - 1 &&
-        y < mapHeight - 1 &&
-        mapData[index] !== 'marketplace' &&
-        mapData[index + 1] !== 'marketplace' &&
-        mapData[index + mapWidth] !== 'marketplace' &&
-        mapData[index + mapWidth + 1] !== 'marketplace'
-      ) {
-        // Ensure the selected item is a house
-        if (selectedItem !== "house") {
-          alert("You must select a house from the inventory to place it!");
+      function openShop() {
+        const shopModal = document.getElementById("shop-modal");
+        shopModal.style.display = "block";
+
+        // Handle Sell Wood button
+        document
+          .getElementById("sell-wood-btn")
+          .addEventListener("click", () => {
+            sellWood();
+          });
+
+        // Handle Sell Stone button
+        document
+          .getElementById("sell-stone-btn")
+          .addEventListener("click", () => {
+            sellStone();
+          });
+
+        // Handle Buy House button
+        document
+          .getElementById("buy-house-btn")
+          .addEventListener("click", () => {
+            buyHouse();
+          });
+
+        // Handle Close button
+        document
+          .getElementById("close-shop-btn")
+          .addEventListener("click", () => {
+            shopModal.style.display = "none";
+          });
+      }
+
+      function buyHouse() {
+        if (money >= 50) {
+          money -= 50;
+          inventory.house += 1; // Add a house to the inventory
+          // updateInventoryUI();
+          alert("You bought a house! Double-click on a tile to place it.");
+        } else {
+          alert("You don't have enough money to buy a house!");
+        }
+      }
+
+      function placeHouse(index) {
+        const x = index % mapWidth;
+        const y = Math.floor(index / mapWidth);
+
+        // Check if there's enough space for a 2x2 house
+        if (
+          x < mapWidth - 1 &&
+          y < mapHeight - 1 &&
+          mapData[index] !== "marketplace" &&
+          mapData[index + 1] !== "marketplace" &&
+          mapData[index + mapWidth] !== "marketplace" &&
+          mapData[index + mapWidth + 1] !== "marketplace"
+        ) {
+          // Ensure the selected item is a house
+          if (selectedItem !== "house") {
+            alert("You must select a house from the inventory to place it!");
+            return;
+          }
+
+          if (inventory.house > 0) {
+            // Update the map data
+            mapData[index] = "house";
+            mapData[index + 1] = "house";
+            mapData[index + mapWidth] = "house";
+            mapData[index + mapWidth + 1] = "house";
+
+            // Update the tiles visually
+            const tile1 = gameContainer.querySelector(
+              `[data-index="${index}"]`
+            );
+            const tile2 = gameContainer.querySelector(
+              `[data-index="${index + 1}"]`
+            );
+            const tile3 = gameContainer.querySelector(
+              `[data-index="${index + mapWidth}"]`
+            );
+            const tile4 = gameContainer.querySelector(
+              `[data-index="${index + mapWidth + 1}"]`
+            );
+
+            [tile1, tile2, tile3, tile4].forEach((tile) => {
+              tile.classList.remove("grass");
+              tile.classList.add("house");
+            });
+
+            inventory.house -= 1; // Remove a house from the inventory
+            // updateInventoryUI();
+            selectedItem = null; // Deselect the item after placing
+            console.log("House placed successfully!");
+          } else {
+            console.log("You don't have any houses in your inventory!");
+          }
+        } else {
+          console.log("Not enough space to place the house!");
+        }
+      }
+
+      function placeCraftingBench(index) {
+        const x = index % mapWidth;
+        const y = Math.floor(index / mapWidth);
+
+        // Ensure the selected item is a crafting bench
+        if (selectedItem !== "craftingBench") {
+          alert(
+            "You must select a crafting bench from the inventory to place it!"
+          );
           return;
         }
 
-        if (inventory.house > 0) {
+        if (mapData[index] === "grass") {
           // Update the map data
-          mapData[index] = 'house';
-          mapData[index + 1] = 'house';
-          mapData[index + mapWidth] = 'house';
-          mapData[index + mapWidth + 1] = 'house';
+          mapData[index] = "craftingBench";
 
-          // Update the tiles visually
-          const tile1 = gameContainer.querySelector(`[data-index="${index}"]`);
-          const tile2 = gameContainer.querySelector(`[data-index="${index + 1}"]`);
-          const tile3 = gameContainer.querySelector(`[data-index="${index + mapWidth}"]`);
-          const tile4 = gameContainer.querySelector(`[data-index="${index + mapWidth + 1}"]`);
+          // Update the tile visually
+          const tile = gameContainer.querySelector(`[data-index="${index}"]`);
+          tile.classList.remove("grass");
+          tile.classList.add("craftingBench");
 
-          [tile1, tile2, tile3, tile4].forEach((tile) => {
-            tile.classList.remove('grass');
-            tile.classList.add('house');
-          });
-
-          inventory.house -= 1; // Remove a house from the inventory
+          inventory.craftingBench--; // Remove the crafting bench from the inventory
           // updateInventoryUI();
           selectedItem = null; // Deselect the item after placing
-          console.log("House placed successfully!");
+          console.log("Crafting bench placed successfully!");
         } else {
-          console.log("You don't have any houses in your inventory!");
+          console.log("You cannot place a crafting bench here!");
         }
-      } else {
-        console.log("Not enough space to place the house!");
-      }
-    }
-
-    function placeCraftingBench(index) {
-      const x = index % mapWidth;
-      const y = Math.floor(index / mapWidth);
-
-      // Ensure the selected item is a crafting bench
-      if (selectedItem !== "craftingBench") {
-        alert("You must select a crafting bench from the inventory to place it!");
-        return;
       }
 
-      if (mapData[index] === "grass") {
-        // Update the map data
-        mapData[index] = "craftingBench";
+      // Create a ghost house element
+      const ghostHouse = document.createElement("div");
+      ghostHouse.id = "ghost-house";
+      ghostHouse.style.display = "none"; // Initially hidden
+      ghostHouse.style.position = "absolute";
+      ghostHouse.style.width = `${tileSize * 2}px`;
+      ghostHouse.style.height = `${tileSize * 2}px`;
+      ghostHouse.style.backgroundColor = "rgba(165, 42, 42, 0.5)"; // Semi-transparent brown
+      ghostHouse.style.pointerEvents = "none"; // Prevent interaction
+      ghostHouse.style.zIndex = "1000";
+      gameContainer.appendChild(ghostHouse);
 
-        // Update the tile visually
-        const tile = gameContainer.querySelector(`[data-index="${index}"]`);
-        tile.classList.remove("grass");
-        tile.classList.add("craftingBench");
+      // Show ghost house on mouse move
+      gameContainer.addEventListener("mousemove", (event) => {
+        if (selectedItem === "house") {
+          const rect = gameContainer.getBoundingClientRect();
+          const mouseX = event.clientX - rect.left;
+          const mouseY = event.clientY - rect.top;
 
-        inventory.craftingBench--; // Remove the crafting bench from the inventory
-        // updateInventoryUI();
-        selectedItem = null; // Deselect the item after placing
-        console.log("Crafting bench placed successfully!");
-      } else {
-        console.log("You cannot place a crafting bench here!");
-      }
-    }
+          // Calculate the top-left corner of the 2x2 house placement
+          const gridX = Math.floor(mouseX / tileSize);
+          const gridY = Math.floor(mouseY / tileSize);
 
-    // Create a ghost house element
-    const ghostHouse = document.createElement("div");
-    ghostHouse.id = "ghost-house";
-    ghostHouse.style.display = "none"; // Initially hidden
-    ghostHouse.style.position = "absolute";
-    ghostHouse.style.width = `${tileSize * 2}px`;
-    ghostHouse.style.height = `${tileSize * 2}px`;
-    ghostHouse.style.backgroundColor = "rgba(165, 42, 42, 0.5)"; // Semi-transparent brown
-    ghostHouse.style.pointerEvents = "none"; // Prevent interaction
-    ghostHouse.style.zIndex = "1000";
-    gameContainer.appendChild(ghostHouse);
-
-    // Show ghost house on mouse move
-    gameContainer.addEventListener("mousemove", (event) => {
-      if (selectedItem === "house") {
-        const rect = gameContainer.getBoundingClientRect();
-        const mouseX = event.clientX - rect.left;
-        const mouseY = event.clientY - rect.top;
-
-        // Calculate the top-left corner of the 2x2 house placement
-        const gridX = Math.floor(mouseX / tileSize);
-        const gridY = Math.floor(mouseY / tileSize);
-
-        if (gridX < mapWidth - 1 && gridY < mapHeight - 1) {
-          ghostHouse.style.display = "block";
-          ghostHouse.style.left = `${gridX * tileSize}px`;
-          ghostHouse.style.top = `${gridY * tileSize}px`;
-        } else {
-          ghostHouse.style.display = "none"; // Hide if out of bounds
-        }
-      } else {
-        ghostHouse.style.display = "none"; // Hide if no house is selected
-      }
-    });
-
-    // Hide ghost house on mouse leave
-    gameContainer.addEventListener("mouseleave", () => {
-      ghostHouse.style.display = "none";
-    });
-
-    function saveGame() {
-      const gameState = {
-        inventory,
-        money,
-        mapData,
-        characterX,
-        characterY, // Save the character's position
-      };
-      localStorage.setItem("gameState", JSON.stringify(gameState));
-      alert("Game saved successfully!");
-    }
-
-    function loadGame() {
-      const savedState = localStorage.getItem("gameState");
-      if (savedState) {
-        const gameState = JSON.parse(savedState);
-        inventory = gameState.inventory;
-        money = gameState.money;
-        mapData = gameState.mapData;
-        characterX = gameState.characterX;
-        characterY = gameState.characterY; // Load the character's position
-        console.log("Loaded game state:", gameState);
-        // Update the UI with the loaded state
-        // updateInventoryUI();
-        renderMap();
-        addCharacter();
-        updateCharacterPosition()
-        alert("Game loaded successfully!");
-      } else {
-        alert("No saved game found!");
-      }
-    }
-
-    function renderMap() {
-      gameContainer.innerHTML = ""; // Clear the current map
-      mapData.forEach((type, index) => {
-        const tile = document.createElement("div");
-        tile.classList.add("tile", type);
-        tile.dataset.index = index; // Store the index of the tile
-        gameContainer.appendChild(tile);
-
-        // Add double-click event for placing items
-        tile.addEventListener("dblclick", () => {
-          if (selectedItem === "house" && inventory.house > 0) {
-            placeHouse(index);
-          } else if (selectedItem === "craftingBench" && inventory.craftingBench > 0) {
-            placeCraftingBench(index);
+          if (gridX < mapWidth - 1 && gridY < mapHeight - 1) {
+            ghostHouse.style.display = "block";
+            ghostHouse.style.left = `${gridX * tileSize}px`;
+            ghostHouse.style.top = `${gridY * tileSize}px`;
+          } else {
+            ghostHouse.style.display = "none"; // Hide if out of bounds
           }
-        });
+        } else {
+          ghostHouse.style.display = "none"; // Hide if no house is selected
+        }
       });
-    }
 
-    setInterval(() => {
-      updateInventoryUI();
-    }, 200)
-  
-// Generate 5 bunnies at the start of the game
-generateBunnies(5);
- 
-  </script>
-</body>
+      // Hide ghost house on mouse leave
+      gameContainer.addEventListener("mouseleave", () => {
+        ghostHouse.style.display = "none";
+      });
+
+      function saveGame() {
+        const gameState = {
+          inventory,
+          money,
+          mapData,
+          characterX,
+          characterY, // Save the character's position
+        };
+        localStorage.setItem("gameState", JSON.stringify(gameState));
+        alert("Game saved successfully!");
+      }
+
+      function loadGame() {
+        const savedState = localStorage.getItem("gameState");
+        if (savedState) {
+          const gameState = JSON.parse(savedState);
+          inventory = gameState.inventory;
+          money = gameState.money;
+          mapData = gameState.mapData;
+          characterX = gameState.characterX;
+          characterY = gameState.characterY; // Load the character's position
+          console.log("Loaded game state:", gameState);
+          // Update the UI with the loaded state
+          // updateInventoryUI();
+          renderMap();
+          addCharacter();
+          updateCharacterPosition();
+          alert("Game loaded successfully!");
+        } else {
+          alert("No saved game found!");
+        }
+      }
+
+      function renderMap() {
+        gameContainer.innerHTML = ""; // Clear the current map
+        mapData.forEach((type, index) => {
+          const tile = document.createElement("div");
+          tile.classList.add("tile", type);
+          tile.dataset.index = index; // Store the index of the tile
+          gameContainer.appendChild(tile);
+
+          // Add double-click event for placing items
+          tile.addEventListener("dblclick", () => {
+            if (selectedItem === "house" && inventory.house > 0) {
+              placeHouse(index);
+            } else if (
+              selectedItem === "craftingBench" &&
+              inventory.craftingBench > 0
+            ) {
+              placeCraftingBench(index);
+            }
+          });
+        });
+      }
+
+      setInterval(() => {
+        updateInventoryUI();
+      }, 200);
+
+      // Generate 5 bunnies at the start of the game
+      generateBunnies(5);
+    </script>
+  </body>
 </html>
