@@ -1,4 +1,5 @@
 import Sprite from "./sprite.js";
+import {openShop} from "./shop.js";
 import {
   gameContainer,
   mapData,
@@ -6,7 +7,7 @@ import {
   mapWidth,
   tileSize,
 } from "./map.js";
-
+import { inventory } from "./inventory.js";
 export const character = new Sprite({
   container: gameContainer,
   width: 32,
@@ -19,15 +20,35 @@ export const character = new Sprite({
   position: { x: 0, y: 0 }, // Initial position
 });
 
-export function updateCharacterPosition(tileSize) {
-  if (character) {
-    character.setPosition(characterX * tileSize, characterY * tileSize);
+
+class Purse{
+  constructor(initialMoney) {
+    this.money = initialMoney;
+  }
+
+  addMoney(amount) {
+    console.log("Adding money ...", amount);
+    this.money += amount;
+    console.log("Current money:", this.money);
+  }
+
+  removeMoney(amount) {
+    if (this.money >= amount) {
+      this.money -= amount;
+    } else {
+      console.log("Not enough money!");
+    }
+  }
+
+  getMoney() {
+    return this.money;
   }
 }
+export const purse = new Purse(0);
 
 document.addEventListener("keydown", (event) => {
-    event.stopPropagation();
-    event.preventDefault();
+  event.stopPropagation();
+  event.preventDefault();
   switch (event.key) {
     case "ArrowUp":
       if (character.position.y > 0) {
@@ -35,14 +56,14 @@ document.addEventListener("keydown", (event) => {
           character.position.x,
           character.position.y - tileSize
         );
-      };
+      }
       break;
     case "ArrowDown":
-      if (character.position.y < (mapHeight - 1) * tileSize){
+      if (character.position.y < (mapHeight - 1) * tileSize) {
         character.setPosition(
-            character.position.x,
-            character.position.y + tileSize
-        )
+          character.position.x,
+          character.position.y + tileSize
+        );
       }
       break;
     case "ArrowLeft":
@@ -65,5 +86,21 @@ document.addEventListener("keydown", (event) => {
       interactWithTile();
       break;
   }
-  updateCharacterPosition();
 });
+
+function interactWithTile() {
+  const tileIndex = character.getTileIndex();
+  console.log("Tile Index:", tileIndex);
+  const tileType = mapData[tileIndex];
+
+  if (tileType === "marketplace") {
+    openShop();
+    return;
+  }
+
+  mapData[tileIndex] = "grass"; // Change the tile type to grass
+  const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
+  tile.classList.remove(tileType);
+  tile.classList.add("grass");
+  inventory.addItem(tileType);
+}

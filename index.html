@@ -207,156 +207,41 @@
     <script type="module">
       import { generateBunnies } from "./bunny.js"; // Import the bunny generation function
       import { bobin } from "./bobin.js"; // Import the bobin function
-      import { mapWidth, mapHeight, gameContainer, tileSize } from "./map.js";
-      import { character } from "./character.js"; // Import the character function
+      import {
+        mapWidth,
+        mapHeight,
+        gameContainer,
+        tileSize,
+        renderMap,
+      } from "./map.js";
+      import { character, purse } from "./character.js"; // Import the character function
+      import { inventory } from "./inventory.js"; // Import the inventory function
       let wood = 100;
-      let money = 0;
       let houseAvailable = false; // Track if a house is available for placement
-      let inventory = { house: 1, wood: 0, stone: 0, craftingBench: 1 }; // Add crafting bench to inventory
       let selectedItem = null; // Track the currently selected item
 
-      function updateInventoryUI() {
-        document.getElementById("money").textContent = money; // Update money display
-        const inventoryList = document.getElementById("inventory-list");
-        inventoryList.innerHTML = ""; // Clear the current inventory list
+      // function collectWood(tileIndex) {
+      //   mapData[tileIndex] = "grass"; // Change the tile type to grass
+      //   const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
+      //   tile.classList.remove("wood");
+      //   tile.classList.add("grass");
 
-        // Populate the inventory list with current items
-        for (const [item, count] of Object.entries(inventory)) {
-          if (count > 0) {
-            const listItem = document.createElement("li");
-            listItem.textContent = `${
-              item.charAt(0).toUpperCase() + item.slice(1)
-            }: ${count}`;
-            listItem.dataset.item = item; // Store the item type in a data attribute
+      //   inventory.wood++; // Add 1 wood to the inventory
+      //   console.log("Collected 1 wood!");
+      // }
 
-            // Add click event to select the item
-            listItem.addEventListener("click", () => {
-              selectInventoryItem(item, listItem);
-            });
-
-            inventoryList.appendChild(listItem);
-          }
-        }
-      }
-
-      function selectInventoryItem(item, listItem) {
-        // Deselect previously selected item
-        const inventoryList = document.getElementById("inventory-list");
-        Array.from(inventoryList.children).forEach((child) => {
-          child.classList.remove("selected");
-        });
-
-        // Select the clicked item
-        listItem.classList.add("selected");
-        selectedItem = item; // Update the selected item
-        console.log(`Selected item: ${selectedItem}`);
-      }
-
-      let characterX = 0;
-      let characterY = 0;
-
-      function interactWithTile() {
-        const tileIndex = characterY * mapWidth + characterX;
-        const tileType = mapData[tileIndex];
-
-        if (tileType === "wood") {
-          collectWood(tileIndex);
-        } else if (tileType === "stone") {
-          collectStone(tileIndex);
-        } else if (tileType === "marketplace") {
-          openShop();
-        }
-      }
-
-      function collectWood(tileIndex) {
-        mapData[tileIndex] = "grass"; // Change the tile type to grass
-        const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
-        tile.classList.remove("wood");
-        tile.classList.add("grass");
-
-        inventory.wood++; // Add 1 wood to the inventory
-        // updateInventoryUI();
-        console.log("Collected 1 wood!");
-      }
-
-      function collectStone(tileIndex) {
-        mapData[tileIndex] = "grass"; // Change the tile type to grass
-        const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
-        tile.classList.remove("stone");
-        tile.classList.add("grass");
-        if (!inventory.stone) {
-          inventory.stone = 0; // Initialize stone in the inventory if not already present
-        }
-        inventory.stone++; // Add 1 stone to the inventory
-        // updateInventoryUI();
-        console.log("Collected 1 stone!");
-      }
-
-      function sellWood() {
-        if (inventory.wood > 0) {
-          inventory.wood--; // Decrease wood count in the inventory
-          money += 5;
-          // updateInventoryUI();
-          alert("You sold 1 wood for $5!");
-        } else {
-          alert("You have no wood to sell!");
-        }
-      }
-
-      function sellStone() {
-        if (inventory.stone > 0) {
-          inventory.stone--; // Decrease stone count in the inventory
-          money += 5;
-          // updateInventoryUI();
-          alert("You sold 1 stone for $5!");
-        } else {
-          alert("You have no stone to sell!");
-        }
-      }
-
-      function openShop() {
-        const shopModal = document.getElementById("shop-modal");
-        shopModal.style.display = "block";
-
-        // Handle Sell Wood button
-        document
-          .getElementById("sell-wood-btn")
-          .addEventListener("click", () => {
-            sellWood();
-          });
-
-        // Handle Sell Stone button
-        document
-          .getElementById("sell-stone-btn")
-          .addEventListener("click", () => {
-            sellStone();
-          });
-
-        // Handle Buy House button
-        document
-          .getElementById("buy-house-btn")
-          .addEventListener("click", () => {
-            buyHouse();
-          });
-
-        // Handle Close button
-        document
-          .getElementById("close-shop-btn")
-          .addEventListener("click", () => {
-            shopModal.style.display = "none";
-          });
-      }
-
-      function buyHouse() {
-        if (money >= 50) {
-          money -= 50;
-          inventory.house += 1; // Add a house to the inventory
-          // updateInventoryUI();
-          alert("You bought a house! Double-click on a tile to place it.");
-        } else {
-          alert("You don't have enough money to buy a house!");
-        }
-      }
+      // function collectStone(tileIndex) {
+      //   mapData[tileIndex] = "grass"; // Change the tile type to grass
+      //   const tile = gameContainer.querySelector(`[data-index="${tileIndex}"]`);
+      //   tile.classList.remove("stone");
+      //   tile.classList.add("grass");
+      //   if (!inventory.stone) {
+      //     inventory.stone = 0; // Initialize stone in the inventory if not already present
+      //   }
+      //   inventory.stone++; // Add 1 stone to the inventory
+      //   // updateInventoryUI();
+      //   console.log("Collected 1 stone!");
+      // }
 
       function placeHouse(index) {
         const x = index % mapWidth;
@@ -488,10 +373,10 @@
       function saveGame() {
         const gameState = {
           inventory,
-          money,
+          money: purse.getMoney(),
           mapData,
-          characterX,
-          characterY, // Save the character's position
+          characterX: character.position.x,
+          characterY: character.position.y, // Save the character's position
         };
         localStorage.setItem("gameState", JSON.stringify(gameState));
         alert("Game saved successfully!");
@@ -502,46 +387,21 @@
         if (savedState) {
           const gameState = JSON.parse(savedState);
           inventory = gameState.inventory;
-          money = gameState.money;
+          purse.setMoeny(gameState.money);
           mapData = gameState.mapData;
-          characterX = gameState.characterX;
-          characterY = gameState.characterY; // Load the character's position
+          character.setPosition(gameState.characterX, gameState.characterY); // Load the character's position
           console.log("Loaded game state:", gameState);
           // Update the UI with the loaded state
-          // updateInventoryUI();
           renderMap();
           addCharacter();
-          updateCharacterPosition();
           alert("Game loaded successfully!");
         } else {
           alert("No saved game found!");
         }
       }
 
-      function renderMap() {
-        gameContainer.innerHTML = ""; // Clear the current map
-        mapData.forEach((type, index) => {
-          const tile = document.createElement("div");
-          tile.classList.add("tile", type);
-          tile.dataset.index = index; // Store the index of the tile
-          gameContainer.appendChild(tile);
-
-          // Add double-click event for placing items
-          tile.addEventListener("dblclick", () => {
-            if (selectedItem === "house" && inventory.house > 0) {
-              placeHouse(index);
-            } else if (
-              selectedItem === "craftingBench" &&
-              inventory.craftingBench > 0
-            ) {
-              placeCraftingBench(index);
-            }
-          });
-        });
-      }
-
       setInterval(() => {
-        updateInventoryUI();
+        inventory.render(purse.getMoney());
       }, 200);
 
       // Generate 5 bunnies at the start of the game

@@ -1,3 +1,4 @@
+import { tileSize, mapWidth, mapHeight } from './map.js';
 class Sprite {
   constructor({
     container,
@@ -7,7 +8,7 @@ class Sprite {
     frames = 1,
     frameDuration = 300, // Duration of each frame in milliseconds
     zIndex = 1,
-    position = { x: 0, y: 0 },
+    position = { x: 0, y: 0 }, // px
     spriteSheetRow = 0, // Row of the sprite sheet to use (default is the first row)
     spriteImageWidth = 32, // Width of each frame in the sprite sheet
     spriteImageHeight = 32, // Height of each frame in the sprite sheet
@@ -60,6 +61,13 @@ class Sprite {
       const offsetY = -this.spriteSheetRow * this.spriteImageHeight; // Vertical row offset
       this.element.style.backgroundPosition = `${offsetX}px ${offsetY}px`;
     }, this.frameDuration);
+  }
+
+  // Get the current tile index based on the sprite's position
+  getTileIndex() {
+    const tileX = Math.floor(this.position.x / tileSize);
+    const tileY = Math.floor(this.position.y / tileSize);
+    return tileY * mapWidth + tileX;
   }
 }
 
