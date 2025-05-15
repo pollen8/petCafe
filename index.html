@@ -207,17 +207,12 @@
     <script type="module">
       import { generateBunnies } from "./bunny.js"; // Import the bunny generation function
       import { bobin } from "./bobin.js"; // Import the bobin function
-      import {
-        mapWidth,
-        mapHeight,
-        gameContainer,
-        tileSize,
-        renderMap,
-      } from "./map.js";
+      import { gameContainer } from "./game.js";
+      import {renderMap} from'./game.js'
+      import { tileSize, mapWidth, mapHeight } from "./map.js"; // Import the renderMap function
       import { character, purse } from "./character.js"; // Import the character function
       import { inventory } from "./inventory.js"; // Import the inventory function
 
- 
       function saveGame() {
         const gameState = {
           inventory,
@@ -253,7 +248,7 @@
       }, 200);
 
       // Generate 5 bunnies at the start of the game
-      generateBunnies(50);
+      generateBunnies(5);
     </script>
   </body>
 </html>

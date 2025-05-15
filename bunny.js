@@ -1,12 +1,12 @@
 const bunnies = []; // Array to store bunny positions
 import Sprite from "./sprite.js";
 import {
-  gameContainer,
   mapWidth,
   mapHeight,
   mapData,
   tileSize,
 } from "./map.js";
+import { gameContainer } from './game.js';
 function addBunny(tileIndex) {
   const bunnyX = Math.floor(tileIndex % mapWidth) * tileSize;
   const bunnyY = Math.floor(tileIndex / mapWidth) * tileSize;
@@ -18,7 +18,7 @@ function addBunny(tileIndex) {
     spriteSheet: "./Running.png", // Path to the sprite sheet
     frames: 8, // Number of frames in the sprite sheet
     frameDuration: 300, // Duration of each frame in milliseconds
-    zIndex: 10,
+    zIndex: 5,
     position: { x: bunnyX, y: bunnyY }, // Initial position
   });
 

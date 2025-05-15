@@ -1,12 +1,12 @@
 import Sprite from "./sprite.js";
 import {openShop} from "./shop.js";
 import {
-  gameContainer,
   mapData,
   mapHeight,
   mapWidth,
   tileSize,
 } from "./map.js";
+import { gameContainer  } from "./game.js";
 import { inventory } from "./inventory.js";
 export const character = new Sprite({
   container: gameContainer,

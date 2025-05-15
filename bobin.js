@@ -2,8 +2,8 @@ let bobinX = 0;
 let bobinY = 0;
 const bobinCapacity = { wood: 0, stone: 0 }; // Bobin's capacity for items
 import Sprite from './sprite.js';
-import { gameContainer, mapData, mapWidth, tileSize } from './map.js';
-
+import { mapData, mapWidth, tileSize } from './map.js';
+import { gameContainer } from './game.js';
  export const bobin = new Sprite({
     container: gameContainer,
     width: 32,
