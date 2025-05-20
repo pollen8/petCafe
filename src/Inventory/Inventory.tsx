@@ -1,11 +1,15 @@
-import { useGame } from "../Game/GameContext";
-/** @ts-ignore */
+import { inventory } from "../store/Inventory";
+/** @ts-expect-error blah */
 import style from "./inventory.module.css";
 
+import { useSelector } from "@xstate/store/react";
+
 export const Inventory = () => {
-  const { inventory } = useGame();
-  const { setSelectedItem, items, selectedItem } = inventory;
-  console.log('selectedItem', selectedItem);
+  const { items, selectedItem } = useSelector(
+    inventory,
+    (state) => state.context
+  );
+  console.log("selectedItem", selectedItem);
   return (
     <div className={style.inventory}>
       {Object.values(items).map((item, index) => (
@@ -15,7 +19,7 @@ export const Inventory = () => {
           className={item.name == selectedItem?.name ? style.selected : ""}
           onClick={() => {
             console.log("click item", item);
-            setSelectedItem(item);
+            inventory.trigger.setSelected({name: item.name});
           }}
         >
           <div>{item.name}</div>

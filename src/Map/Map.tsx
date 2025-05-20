@@ -1,6 +1,6 @@
 import { PropsWithChildren } from "react";
 import { Tile } from "../Tile/Tile";
-/** @ts-ignore */
+/** @ts-expect-error import*/
 import styles from "./map.module.css";
 import { useGame } from "../Game/GameContext";
 

@@ -1,6 +1,6 @@
-/** @ts-ignore */
-import { tileSize, useGame } from "../../Game/GameContext";
+/** @ts-expect-error import */
 import styles from "./bunny.module.css";
+import { tileSize, useGame } from "../../Game/GameContext";
 import { useEffect, useState } from "react";
 
 interface BunnyProps {
@@ -40,7 +40,7 @@ export const Bunny = ({ x, y }: BunnyProps) => {
     }, 10000); // Hop every 1 second
 
     return () => clearInterval(hopInterval); // Cleanup the interval on unmount
-  }, [position, tileSize, map]);
+  }, [position, map]);
 
   return (
     <div

@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
-/** @ts-ignore */
+/** @ts-expect-error import */
 import styles from "./character.module.css";
 import { useGame } from "../Game/GameContext";
+import { useNpc } from "../context/NpcContext";
+import { inventory } from "../store/Inventory";
 
 const useCharacter = () => {
-  const { tileSize, mapWidth, mapHeight, inventory, map, npc } = useGame();
+  const { tileSize, mapWidth, mapHeight, map  } = useGame();
+  const npc = useNpc()
   const [position, setPosition] = useState({
     x: 0,
     y: 0,
@@ -47,7 +50,7 @@ const useCharacter = () => {
           break;
         case " ":
         case "Enter":
-            const npcItem = npc.findByPosition(position.x, position.y)
+            { const npcItem = npc.findByPosition(position.x, position.y)
             console.log("npcItem", npcItem)
             if (npcItem) {
                 npcItem.interact()
@@ -56,8 +59,8 @@ const useCharacter = () => {
             }
             const tile = map.getCurrentTile(position.x, position.y);
             console.log(tile)
-            inventory.addItem({name: tile, quantity: 1, value: 10});
-          break;
+            inventory.trigger.add({name: tile, quantity: 1, value: 10});
+          break; }
       }
     };
 
@@ -65,7 +68,7 @@ const useCharacter = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [position, tileSize, mapWidth, mapHeight]);
+  }, [position, tileSize, mapWidth, mapHeight, npc, map, inventory]);
 
   return position;
 };

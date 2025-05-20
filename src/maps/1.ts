@@ -10,5 +10,5 @@ export type Map = {
 export const map: Map = {
     width: 10,
     height: 10,
-    tiles: new Array(100).fill('').map(i => tiles[Math.floor(Math.random() * 4)])
+    tiles: new Array(100).fill('').map(() => tiles[Math.floor(Math.random() * 4)])
 }
