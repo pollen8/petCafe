@@ -4,19 +4,42 @@ import { GameMap } from './map.js';
 export const gameContainer = document.getElementById("game");
 export const tileSize = 32; // Tile size in pixels
 
-// Create a ghost element for dragging
-const dragGhostElement = document.createElement("div");
-dragGhostElement.style.position = "absolute";
-dragGhostElement.style.pointerEvents = "none";
-dragGhostElement.style.opacity = "0.5";
-dragGhostElement.style.display = "none"; // Initially hidden
-dragGhostElement.style.zIndex = "1000";
-gameContainer.appendChild(dragGhostElement);
 
 class Game {
   constructor() {
     this.maps = []; // List of available maps
     this.currentMapIndex = null; // Index of the currently active map
+    // Create a ghost element for dragging
+this.dragGhostElement = document.createElement("div");
+this.dragGhostElement.style.position = "absolute";
+this.dragGhostElement.id = 'drag-ghost';
+this.dragGhostElement.style.pointerEvents = "none";
+this.dragGhostElement.style.opacity = "0.5";
+this.dragGhostElement.style.display = "none"; // Initially hidden
+this.dragGhostElement.style.zIndex = "2000";
+gameContainer.appendChild(this.dragGhostElement);
+console.log('gameContainer', gameContainer);
+// Add mousemove event to show the selected inventory item on the dragGhostElement
+document.getElementById('game').addEventListener("mousemove", (event) => {
+  const selectedItem = inventory.selectedItem;
+console.log("Selected item:", selectedItem);
+  if (selectedItem && selectedItem.isDragging) {
+    const rect = gameContainer.getBoundingClientRect();
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+
+    this.dragGhostElement.style.width = `${selectedItem.dragGhost.width * tileSize}px`;
+    this.dragGhostElement.style.height = `${selectedItem.dragGhost.height * tileSize}px`;
+    this.dragGhostElement.style.left = `${mouseX - tileSize / 2}px`;
+    this.dragGhostElement.style.top = `${mouseY - tileSize / 2}px`;
+    this.dragGhostElement.style.backgroundColor = "rgba(0, 0, 255, 0.5)"; // Example color
+    this.dragGhostElement.style.display = "block";
+    console.log(mouseX, mouseY);
+  } else {
+    this.dragGhostElement.style.display = "none";
+  }
+}).bind(this);
+
   }
 
   // Generate a new map and add it to the list of maps
@@ -111,7 +134,7 @@ class Game {
 
         // Stop dragging
         selectedItem.setDragging(false);
-        dragGhostElement.style.display = "none";
+        this.dragGhostElement.style.display = "none";
 
         console.log(`${selectedItem.type} placed on the map at index ${index}`);
       } else {
@@ -133,6 +156,7 @@ class Game {
     return true;
   }
 }
+
 
 // Create a new game instance
 export const game = new Game();
