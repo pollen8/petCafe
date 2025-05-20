@@ -1,5 +1,5 @@
-import { inventory } from './inventory.js';
-import { GameMap } from './map.js';
+import { inventory } from '../inventory.js';
+// import { GameMap } from '../_old/map.js';
 
 export const gameContainer = document.getElementById("game");
 export const tileSize = 32; // Tile size in pixels

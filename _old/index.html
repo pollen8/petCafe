@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Item Collector Game</title>
+    <style>
+      body {
+        font-family: Arial;
+        padding: 20px;
+      }
+      button {
+        margin: 5px;
+        padding: 10px;
+      }
+      #status {
+        margin-top: 20px;
+      }
+    </style>
+    <style>
+      body {
+        font-family: sans-serif;
+        background: #333;
+        color: white;
+      }
+
+      #game {
+        display: grid;
+        grid-template-columns: repeat(20, 32px);
+        grid-template-rows: repeat(20, 32px);
+        gap: 0;
+        margin: 20px auto;
+        width: 320px;
+        position: relative; /* Ensure the game container is the reference for absolute positioning */
+      }
+
+      .tile {
+        width: 32px;
+        height: 32px;
+        image-rendering: pixelated;
+      }
+
+      .grass {
+        background: url("grass.png");
+      }
+      .wood {
+        background: url("wood.png");
+      }
+      .stone {
+        background: url("stone.png");
+      }
+
+      /* Fallback styles if no images yet */
+      .tile.grass {
+        background-color: #4caf50;
+      }
+      .tile.wood {
+        background-color: #795548;
+      }
+      .tile.stone {
+        background-color: #9e9e9e;
+      }
+
+      #character {
+        width: 32px;
+        height: 32px;
+        background-color: rgb(150, 100, 232);
+        z-index: 20; /* Higher z-index to place the player above the bunnies */
+        position: absolute; /* Position the character absolutely */
+        top: 0; /* Start at the top */
+        left: 0; /* Start at the left */
+        transition: top 0.1s, left 0.1s; /* Smooth movement */
+      }
+
+      .tile.marketplace {
+        background-color: gold;
+        border: 2px solid black;
+      }
+
+      .tile.house {
+        background-color: brown;
+        border: 2px solid black;
+      }
+    </style>
+    <style>
+      #inventory {
+        margin-top: 20px;
+        padding: 10px;
+        background: #444;
+        color: white;
+        border: 2px solid #222;
+        width: 320px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      #inventory h2 {
+        margin: 0 0 10px 0;
+        text-align: center;
+      }
+
+      #inventory-list {
+        list-style: none;
+        padding: 0;
+      }
+
+      #inventory-list li {
+        margin: 5px 0;
+        padding: 5px;
+        background: #555;
+        border: 1px solid #333;
+        text-align: center;
+      }
+    </style>
+    <style>
+      #bobin {
+        background-color: blue;
+        border: 2px solid white;
+        position: absolute;
+        transition: top 0.5s, left 0.5s; /* Smooth movement */
+      }
+    </style>
+    <style>
+      #character {
+        width: 32px;
+        height: 32px;
+        background-color: rgb(150, 100, 232);
+        z-index: 20; /* Higher z-index to place the player above the bunnies */
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: top 0.1s, left 0.1s; /* Smooth movement */
+      }
+
+      .bunny {
+        width: 32px;
+        height: 32px;
+        background: url("./Running.png") no-repeat;
+        background-size: auto; /* Ensure the sprite sheet is not stretched */
+        position: absolute;
+        z-index: 10; /* Lower z-index to place bunnies below the player */
+        transition: top 0.5s, left 0.5s; /* Smooth movement */
+        animation: bunnyRun 2.4s steps(8) infinite; /* Animation for running */
+      }
+
+      @keyframes bunnyRun {
+        from {
+          background-position: 0px; /* Start at the first frame */
+        }
+        to {
+          background-position: -256px; /* Move to the last frame (8 frames * 32px) */
+        }
+      }
+    </style>
+    <style>
+      .tile.craftingBench {
+        background-color: rgba(201, 98, 18, 0.775);
+        border: 2px solid rgb(25, 95, 106);
+      }
+    </style>
+    <!-- <script type="module" src="sprite.js"></script>
+  <script type="module" src="bobin.js"></script>
+  <script type="module"  src="bunny.js"></script> -->
+  </head>
+  <body>
+    <h1>Item Collector Game</h1>
+    <div id="game"></div>
+
+    <div id="status">
+      <p><strong>Wood:</strong> <span id="wood-count">0</span></p>
+      <p><strong>Money:</strong> $<span id="money">0</span></p>
+    </div>
+
+    <div id="inventory">
+      <h2>Inventory</h2>
+      <ul id="inventory-list">
+        <!-- Inventory items will be dynamically added here -->
+      </ul>
+    </div>
+
+    <div
+      id="shop-modal"
+      style="
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        color: black;
+        padding: 20px;
+        border: 2px solid black;
+        z-index: 1000;
+      "
+    >
+      <h2>Shop</h2>
+      <p>Choose an option:</p>
+      <button id="sell-wood-btn">Sell Wood ($5 per wood)</button>
+      <button id="sell-stone-btn">Sell Stone ($5 per stone)</button>
+      <button id="buy-house-btn">Buy House (50 coins)</button>
+      <button id="close-shop-btn">Close</button>
+    </div>
+
+    <div id="controls">
+      <button onclick="saveGame()">Save Game</button>
+      <button onclick="loadGame()">Load Game</button>
+    </div>
+
+    <script type="module">
+      import { generateBunnies } from "./bunny.js"; // Import the bunny generation function
+      import { bobin } from "./bobin.js"; // Import the bobin function
+      import { gameContainer } from "./game.js";
+      import {game,  } from'./game.js'
+      import { character, purse } from "./character.js"; // Import the character function
+      import { inventory } from "./inventory.js"; // Import the inventory function
+
+      function saveGame() {
+        const gameState = {
+          inventory,
+          money: purse.getMoney(),
+          mapData,
+          characterX: character.position.x,
+          characterY: character.position.y, // Save the character's position
+        };
+        localStorage.setItem("gameState", JSON.stringify(gameState));
+        alert("Game saved successfully!");
+      }
+
+      function loadGame() {
+        const savedState = localStorage.getItem("gameState");
+        if (savedState) {
+          const gameState = JSON.parse(savedState);
+          inventory = gameState.inventory;
+          purse.setMoeny(gameState.money);
+          mapData = gameState.mapData;
+          character.setPosition(gameState.characterX, gameState.characterY); // Load the character's position
+          console.log("Loaded game state:", gameState);
+          // Update the UI with the loaded state
+          renderMap();
+          addCharacter();
+          alert("Game loaded successfully!");
+        } else {
+          alert("No saved game found!");
+        }
+      }
+
+      setInterval(() => {
+        inventory.render(purse.getMoney());
+      }, 200);
+
+      // Generate 5 bunnies at the start of the game
+      generateBunnies(5);
+    </script>
+  </body>
+</html>

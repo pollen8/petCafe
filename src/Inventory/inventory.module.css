@@ -1,0 +1,10 @@
+.inventory {
+    display: grid;
+   grid-template-columns: repeat(6, 1fr);
+    align-items: center;
+    gap: 1rem;
+}
+
+.selected {
+    border: 1px solid blue;
+}

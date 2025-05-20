@@ -1,6 +1,6 @@
 const bunnies = []; // Array to store bunny positions
 import Sprite from "./sprite.js";
-import { gameContainer, game, tileSize } from "./game.js";
+import { gameContainer, game, tileSize } from "../src/game.js";
 function addBunny(tileIndex) {
   const { mapWidth } = game.getCurrentMap(); // Assuming you have a method to get the tile size
 

@@ -1,4 +1,4 @@
-import {game} from './game.js';
+import {game} from '../src/game.js';
 class Sprite {
   constructor({
     container,

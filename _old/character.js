@@ -1,7 +1,7 @@
 import Sprite from "./sprite.js";
 import { openShop } from "./shop.js";
 import { game, gameContainer, tileSize } from "./game.js";
-import { inventory } from "./inventory.js";
+import { inventory } from "../inventory.js";
 
 export const character = new Sprite({
   container: gameContainer,
