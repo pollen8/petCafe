@@ -9,6 +9,7 @@ interface GameContextType {
   mapWidth: number;
   mapHeight: number;
   map: ReturnType<typeof useMap>;
+  shop: {x: number, y: number}
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -39,6 +40,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         mapWidth: 10,
         mapHeight: 10,
         map,
+        shop: {x: tileSize * 5, y: tileSize * 5} // Example shop position
       }}
     >
       {children}

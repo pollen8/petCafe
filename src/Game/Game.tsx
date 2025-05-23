@@ -7,6 +7,7 @@ import { NpcGenerator } from "../npc/NpcGenerator";
 import style from "./game.module.css";
 import { Character } from "../Character/Character";
 import { NpcProvider } from "../context/NpcContext";
+import { Shop } from "../shop/Shop";
 
 const Game = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
@@ -24,6 +25,7 @@ const Game = () => {
         <Map>
           <Character />
           <NpcGenerator />
+          <Shop />
         </Map>
         <Inventory />
       </div>

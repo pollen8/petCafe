@@ -51,9 +51,6 @@ export const Bunny = ({ x, y }: BunnyProps) => {
         top: `${position.y}px`,
         width: "32px",
         height: "32px",
-        // backgroundColor: "pink",
-        // borderRadius: "50%",
-        // transition: "transform 0.3s ease", // Smooth hopping animation
       }}
     ></div>
   );

@@ -1,7 +1,6 @@
 import { inventory } from "../store/Inventory";
 /** @ts-expect-error blah */
 import style from "./inventory.module.css";
-
 import { useSelector } from "@xstate/store/react";
 
 export const Inventory = () => {
@@ -9,7 +8,6 @@ export const Inventory = () => {
     inventory,
     (state) => state.context
   );
-  console.log("selectedItem", selectedItem);
   return (
     <div className={style.inventory}>
       {Object.values(items).map((item, index) => (
@@ -18,7 +16,6 @@ export const Inventory = () => {
           type="button"
           className={item.name == selectedItem?.name ? style.selected : ""}
           onClick={() => {
-            console.log("click item", item);
             inventory.trigger.setSelected({name: item.name});
           }}
         >

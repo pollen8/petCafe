@@ -8,31 +8,80 @@ export type Item = {
 
 export const inventory = createStore({
   // Initial context
-  context: { items: [{name:'foo', value: 1,quantity: 1}], selectedItem: null } as {
+  context: { money: 0, items: [{ name: "foo", value: 1, quantity: 1 }], selectedItem: null } as {
     items: Item[];
     selectedItem: Item | null;
+    money: number;
   },
   // Transitions
   on: {
-    setSelected: (context, {name}: {name: string}) => {
+    setSelected: (context, { name }: { name: string }) => {
       console.log("setSelected x", name);
       return {
         ...context,
         selectedItem: context.items.find((item) => item.name === name) ?? null,
       };
     },
-    add: (context, event: Item) => {
-      const i = context.items.findIndex((item) => item.name === event.name);
+    add: (context, {item}: {item: Item}) => {
+      const i = context.items.findIndex((i) => i.name === item.name);
       if (i === -1) {
-        return { ...context, items: [...context.items, event] };
+        return { ...context, items: [...context.items, item] };
       }
+      return {
+        ...context,
+        items: context.items.map((ix, index) =>
+          index === i
+            ? {
+                ...ix,
+                quantity: ix.quantity + item.quantity,
+              }
+            : item
+        ),
+      };
+    },
+    addMoney: (context, {amount}: {amount: number}) => {
+      console.log(amount)
+      console.log(`Adding money: ${amount}`);
+      return {
+        ...context,
+        money: context.money + amount,
+      };
+    },
+    removeMoney: (context, {amount}: {amount:number}) => {
+      if (context.money < amount) {
+        console.log(`Not enough money to remove: ${amount}`);
+        return context; // Return the same context if there's not enough money
+      }
+      console.log(`Removing money: ${amount}`);
+      return {
+        ...context,
+        money: context.money - amount,
+      };
+    },
+    remove: (context, { item: {quantity,name} }: { item: Item }) => {
+      const i = context.items.findIndex((i) => i.name === name);
+      if (i === -1) {
+        console.log(`Item ${name} not found in inventory.`);
+        return context; // Return the same context if the item doesn't exist
+      }
+
+      const foundItem = context.items[i];
+      if (foundItem.quantity <= quantity) {
+        // Remove the item completely if the quantity to remove is greater than or equal to the current quantity
+        return {
+          ...context,
+          items: context.items.filter((_, index) => index !== i),
+        };
+      }
+
+      // Otherwise, reduce the item's quantity
       return {
         ...context,
         items: context.items.map((item, index) =>
           index === i
             ? {
                 ...item,
-                quantity: item.quantity + event.quantity,
+                quantity: item.quantity - quantity,
               }
             : item
         ),

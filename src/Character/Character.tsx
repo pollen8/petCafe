@@ -4,9 +4,10 @@ import styles from "./character.module.css";
 import { useGame } from "../Game/GameContext";
 import { useNpc } from "../context/NpcContext";
 import { inventory } from "../store/Inventory";
+import {shop as shopStore} from "../shop/shop.store";
 
 const useCharacter = () => {
-  const { tileSize, mapWidth, mapHeight, map  } = useGame();
+  const { tileSize, mapWidth, mapHeight, map,  shop} = useGame();
   const npc = useNpc()
   const [position, setPosition] = useState({
     x: 0,
@@ -52,14 +53,18 @@ const useCharacter = () => {
         case "Enter":
             { const npcItem = npc.findByPosition(position.x, position.y)
             console.log("npcItem", npcItem)
+            if (shop.x == position.x && shop.y == position.y) {
+              console.log("interact with shop");
+              shopStore.trigger.open();
+              return;
+            }
             if (npcItem) {
                 npcItem.interact()
               console.log("interact with npc");
               return;
             }
             const tile = map.getCurrentTile(position.x, position.y);
-            console.log(tile)
-            inventory.trigger.add({name: tile, quantity: 1, value: 10});
+            inventory.trigger.add({item: {name: tile, quantity: 1, value: 10}});
           break; }
       }
     };
@@ -68,7 +73,7 @@ const useCharacter = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [position, tileSize, mapWidth, mapHeight, npc, map, inventory]);
+  }, [position, tileSize, mapWidth, mapHeight, npc, map ]);
 
   return position;
 };
