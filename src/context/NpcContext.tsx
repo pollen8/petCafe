@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
 import { tileSize, useGame } from "../Game/GameContext";
-import { inventory } from "../store/Inventory";
+import { inventory } from "../Inventory/inventory.store";
 
 interface Npc {
   x: number;
@@ -37,7 +37,7 @@ export const NpcProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [npcs, setNpcs] = useState<Npc[]>([]);
-  const {map, send} = useGame();
+  const {map} = useGame();
 
   const addNpc = useCallback((npc: Npc) => {
     setNpcs((prev) => [...prev, npc]);
@@ -62,11 +62,11 @@ export const NpcProvider: React.FC<{ children: React.ReactNode }> = ({
     const newBunnies = Array.from({ length: bunnyCount }, () => (new Bunny({
       x: Math.floor(Math.random() * map.currentMap.width) * tileSize,
       y: Math.floor(Math.random() * map.currentMap.height) * tileSize,
-      interact: () => inventory.trigger.add({name: 'Bunny', quantity: 1, value: 10}),
+      interact: () => inventory.trigger.add({item: {name: 'Bunny', quantity: 1, value: 10}}),
     })));
 
     setNpcs(newBunnies);
-  }, [map, send]);
+  }, [map]);
   return (
     <NpcContext.Provider value={{ npcs, addNpc, removeNpc, findByPosition }}>
       {children}

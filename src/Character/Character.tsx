@@ -3,8 +3,8 @@ import { useEffect, useState } from "react";
 import styles from "./character.module.css";
 import { useGame } from "../Game/GameContext";
 import { useNpc } from "../context/NpcContext";
-import { inventory } from "../store/Inventory";
 import {shop as shopStore} from "../shop/shop.store";
+import { inventory } from "../Inventory/inventory.store";
 
 const useCharacter = () => {
   const { tileSize, mapWidth, mapHeight, map,  shop} = useGame();

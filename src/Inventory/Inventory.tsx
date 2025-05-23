@@ -1,7 +1,7 @@
-import { inventory } from "../store/Inventory";
 /** @ts-expect-error blah */
 import style from "./inventory.module.css";
 import { useSelector } from "@xstate/store/react";
+import { inventory } from "./inventory.store";
 
 export const Inventory = () => {
   const { items, selectedItem } = useSelector(

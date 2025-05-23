@@ -3,7 +3,7 @@ import { useGame } from "../Game/GameContext";
 import { shop as shopStore } from "./shop.store";
 /** @ts-expect-error import */
 import styles from "./shop.module.css";
-import { inventory } from "../store/Inventory";
+import { inventory } from "../Inventory/inventory.store";
 
 export const Shop = () => {
   const { shop } = useGame();

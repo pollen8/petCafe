@@ -10,11 +10,11 @@ import { NpcProvider } from "../context/NpcContext";
 import { Shop } from "../shop/Shop";
 import { Bobin } from "../npc/Bobin/Bobin";
 import { BobinResources } from "../npc/Bobin/BobinResources";
-import { inventory } from "../store/Inventory";
 import { bobinStore } from "../npc/Bobin/bobin.store";
 import { shop } from "../shop/shop.store";
 import { useSelector } from "@xstate/store/react";
 import { Overlay } from "./Overlay";
+import { inventory } from "../Inventory/inventory.store";
 
 const useSave = () => {
   const i = useSelector(inventory, ({ context }) => context);
@@ -47,7 +47,7 @@ const Game = () => {
     if (savedState) {
       const gameState = JSON.parse(savedState);
 
-      inventory.send({type: "restore", state: gameState.inventory}); // Restore inventory state
+      inventorychpch.send({type: "restore", state: gameState.inventory}); // Restore inventory state
       bobinStore.send({type: 'restore', state: gameState.bobin });
       shop.send({type: 'restore', state: gameState.shop });
 
