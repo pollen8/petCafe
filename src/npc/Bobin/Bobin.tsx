@@ -29,27 +29,10 @@ export const Bobin = ({ x, y, maxResources }: BobinProps) => {
         return;
       }
 
-      // Calculate possible adjacent tiles
-      const possibleMoves = [
-        { x: position.x - tileSize, y: position.y }, // Left
-        { x: position.x + tileSize, y: position.y }, // Right
-        { x: position.x, y: position.y - tileSize }, // Up
-        { x: position.x, y: position.y + tileSize }, // Down
-      ];
-
-      // Filter moves to ensure they stay within the map boundaries
-      const validMoves = possibleMoves.filter(
-        (move) =>
-          move.x >= 0 &&
-          move.x < map.currentMap.width * tileSize &&
-          move.y >= 0 &&
-          move.y < map.currentMap.height * tileSize
-      );
-
-      // Choose a random valid move
-      const nextMove =
-        validMoves[Math.floor(Math.random() * validMoves.length)];
-
+    const nextMove = {
+        x: Math.floor(Math.random() * map.currentMap.width * tileSize - tileSize),
+        y: Math.floor(Math.random() * map.currentMap.height * tileSize - tileSize),
+    }
         console.log("nextMove", nextMove)
       // Update Bobin's position
       setPosition(nextMove);
