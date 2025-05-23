@@ -2,7 +2,7 @@
   z-index: 10; /* Lower z-index to place bunnies below the player */
   transition: top 0.5s, left 0.5s; /* Smooth movement */
   animation: bunnyRun 2.4s steps(8) infinite; /* Animation for running */
-  background: url("./src/assets/Running.png") no-repeat;
+  background: url("./Running.png") no-repeat;
 }
 
 @keyframes bunnyRun {

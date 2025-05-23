@@ -2,4 +2,18 @@
     position: absolute;
     top: 0;
     left: 0;
+    width: 32px;
+    height: 32px;
+  z-index: 10; /* Lower z-index to place bunnies below the player */
+  animation: bunnyRun 2.4s steps(6) infinite; /* Animation for running */
+  background: url("./gabe-idle-run.png") no-repeat;
+}
+
+@keyframes bunnyRun {
+  to {
+    background-position: 0px; /* Start at the first frame */
+  }
+  from {
+    background-position: calc(6 * -32px); /* Move to the last frame (8 frames * 32px) */
+  }
 }
