@@ -47,7 +47,7 @@ const Game = () => {
     if (savedState) {
       const gameState = JSON.parse(savedState);
 
-      inventorychpch.send({type: "restore", state: gameState.inventory}); // Restore inventory state
+      inventory.send({type: "restore", state: gameState.inventory}); // Restore inventory state
       bobinStore.send({type: 'restore', state: gameState.bobin });
       shop.send({type: 'restore', state: gameState.shop });
 
