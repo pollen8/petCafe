@@ -7,6 +7,7 @@
   z-index: 10; /* Lower z-index to place bunnies below the player */
   animation: bunnyRun 2.4s steps(6) infinite; /* Animation for running */
   background: url("./gabe-idle-run.png") no-repeat;
+  background-size: 192px 32px; /* Adjust size to fit the sprite sheet */
 }
 
 @keyframes bunnyRun {

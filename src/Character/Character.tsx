@@ -80,5 +80,5 @@ const useCharacter = () => {
 
 export const Character = () => {
   const position = useCharacter();
-  return <div className={styles.character} style={{top: `${position.y}px`, left: `${position.x}px`}}>bob!</div>;
+  return <div className={styles.character} style={{top: `${position.y}px`, left: `${position.x}px`}}></div>;
 };
