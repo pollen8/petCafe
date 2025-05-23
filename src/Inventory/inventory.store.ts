@@ -4,6 +4,8 @@ export type Item = {
   quantity: number;
   value: number;
   name: string;
+  width?: number;
+  height?: number;
 };
 
 type InventoryContext = {

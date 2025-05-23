@@ -1,10 +1,6 @@
 import { createStore } from "@xstate/store";
+import { Item } from "../Inventory/inventory.store";
 
-export type Item = {
-  quantity: number;
-  value: number;
-  name: string;
-};
 
 type ShopContext = {
   items: Item[];
@@ -13,7 +9,8 @@ type ShopContext = {
 };
 export const shop = createStore({
   context: {
-    items: [{ name: "house", value: 100, quantity: 1 }],
+    items: [{ name: "house", value: 100, quantity: 1, width: 2, height: 2 }],
+    isOpen: false,
     selectedItem: null,
   } as ShopContext,
   on: {
@@ -27,7 +24,6 @@ export const shop = createStore({
       return { ...context, isOpen: false };
     },
     setSelected: (context, { name }: { name: string }) => {
-      console.log("setSelected x", name);
       return {
         ...context,
         selectedItem: context.items.find((item) => item.name === name) ?? null,
