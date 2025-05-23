@@ -7,4 +7,6 @@
         display: grid;
     grid-template-columns: repeat(10, 36px);
     grid-template-rows: repeat(10, 36px);
+    min-width: 360px;
+    min-height: 360px;
 }

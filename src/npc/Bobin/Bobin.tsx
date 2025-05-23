@@ -29,20 +29,24 @@ export const Bobin = ({ x, y, maxResources }: BobinProps) => {
         return;
       }
 
-    const nextMove = {
-        x: Math.floor(Math.random() * map.currentMap.width * tileSize - tileSize),
-        y: Math.floor(Math.random() * map.currentMap.height * tileSize - tileSize),
-    }
-        console.log("nextMove", nextMove)
+      const nextMove = {
+        x: Math.floor(
+          Math.random() * map.currentMap.width * tileSize - tileSize
+        ),
+        y: Math.floor(
+          Math.random() * map.currentMap.height * tileSize - tileSize
+        ),
+      };
+      // console.log("nextMove", nextMove)
       // Update Bobin's position
       setPosition(nextMove);
 
-      // Collect the resource on the current tile
+    //   // Collect the resource on the current tile
       const currentTile = map.getCurrentTile(nextMove.x, nextMove.y);
       if (currentTile) {
         bobinStore.send({ type: "collectResource", resource: currentTile });
       }
-    }, 1000); // Move every 1 second
+    }, 5000); 
 
     return () => clearInterval(moveInterval); // Cleanup interval on unmount
   }, [position, resources, map, maxResources]);
@@ -58,9 +62,7 @@ export const Bobin = ({ x, y, maxResources }: BobinProps) => {
         height: "32px",
       }}
     >
-      <div className={styles.resources}>
-       
-      </div>
+      <div className={styles.resources}></div>
     </div>
   );
 };

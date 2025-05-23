@@ -6,15 +6,24 @@ export type Item = {
   name: string;
 };
 
+type InventoryContext = {
+  items: Item[];
+  selectedItem: Item | null;
+  money: number;
+};
+
 export const inventory = createStore({
   // Initial context
-  context: { money: 0, items: [{ name: "foo", value: 1, quantity: 1 }], selectedItem: null } as {
-    items: Item[];
-    selectedItem: Item | null;
-    money: number;
-  },
+  context: {
+    money: 0,
+    items: [{ name: "foo", value: 1, quantity: 1 }],
+    selectedItem: null,
+  } as InventoryContext,
   // Transitions
   on: {
+    restore: (context, { state }: { state: InventoryContext }) => {
+      return state;
+    },
     setSelected: (context, { name }: { name: string }) => {
       console.log("setSelected x", name);
       return {
@@ -22,7 +31,7 @@ export const inventory = createStore({
         selectedItem: context.items.find((item) => item.name === name) ?? null,
       };
     },
-    add: (context, {item}: {item: Item}) => {
+    add: (context, { item }: { item: Item }) => {
       const i = context.items.findIndex((i) => i.name === item.name);
       if (i === -1) {
         return { ...context, items: [...context.items, item] };
@@ -39,15 +48,15 @@ export const inventory = createStore({
         ),
       };
     },
-    addMoney: (context, {amount}: {amount: number}) => {
-      console.log(amount)
+    addMoney: (context, { amount }: { amount: number }) => {
+      console.log(amount);
       console.log(`Adding money: ${amount}`);
       return {
         ...context,
         money: context.money + amount,
       };
     },
-    removeMoney: (context, {amount}: {amount:number}) => {
+    removeMoney: (context, { amount }: { amount: number }) => {
       if (context.money < amount) {
         console.log(`Not enough money to remove: ${amount}`);
         return context; // Return the same context if there's not enough money
@@ -58,7 +67,7 @@ export const inventory = createStore({
         money: context.money - amount,
       };
     },
-    remove: (context, { item: {quantity,name} }: { item: Item }) => {
+    remove: (context, { item: { quantity, name } }: { item: Item }) => {
       const i = context.items.findIndex((i) => i.name === name);
       if (i === -1) {
         console.log(`Item ${name} not found in inventory.`);

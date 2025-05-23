@@ -6,18 +6,20 @@ export type Item = {
   name: string;
 };
 
+type ShopContext = {
+  items: Item[];
+  selectedItem: Item | null;
+  isOpen: boolean;
+};
 export const shop = createStore({
-  // Initial context
   context: {
     items: [{ name: "house", value: 100, quantity: 1 }],
     selectedItem: null,
-  } as {
-    items: Item[];
-    selectedItem: Item | null;
-    isOpen: boolean;
-  },
-  // Transitions
+  } as ShopContext,
   on: {
+    restore: (context, { state }: { state: ShopContext }) => {
+      return state;
+    },
     open: (context) => {
       return { ...context, isOpen: true };
     },
