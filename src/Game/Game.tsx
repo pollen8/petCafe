@@ -13,9 +13,8 @@ import { useSelector } from "@xstate/store/react";
 import { Overlay } from "./Overlay";
 import { inventory } from "../Inventory/inventory.store";
 import { resourcesStore } from "../Resources/resources.store";
-import { useGame } from "./useGame";
-import { SaveButton, saveGame } from "./SaveButton";
-import { LoadButton, loadGame } from "./LoadButton";
+import { SaveButton  } from "./SaveButton";
+import { LoadButton } from "./LoadButton";
 
 const Game = () => {
   // 
