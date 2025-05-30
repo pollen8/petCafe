@@ -1,5 +1,7 @@
 import { createStore } from "@xstate/store";
 
+type ResourceType = 'portal' | 'shop' | 'resource';
+
 export type MapResource = {
   id: string;
   name: string;
@@ -7,6 +9,7 @@ export type MapResource = {
   y: number;
   width: number;
   height: number;
+  type?: ResourceType;
 };
 
 interface ResourcesContext {

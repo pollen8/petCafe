@@ -99,6 +99,7 @@ const Game = () => {
           y: mousePosition.y / tileSize,
           width: selectedItem.width ?? 1,
           height: selectedItem.height ?? 1,
+          type: selectedItem.name === "house" ? "portal" : "resource", // Example: house is a portal
         },
       });
     } else {

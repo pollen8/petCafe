@@ -71,6 +71,22 @@ const useCharacter = () => {
             const resourceItem = Object.values(resourceItems).find((item) => item.x * tileSize === position.x && item.y * tileSize === position.y);
             if (resourceItem) {
               console.log("interact with resource", resourceItem);
+              if (resourceItem.type === "portal") {
+                // Dynamically import the map module by resource name
+                import(`../maps/${resourceItem.name}.ts`).then((mod) => {
+                  // The map export could be named after the file or 'map'
+                  const newMap = mod[resourceItem.name] || mod.map;
+                  if (newMap) {
+                    map.setCurrentMap(newMap);
+                    setPosition({ x: 0, y: 0 });
+                  } else {
+                    console.error("Map not found in module", mod);
+                  }
+                }).catch((err) => {
+                  console.error("Failed to load map", err);
+                });
+                return;
+              }
               return;
             }
             const tile = map.getCurrentTile(position.x, position.y);
