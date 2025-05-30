@@ -9,7 +9,7 @@ const colours: Record<TileTypes, string> = {
   water: "blue",
   forest: "darkgreen",
   stone: "gray",
-}
+} as const
 
 export const Tile = ({ type }: Props) => {
   return <div className={styles.tile} style={{background: colours[type]}}></div>;

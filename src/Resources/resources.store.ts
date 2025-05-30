@@ -10,25 +10,32 @@ export type MapResource = {
 };
 
 interface ResourcesContext {
-  items: MapResource[];
+  items: Record<string, MapResource>;
 }
 
 export const resourcesStore = createStore({
   context: {
-    items: [],
+    items: {},
   } as ResourcesContext,
   on: {
-    add: (context, item: MapResource) => ({
+    add: (context, { item }: { item: MapResource }) => ({
       ...context,
-      items: [...context.items, item],
+      items: {
+        ...context.items,
+        [item.id]: item,
+      },
     }),
-    remove: (context, { id }: { id: string }) => ({
-      ...context,
-      items: context.items.filter((item) => item.id !== id),
-    }),
+    remove: (context, { id }: { id: string }) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { [id]: _, ...rest } = context.items;
+      return {
+        ...context,
+        items: rest,
+      };
+    },
     clear: (context) => ({
       ...context,
-      items: [],
+      items: {},
     }),
     restore: (context, { state }: { state: ResourcesContext }) => ({
       ...context,

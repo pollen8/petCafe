@@ -1,6 +1,7 @@
 import { createStore } from "@xstate/store";
 
 export type Item = {
+  id: string;
   quantity: number;
   value: number;
   name: string;
@@ -25,6 +26,12 @@ export const inventory = createStore({
   on: {
     restore: (context, { state }: { state: InventoryContext }) => {
       return state;
+    },
+    clearSelected: (context) => {
+      return {
+        ...context,
+        selectedItem: null,
+      }
     },
     setSelected: (context, { name }: { name: string }) => {
       console.log("setSelected x", name);

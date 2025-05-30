@@ -14,11 +14,18 @@ import { shop } from "../shop/shop.store";
 import { useSelector } from "@xstate/store/react";
 import { Overlay } from "./Overlay";
 import { inventory } from "../Inventory/inventory.store";
+import { resourcesStore } from "../Resources/resources.store";
 
 const Game = () => {
   const gameContainerRef = useRef<HTMLDivElement>(null);
-  const selectedItem = useSelector(inventory, (state) => state.context.selectedItem);
-  const [mousePosition, setMousePosition] = useState<{ x: number; y: number } | null>(null);
+  const selectedItem = useSelector(
+    inventory,
+    (state) => state.context.selectedItem
+  );
+  const [mousePosition, setMousePosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
 
   // Save the game state to local storage
   const saveGame = () => {
@@ -72,9 +79,24 @@ const Game = () => {
       mousePosition.x + itemWidth <= mapWidth &&
       mousePosition.y + itemHeight <= mapHeight
     ) {
-
+      inventory.send({ type: "clearSelected" });
+      console.log("Placing item on the map at:", mousePosition);
       // Add logic to place the item on the map
-      inventory.send({ type: "remove", item: {...selectedItem, quantity: 1} });
+      inventory.send({
+        type: "remove",
+        item: { ...selectedItem, quantity: 1 },
+      });
+      resourcesStore.send({
+        type: "add",
+        item: {
+          id: selectedItem.id ?? "1",
+          name: selectedItem.name,
+          x: mousePosition.x / tileSize,
+          y: mousePosition.y / tileSize,
+          width: selectedItem.width ?? 1,
+          height: selectedItem.height ?? 1,
+        },
+      });
     } else {
       console.log("Item does not fit in the map.");
     }
@@ -88,9 +110,7 @@ const Game = () => {
           onMouseMove={handleMouseMove}
           onClick={handleMapClick}
         >
-          <Map
-          ref={gameContainerRef}
-          >
+          <Map ref={gameContainerRef}>
             <Character />
             <Bobin maxResources={{ wood: 5 }} x={1} y={2} />
             <NpcGenerator />

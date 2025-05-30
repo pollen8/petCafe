@@ -10,3 +10,11 @@
     min-width: 360px;
     min-height: 360px;
 }
+
+.resource {
+    position: absolute; 
+    width: 36px;
+    height: 36px;
+    top: 0;
+    left: 0;
+}
