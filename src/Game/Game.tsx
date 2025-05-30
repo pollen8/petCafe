@@ -32,6 +32,7 @@ const Game = () => {
     const gameState = {
       inventory: inventory.get().context,
       bobin: bobinStore.get().context,
+      resources: resourcesStore.get().context,
       shop: shop.get().context,
     };
     localStorage.setItem("gameState", JSON.stringify(gameState));
@@ -43,7 +44,10 @@ const Game = () => {
     const savedState = localStorage.getItem("gameState");
     if (savedState) {
       const gameState = JSON.parse(savedState);
-
+      resourcesStore.send({
+        type: "restore",
+        state: gameState.resources,
+      });
       inventory.send({ type: "restore", state: gameState.inventory });
       bobinStore.send({ type: "restore", state: gameState.bobin });
       shop.send({ type: "restore", state: gameState.shop });

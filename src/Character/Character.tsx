@@ -4,6 +4,8 @@ import { useGame } from "../Game/useGame";
 import { useNpc } from "../context/useNpc";
 import {shop as shopStore} from "../shop/shop.store";
 import { inventory } from "../Inventory/inventory.store";
+import { resourcesStore } from "../Resources/resources.store";
+import { useSelector } from "@xstate/store/react";
 
 const useCharacter = () => {
   const { tileSize, mapWidth, mapHeight, map,  shop} = useGame();
@@ -13,6 +15,7 @@ const useCharacter = () => {
     y: 0,
   });
 
+            const resourceItems = useSelector(resourcesStore, (state) => (state.context.items));
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key) {
@@ -62,8 +65,16 @@ const useCharacter = () => {
               console.log("interact with npc");
               return;
             }
+            console.log('position', position);
+            console.log('resourceItems', resourceItems);
+            // @todo interact with resource rect (house is larger than tile)
+            const resourceItem = Object.values(resourceItems).find((item) => item.x * tileSize === position.x && item.y * tileSize === position.y);
+            if (resourceItem) {
+              console.log("interact with resource", resourceItem);
+              return;
+            }
             const tile = map.getCurrentTile(position.x, position.y);
-            inventory.trigger.add({item: {name: tile, quantity: 1, value: 10}});
+            inventory.trigger.add({item: {id:tile, name: tile, quantity: 1, value: 10}});
           break; }
       }
     };
@@ -72,7 +83,7 @@ const useCharacter = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [position, tileSize, mapWidth, mapHeight, npc, map ]);
+  }, [position, tileSize, mapWidth, mapHeight, npc, map, shop.x, shop.y, resourceItems]);
 
   return position;
 };
