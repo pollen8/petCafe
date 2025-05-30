@@ -13,7 +13,7 @@ export const SaveButton = () => {
       bobin: bobinStore.get().context,
       resources: resourcesStore.get().context,
       shop: shop.get().context,
-      currentMap: map.currentMap, // Save the current map
+      currentMapId: map.currentMap.id ?? "1", // Only store the map id
     };
     localStorage.setItem("gameState", JSON.stringify(gameState));
     console.log("Game saved!");
