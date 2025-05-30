@@ -1,3 +1,5 @@
+import type { MapResource } from "../Resources/resources.store";
+
 export type TileTypes = 'grass' | 'water' | 'stone' | 'forest';
 const tiles: TileTypes[ ] = ['grass', 'water', 'stone', 'forest'];
 
@@ -6,11 +8,41 @@ export type Map = {
     width: number;
     height: number;
     tiles: TileTypes[];
+    resources: MapResource[]
 }
 
 export const map: Map = {
     id: '1',
     width: 10,
     height: 10,
+    resources:[
+        {
+            id: 'portal',
+            name: 'Portal',
+            x: 1,
+            y: 1,
+            width: 1,
+            height: 1,
+            type: 'portal'
+        },
+        {
+            id: 'shop',
+            name: 'Shop',
+            x: 2,
+            y: 2,
+            width: 1,
+            height: 1,
+            type: 'shop'
+        },
+        {
+            id: 'tree',
+            name: 'Tree',
+            x: 3,
+            y: 3,
+            width: 1,
+            height: 1,
+            type: 'resource'
+        }
+    ],
     tiles: new Array(100).fill('').map(() => tiles[Math.floor(Math.random() * 4)])
 }

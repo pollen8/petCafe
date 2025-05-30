@@ -9,7 +9,7 @@ export type MapResource = {
   y: number;
   width: number;
   height: number;
-  type?: ResourceType;
+  type: ResourceType;
 };
 
 interface ResourcesContext {
