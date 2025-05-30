@@ -12,6 +12,7 @@ import { BobinResources } from "../npc/Bobin/BobinResources";
 import { Overlay } from "./Overlay";
 import { SaveButton  } from "./SaveButton";
 import { LoadButton } from "./LoadButton";
+import { StorageModal } from "../Storage/Storage";
 
 const Game = () => {
   // 
@@ -29,6 +30,7 @@ const Game = () => {
             <Bobin maxResources={{ wood: 5 }} x={1} y={2} />
             <NpcGenerator />
             <Shop />
+            <StorageModal />
           </Map>
           <Overlay>
             <Inventory />

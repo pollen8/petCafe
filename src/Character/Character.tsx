@@ -6,6 +6,7 @@ import { shop as shopStore } from "../shop/shop.store";
 import { inventory } from "../Inventory/inventory.store";
 import { resourcesStore, type MapResource } from "../Resources/resources.store";
 import { useSelector } from "@xstate/store/react";
+import { storageStore } from "../Storage/storage.store";
 
 
 const useResouceItems = () => {
@@ -108,9 +109,9 @@ const useCharacter = () => {
               return;
             }
             if (resourceItem.type === 'storage') {
-              import("../Storage/storage.store").then(({ storageStore }) => {
+              // import("../Storage/storage.store").then(({ storageStore }) => {
                 storageStore.send({ type: "open" });
-              });
+              // });
               return;
             }
             return;
