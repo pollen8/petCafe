@@ -1,6 +1,5 @@
-import React from "react";
 import { Bunny } from "./Bunny/Bunny";
-import { useNpc } from "../context/NpcContext";
+import { useNpc } from "../context/useNpc";
 
 export const NpcGenerator = () => {
   const  {npcs}  = useNpc();

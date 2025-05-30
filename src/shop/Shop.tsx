@@ -1,9 +1,8 @@
 import { useSelector } from "@xstate/store/react";
-import { useGame } from "../Game/GameContext";
 import { shop as shopStore } from "./shop.store";
-/** @ts-expect-error import */
 import styles from "./shop.module.css";
 import { inventory } from "../Inventory/inventory.store";
+import { useGame } from "../Game/useGame";
 
 export const Shop = () => {
   const { shop } = useGame();

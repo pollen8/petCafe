@@ -1,9 +1,9 @@
-/** @ts-expect-error import */
 import styles from "./bobin.module.css";
-import { tileSize, useGame } from "../../Game/GameContext";
+import { tileSize  } from "../../Game/GameContext";
 import { useEffect, useState } from "react";
 import { useSelector } from "@xstate/store/react";
 import { bobinStore } from "./bobin.store";
+import { useGame } from "../../Game/useGame";
 
 interface BobinProps {
   x: number;

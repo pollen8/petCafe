@@ -1,26 +1,17 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from "react";
-import { tileSize, useGame } from "../Game/GameContext";
+import React, { useState, useCallback, useEffect } from "react";
+import { tileSize } from "../Game/GameContext";
 import { inventory } from "../Inventory/inventory.store";
-
-interface Npc {
-  x: number;
-  y: number;
-  interact: () => void;
-}
-
-interface NpcContextType {
-  npcs: Npc[];
-  addNpc: (npc: Npc) => void;
-  removeNpc: (id: string) => void;
-  findByPosition: (x: number, y: number) => Npc | undefined;
-}
+import { useGame } from "../Game/useGame";
+import { NpcContext, type Npc } from "./useNpc";
 
 class Bunny {
+    id: string;
     x: number;
     y: number;
     iteraction: (event: {type: string; payload?: unknown }) => void;
     
-    constructor({x, y, interact}: Npc) {
+    constructor({id, x, y, interact}: Npc) {
+      this.id = id;
         this.x = x;
         this.y = y;
         this.iteraction = interact;
@@ -31,7 +22,6 @@ class Bunny {
     }
 }
 
-const NpcContext = createContext<NpcContextType | undefined>(undefined);
 
 export const NpcProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -60,6 +50,7 @@ export const NpcProvider: React.FC<{ children: React.ReactNode }> = ({
 
     // Generate random positions for the bunnies
     const newBunnies = Array.from({ length: bunnyCount }, () => (new Bunny({
+      id: `bunny-${Math.random().toString(36).substr(2, 9)}`,
       x: Math.floor(Math.random() * map.currentMap.width) * tileSize,
       y: Math.floor(Math.random() * map.currentMap.height) * tileSize,
       interact: () => inventory.trigger.add({item: {name: 'Bunny', quantity: 1, value: 10}}),
@@ -74,10 +65,3 @@ export const NpcProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useNpc = (): NpcContextType => {
-  const context = useContext(NpcContext);
-  if (!context) {
-    throw new Error("useNpc must be used within an NpcProvider");
-  }
-  return context;
-};

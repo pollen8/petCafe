@@ -1,7 +1,7 @@
-/** @ts-expect-error import */
 import styles from "./bunny.module.css";
-import { tileSize, useGame } from "../../Game/GameContext";
+import { useGame } from "../../Game/useGame";
 import { useEffect, useState } from "react";
+import { tileSize } from "../../Game/GameContext";
 
 interface BunnyProps {
   x: number;

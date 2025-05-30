@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-/** @ts-expect-error import */
 import styles from "./character.module.css";
-import { useGame } from "../Game/GameContext";
-import { useNpc } from "../context/NpcContext";
+import { useGame } from "../Game/useGame";
+import { useNpc } from "../context/useNpc";
 import {shop as shopStore} from "../shop/shop.store";
 import { inventory } from "../Inventory/inventory.store";
 
