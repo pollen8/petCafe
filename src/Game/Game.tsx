@@ -35,7 +35,6 @@ const Game = () => {
             <BobinResources />
             <div className={style.controls}>
               <LoadButton />
-              
               <SaveButton />
             </div>
           </Overlay>

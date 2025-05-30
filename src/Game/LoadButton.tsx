@@ -28,6 +28,8 @@ function loadGame(map: GameContextType["map"]) {
       // Dynamically import the map module by resource name
       import(`../maps/${gameState.currentMapId}.ts`).then((mod) => {
         console.log("Loaded map module:", mod);
+
+
         // The map export could be named after the file or 'map'
         const newMap = mod[gameState.currentMapId] || mod.map;
         if (newMap) {
@@ -36,6 +38,13 @@ function loadGame(map: GameContextType["map"]) {
         } else {
           console.error("Map not found in module", mod);
         }
+        map.currentMap.resources.forEach((item) => {
+        resourcesStore.send({
+          type: 'add',
+          mapId: map.currentMap.id,
+          item,
+        });
+      });
         // const loadedMap = mapRegistry[gameState.currentMapId] ?? map1;
         // map.setCurrentMap(loadedMap); // Restore the current map by id
       });

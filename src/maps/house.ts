@@ -6,7 +6,7 @@ export const house: Map = {
   height: 6,
   resources: [
     {
-      id: "portal",
+      id: "1",
       name: "Portal",
       x: 4,
       y: 1,

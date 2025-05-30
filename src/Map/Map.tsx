@@ -96,6 +96,7 @@ export const Map = ({
         <div
           key={resource.id}
           className={styles.resource}
+          title={resource.name}
           style={{
             background: `url("${resource.name}.png") no-repeat`,
             left: resource.x * tileSize,
@@ -104,7 +105,7 @@ export const Map = ({
             height: resource.height * tileSize,
           }}
         >
-          {resource.name}
+          {/* {resource.name} */}
         </div>
       ))}
       {children}

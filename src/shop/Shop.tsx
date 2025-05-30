@@ -2,17 +2,18 @@ import { useSelector } from "@xstate/store/react";
 import { shop as shopStore } from "./shop.store";
 import styles from "./shop.module.css";
 import { inventory } from "../Inventory/inventory.store";
-import { useGame } from "../Game/useGame";
+// import { useGame } from "../Game/useGame";
 
 export const Shop = () => {
-  const { shop } = useGame();
+  // const { shop } = useGame();
   const money = useSelector(inventory, (state) => state.context.money);
   const items = useSelector(inventory, (state) => state.context.items);
   const isOpen = useSelector(shopStore, (state) => state.context.isOpen);
+  console.log('sop open', isOpen)
   const stock = useSelector(shopStore, (state) => state.context.items);
   return (
     <>
-      <div
+      {/* <div
         style={{
           position: "absolute",
           left: `${shop.x}px`,
@@ -24,7 +25,7 @@ export const Shop = () => {
         }}
       >
         shop
-      </div>
+      </div> */}
       {isOpen && (
         <div className={styles.shop}>
           <h1>shop</h1>

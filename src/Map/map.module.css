@@ -5,16 +5,16 @@
     top: 0;
     left: 0;
         display: grid;
-    grid-template-columns: repeat(10, 36px);
-    grid-template-rows: repeat(10, 36px);
-    min-width: 360px;
-    min-height: 360px;
+    grid-template-columns: repeat(10, 32px);
+    grid-template-rows: repeat(10, 32px);
+    min-width: 320px;
+    min-height: 320px;
 }
 
 .resource {
     position: absolute; 
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     top: 0;
     left: 0;
 }

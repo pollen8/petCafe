@@ -53,7 +53,7 @@ export const NpcProvider: React.FC<{ children: React.ReactNode }> = ({
       id: `bunny-${Math.random().toString(36).substr(2, 9)}`,
       x: Math.floor(Math.random() * map.currentMap.width) * tileSize,
       y: Math.floor(Math.random() * map.currentMap.height) * tileSize,
-      interact: () => inventory.trigger.add({item: {name: 'Bunny', quantity: 1, value: 10}}),
+      interact: () => inventory.trigger.add({item: {id: 'buttn', name: 'Bunny', quantity: 1, value: 10}}),
     })));
 
     setNpcs(newBunnies);

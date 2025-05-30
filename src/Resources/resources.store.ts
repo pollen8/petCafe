@@ -21,6 +21,18 @@ export const resourcesStore = createStore({
     items: {},
   } as ResourcesContext,
   on: {
+    initialize: (context, { mapId, items }: { mapId: string; items: MapResource[] }) => {
+    console.log("Initializing resources for map:", mapId, items);
+    if (context.items[mapId]) {
+      console.log('resourcesStore: Map already initialized:', mapId);
+      return context
+    }
+      return {
+        items: {
+          [mapId]: Object.fromEntries(items.map(item => [item.id, item])),
+        }
+      }
+    },
     add: (context, { item, mapId }: { item: MapResource; mapId: string }) => ({
       ...context,
       items: {

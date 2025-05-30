@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { type Map, map } from "../maps/1"; // Import the map data
 import { GameContext } from "./useGame";
+import { resourcesStore } from "../Resources/resources.store";
 
-export const tileSize = 36;
+export const tileSize = 32;
 
 const mapWidth = 10; // Assuming the map width is 10 (or use the value from context if needed)
 export interface GameContextType {
@@ -10,9 +11,7 @@ export interface GameContextType {
   mapWidth: number;
   mapHeight: number;
   map: ReturnType<typeof useMap>;
-  shop: {x: number, y: number}
 }
-
 
 const useMap = () => {
   const [currentMap, setCurrentMap] = useState<Map>(map); // Replace `any` with your map type
@@ -32,7 +31,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const map = useMap(); // Move inside the component
-
+  resourcesStore.send({
+    type: "initialize",
+    mapId: map.currentMap.id ?? "1",
+    items: map.currentMap.resources,
+  });
   return (
     <GameContext.Provider
       value={{
@@ -40,11 +43,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         mapWidth: 10,
         mapHeight: 10,
         map,
-        shop: {x: tileSize * 5, y: tileSize * 5} // Example shop position
       }}
     >
       {children}
     </GameContext.Provider>
   );
 };
-

@@ -1,5 +1,5 @@
 import { createStore } from "@xstate/store";
-import { Item } from "../Inventory/inventory.store";
+import type { Item } from "../Inventory/inventory.store";
 
 
 type ShopContext = {
@@ -9,7 +9,7 @@ type ShopContext = {
 };
 export const shop = createStore({
   context: {
-    items: [{ name: "house", value: 100, quantity: 1, width: 2, height: 2 }],
+    items: [{ id: 'house', name: "house", value: 100, quantity: 1, width: 2, height: 2 }],
     isOpen: false,
     selectedItem: null,
   } as ShopContext,

@@ -20,8 +20,9 @@ const useResouceItems = () => {
   }, [foo, map.currentMap.id]);
   return resourceItems
 }
+
 const useCharacter = () => {
-  const { tileSize, mapWidth, mapHeight, map, shop } = useGame();
+  const { tileSize, mapWidth, mapHeight, map  } = useGame();
   const npc = useNpc();
   const [position, setPosition] = useState({
     x: 0,
@@ -68,11 +69,6 @@ const useCharacter = () => {
         case "Enter": {
           const npcItem = npc.findByPosition(position.x, position.y);
           console.log("npcItem", npcItem);
-          if (shop.x == position.x && shop.y == position.y) {
-            console.log("interact with shop");
-            shopStore.trigger.open();
-            return;
-          }
           if (npcItem) {
             npcItem.interact();
             console.log("interact with npc");
@@ -90,10 +86,11 @@ const useCharacter = () => {
             console.log("interact with resource", resourceItem);
             if (resourceItem.type === "portal") {
               // Dynamically import the map module by resource name
-              import(`../maps/${resourceItem.name}.ts`)
+              import(`../maps/${resourceItem.id}.ts`)
                 .then((mod) => {
+                  console.log('loaded map module:', mod); 
                   // The map export could be named after the file or 'map'
-                  const newMap = mod[resourceItem.name] || mod.map;
+                  const newMap = mod[resourceItem.id] || mod.map;
                   if (newMap) {
                     map.setCurrentMap(newMap);
                     setPosition({ x: 0, y: 0 });
@@ -104,6 +101,10 @@ const useCharacter = () => {
                 .catch((err) => {
                   console.error("Failed to load map", err);
                 });
+              return;
+            }
+            if (resourceItem.type === 'shop') {
+              shopStore.trigger.open();
               return;
             }
             return;
@@ -128,8 +129,6 @@ const useCharacter = () => {
     mapHeight,
     npc,
     map,
-    shop.x,
-    shop.y,
     resourceItems,
   ]);
 
