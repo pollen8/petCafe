@@ -1,6 +1,6 @@
 import { createStore } from "@xstate/store";
 
-type ResourceType = 'portal' | 'shop' | 'resource';
+type ResourceType = 'portal' | 'shop' | 'resource' | 'storage';
 
 export type MapResource = {
   id: string;

@@ -1,4 +1,5 @@
 // Load the game state from local storage
+import { useEffect } from "react";
 import { inventory } from "../Inventory/inventory.store";
 import { bobinStore } from "../npc/Bobin/bobin.store";
 import { resourcesStore } from "../Resources/resources.store";
@@ -57,6 +58,9 @@ function loadGame(map: GameContextType["map"]) {
 
 export const LoadButton = () => {
   const { map } = useGame();
+  useEffect(() => {
+    loadGame(map)
+  }, [])
   const loadGameState = () => {
     loadGame(map);
   };

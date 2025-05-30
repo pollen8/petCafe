@@ -107,6 +107,12 @@ const useCharacter = () => {
               shopStore.trigger.open();
               return;
             }
+            if (resourceItem.type === 'storage') {
+              import("../Storage/storage.store").then(({ storageStore }) => {
+                storageStore.send({ type: "open" });
+              });
+              return;
+            }
             return;
           }
           const tile = map.getCurrentTile(position.x, position.y);
