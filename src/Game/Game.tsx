@@ -9,14 +9,16 @@ import { NpcProvider } from "../context/NpcContext";
 import { Shop } from "../shop/Shop";
 import { Bobin } from "../npc/Bobin/Bobin";
 import { BobinResources } from "../npc/Bobin/BobinResources";
-import { bobinStore } from "../npc/Bobin/bobin.store";
-import { shop } from "../shop/shop.store";
 import { useSelector } from "@xstate/store/react";
 import { Overlay } from "./Overlay";
 import { inventory } from "../Inventory/inventory.store";
 import { resourcesStore } from "../Resources/resources.store";
+import { useGame } from "./useGame";
+import { SaveButton, saveGame } from "./SaveButton";
+import { LoadButton, loadGame } from "./LoadButton";
 
 const Game = () => {
+  // 
   const gameContainerRef = useRef<HTMLDivElement>(null);
   const selectedItem = useSelector(
     inventory,
@@ -26,37 +28,6 @@ const Game = () => {
     x: number;
     y: number;
   } | null>(null);
-
-  // Save the game state to local storage
-  const saveGame = () => {
-    const gameState = {
-      inventory: inventory.get().context,
-      bobin: bobinStore.get().context,
-      resources: resourcesStore.get().context,
-      shop: shop.get().context,
-    };
-    localStorage.setItem("gameState", JSON.stringify(gameState));
-    console.log("Game saved!");
-  };
-
-  // Load the game state from local storage
-  const loadGame = () => {
-    const savedState = localStorage.getItem("gameState");
-    if (savedState) {
-      const gameState = JSON.parse(savedState);
-      resourcesStore.send({
-        type: "restore",
-        state: gameState.resources,
-      });
-      inventory.send({ type: "restore", state: gameState.inventory });
-      bobinStore.send({ type: "restore", state: gameState.bobin });
-      shop.send({ type: "restore", state: gameState.shop });
-
-      console.log("Game loaded!");
-    } else {
-      console.log("No saved game found.");
-    }
-  };
 
   const handleMouseMove = (event: React.MouseEvent) => {
     if (!selectedItem) return;
@@ -125,8 +96,9 @@ const Game = () => {
             <Inventory />
             <BobinResources />
             <div className={style.controls}>
-              <button onClick={saveGame}>Save Game</button>
-              <button onClick={loadGame}>Load Game</button>
+              <LoadButton />
+              
+              <SaveButton />
             </div>
           </Overlay>
           {selectedItem && mousePosition && (
