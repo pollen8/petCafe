@@ -1,7 +1,5 @@
 ### TODO
 
-* Pick up bunnies, kill them
-* npc genererate respawns
-* shop
-* bobin helper
-* drag house onto map
+* Move shop to be a resource on a map
+* add portal out of house
+* associate NPC with map

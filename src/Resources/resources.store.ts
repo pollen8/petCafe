@@ -13,7 +13,7 @@ export type MapResource = {
 };
 
 interface ResourcesContext {
-  items: Record<string, MapResource>;
+  items: Record<string, Record<string, MapResource>>; // mapId -> resourceId -> MapResource
 }
 
 export const resourcesStore = createStore({
@@ -21,24 +21,34 @@ export const resourcesStore = createStore({
     items: {},
   } as ResourcesContext,
   on: {
-    add: (context, { item }: { item: MapResource }) => ({
+    add: (context, { item, mapId }: { item: MapResource; mapId: string }) => ({
       ...context,
       items: {
         ...context.items,
-        [item.id]: item,
+        [mapId]: {
+          ...(context.items[mapId] || {}),
+          [item.id]: item,
+        },
       },
     }),
-    remove: (context, { id }: { id: string }) => {
+    remove: (context, { id, mapId }: { id: string; mapId: string }) => {
+      if (!context.items[mapId]) return context;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { [id]: _, ...rest } = context.items;
+      const { [id]: _, ...rest } = context.items[mapId];
       return {
         ...context,
-        items: rest,
+        items: {
+          ...context.items,
+          [mapId]: rest,
+        },
       };
     },
-    clear: (context) => ({
+    clear: (context, { mapId }: { mapId: string }) => ({
       ...context,
-      items: {},
+      items: {
+        ...context.items,
+        [mapId]: {},
+      },
     }),
     restore: (context, { state }: { state: ResourcesContext }) => ({
       ...context,

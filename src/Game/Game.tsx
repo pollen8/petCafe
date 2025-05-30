@@ -1,7 +1,7 @@
-import { useRef, useState } from "react";
+import { useRef  } from "react";
 import { Map } from "../Map/Map";
 import { Inventory } from "../Inventory/Inventory";
-import { GameProvider, tileSize } from "./GameContext";
+import { GameProvider  } from "./GameContext";
 import { NpcGenerator } from "../npc/NpcGenerator";
 import style from "./game.module.css";
 import { Character } from "../Character/Character";
@@ -9,83 +9,22 @@ import { NpcProvider } from "../context/NpcContext";
 import { Shop } from "../shop/Shop";
 import { Bobin } from "../npc/Bobin/Bobin";
 import { BobinResources } from "../npc/Bobin/BobinResources";
-import { useSelector } from "@xstate/store/react";
 import { Overlay } from "./Overlay";
-import { inventory } from "../Inventory/inventory.store";
-import { resourcesStore } from "../Resources/resources.store";
 import { SaveButton  } from "./SaveButton";
 import { LoadButton } from "./LoadButton";
 
 const Game = () => {
   // 
   const gameContainerRef = useRef<HTMLDivElement>(null);
-  const selectedItem = useSelector(
-    inventory,
-    (state) => state.context.selectedItem
-  );
-  const [mousePosition, setMousePosition] = useState<{
-    x: number;
-    y: number;
-  } | null>(null);
-
-  const handleMouseMove = (event: React.MouseEvent) => {
-    if (!selectedItem) return;
-    const rect = gameContainerRef.current?.getBoundingClientRect();
-    if (rect) {
-      setMousePosition({
-        x: Math.floor((event.clientX - rect.left) / tileSize) * tileSize,
-        y: Math.floor((event.clientY - rect.top) / tileSize) * tileSize,
-      });
-    }
-  };
-
-  const handleMapClick = () => {
-    if (!selectedItem || !mousePosition) return;
-
-    const itemWidth = (selectedItem?.width ?? 1) * tileSize;
-    const itemHeight = (selectedItem?.height ?? 1) * tileSize;
-
-    // Check if the rectangle fits within the map boundaries
-    const mapWidth = 10 * tileSize; // Assuming map width is 10 tiles
-    const mapHeight = 10 * tileSize; // Assuming map height is 10 tiles
-
-    if (
-      mousePosition.x + itemWidth <= mapWidth &&
-      mousePosition.y + itemHeight <= mapHeight
-    ) {
-      inventory.send({ type: "clearSelected" });
-      console.log("Placing item on the map at:", mousePosition);
-      // Add logic to place the item on the map
-      inventory.send({
-        type: "remove",
-        item: { ...selectedItem, quantity: 1 },
-      });
-      resourcesStore.send({
-        type: "add",
-        item: {
-          id: selectedItem.id ?? "1",
-          name: selectedItem.name,
-          x: mousePosition.x / tileSize,
-          y: mousePosition.y / tileSize,
-          width: selectedItem.width ?? 1,
-          height: selectedItem.height ?? 1,
-          type: selectedItem.name === "house" ? "portal" : "resource", // Example: house is a portal
-        },
-      });
-    } else {
-      console.log("Item does not fit in the map.");
-    }
-  };
-
+ 
   return (
     <GameProvider>
       <NpcProvider>
         <div
           className={style.game}
-          onMouseMove={handleMouseMove}
-          onClick={handleMapClick}
         >
-          <Map ref={gameContainerRef}>
+          <Map ref={gameContainerRef}
+            >
             <Character />
             <Bobin maxResources={{ wood: 5 }} x={1} y={2} />
             <NpcGenerator />
@@ -100,19 +39,7 @@ const Game = () => {
               <SaveButton />
             </div>
           </Overlay>
-          {selectedItem && mousePosition && (
-            <div
-              style={{
-                position: "absolute",
-                left: `${mousePosition.x}px`,
-                top: `${mousePosition.y}px`,
-                width: `${(selectedItem.width ?? 1) * tileSize}px`,
-                height: `${(selectedItem.height ?? 1) * tileSize}px`,
-                backgroundColor: "rgba(208, 255, 208, 0.69)", // Semi-transparent green
-                pointerEvents: "none", // Prevent interfering with mouse events
-              }}
-            ></div>
-          )}
+        
         </div>
       </NpcProvider>
     </GameProvider>
