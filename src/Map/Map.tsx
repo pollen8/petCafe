@@ -8,6 +8,7 @@ import { tileSize } from "../Game/GameContext";
 
 export const Map = ({children, ref}: PropsWithChildren & {ref: RefObject<HTMLDivElement | null>} & HTMLAttributes<HTMLDivElement>) => {
  const {map} = useGame()
+ console.log('map', map);
  const resources = useSelector(resourcesStore, (state) => state.context.items);
  console.log('resources', resources);
   return (
