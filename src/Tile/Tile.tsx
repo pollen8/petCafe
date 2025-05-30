@@ -1,4 +1,4 @@
-import { TileTypes } from "../maps/1";
+import type { TileTypes } from "../maps/1";
 import styles from  './Tile.module.css';
 type Props = {
   type: TileTypes;

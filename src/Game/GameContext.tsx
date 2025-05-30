@@ -1,10 +1,11 @@
-import React, { createContext, useContext, useState } from "react";
-import { Map, map } from "../maps/1"; // Import the map data
+import React, { useState } from "react";
+import { type Map, map } from "../maps/1"; // Import the map data
+import { GameContext } from "./useGame";
 
 export const tileSize = 36;
 
 const mapWidth = 10; // Assuming the map width is 10 (or use the value from context if needed)
-interface GameContextType {
+export interface GameContextType {
   tileSize: number;
   mapWidth: number;
   mapHeight: number;
@@ -12,7 +13,6 @@ interface GameContextType {
   shop: {x: number, y: number}
 }
 
-const GameContext = createContext<GameContextType | undefined>(undefined);
 
 const useMap = () => {
   const [currentMap, setCurrentMap] = useState<Map>(map); // Replace `any` with your map type
@@ -48,10 +48,3 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-export const useGame = (): GameContextType => {
-  const context = useContext(GameContext);
-  if (!context) {
-    throw new Error("useGame must be used within a GameProvider");
-  }
-  return context;
-};

@@ -1,4 +1,3 @@
-/** @ts-expect-error blah */
 import style from "./inventory.module.css";
 import { useSelector } from "@xstate/store/react";
 import { inventory } from "./inventory.store";
