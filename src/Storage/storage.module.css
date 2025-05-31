@@ -13,8 +13,11 @@
 
 .modal {
   background: #fff;
-  border-radius: 12px;
   padding: 2rem;
+  border-image-slice: 6 fill;
+  border-image-source: url("frame.png");
+  border-image-repeat: repeat;
+  border-image-width: 6px;
   min-width: 480px;
   min-height: 260px;
   box-shadow: 0 4px 32px rgba(0, 0, 0, 0.18);
@@ -66,6 +69,10 @@
   grid-column: 1 / -1;
 }
 
-button {
+.button {
   margin-top: 1rem;
+  border-image-slice: 6 fill;
+  border-image-source: url("stone.png");
+  border-image-repeat: repeat;
+  border-image-width: 6px;
 }

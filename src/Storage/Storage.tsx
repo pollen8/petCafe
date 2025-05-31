@@ -78,7 +78,7 @@ export const StorageModal: React.FC = () => {
             </div>
           </div>
         </div>
-        <button type="button" onClick={close}>
+        <button className={styles.button} type="button" onClick={close}>
           Close
         </button>
       </div>
