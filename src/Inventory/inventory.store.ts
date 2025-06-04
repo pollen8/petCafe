@@ -20,7 +20,7 @@ export const inventory = createStore({
   // Initial context
   context: {
     money: 0,
-    items: [{ name: "foo", value: 1, quantity: 1 }],
+    items: [],
     selectedItem: null,
   } as InventoryContext,
   // Transitions

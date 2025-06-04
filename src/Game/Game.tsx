@@ -14,6 +14,7 @@ import { SaveButton } from "./SaveButton";
 import { LoadButton } from "./LoadButton";
 import { StorageModal } from "../Storage/Storage";
 import { Resources } from "../Resources/Resources";
+import { NewGameButton } from "./NewGame";
 
 const Game = () => {
   //
@@ -35,6 +36,7 @@ const Game = () => {
             <Inventory />
             <BobinResources />
             <div className={style.controls}>
+              <NewGameButton />
               <LoadButton />
               <SaveButton />
             </div>
