@@ -20,7 +20,7 @@ export const house: Map = {
     },
     {
       id: "storage",
-      image: "Storage",
+      image: "Box",
       name: "House Storage",
       x: 4,
       y: 3,

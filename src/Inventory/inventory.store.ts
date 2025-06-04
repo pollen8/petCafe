@@ -1,4 +1,5 @@
 import { createStore } from "@xstate/store";
+import { produce } from "immer";
 
 export type Item = {
   id: string;
@@ -43,20 +44,13 @@ export const inventory = createStore({
     },
     add: (context, { item }: { item: Item }) => {
       const i = context.items.findIndex((i) => i.name === item.name);
-      if (i === -1) {
-        return { ...context, items: [...context.items, item] };
-      }
-      return {
-        ...context,
-        items: context.items.map((ix, index) =>
-          index === i
-            ? {
-                ...ix,
-                quantity: ix.quantity + item.quantity,
-              }
-            : item
-        ),
-      };
+      return produce(context, (draft) => {
+        if (i === -1) {
+          draft.items.push(item);
+        } else {
+          draft.items[i].quantity = draft.items[i].quantity + item.quantity;
+        }
+      });
     },
     addMoney: (context, { amount }: { amount: number }) => {
       console.log(amount);

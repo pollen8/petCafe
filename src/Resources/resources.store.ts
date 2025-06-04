@@ -1,5 +1,13 @@
 import { createStore } from "@xstate/store";
 
+import { createBrowserInspector } from "@statelyai/inspect";
+import { produce } from "immer";
+
+const inspector = createBrowserInspector({
+  // ...
+  autoStart: true,
+});
+
 type ResourceType = "portal" | "shop" | "resource" | "storage";
 
 export type MapResource = {
@@ -14,8 +22,11 @@ export type MapResource = {
   image: string;
 };
 
+type MapId = string;
+type ResourceId = string;
+
 interface ResourcesContext {
-  items: Record<string, Record<string, MapResource>>; // mapId -> resourceId -> MapResource
+  items: Record<MapId, Record<ResourceId, MapResource>>; // mapId -> resourceId -> MapResource
 }
 
 export const resourcesStore = createStore({
@@ -27,49 +38,50 @@ export const resourcesStore = createStore({
       context,
       { mapId, items }: { mapId: string; items: MapResource[] }
     ) => {
-      console.log("Initializing resources for map:", mapId, items);
       if (context.items[mapId]) {
-        console.log("resourcesStore: Map already initialized:", mapId);
+        console.error(
+          "resourcesStore: Map already initialized:",
+          mapId,
+          context
+        );
         return context;
       }
-      return {
-        items: {
-          [mapId]: Object.fromEntries(items.map((item) => [item.id, item])),
-        },
-      };
+      return produce(context, (draft) => {
+        draft.items[mapId] = Object.fromEntries(
+          items.map((item) => [item.id, item])
+        );
+      });
     },
-    add: (context, { item, mapId }: { item: MapResource; mapId: string }) => ({
-      ...context,
-      items: {
-        ...context.items,
-        [mapId]: {
-          ...(context.items[mapId] || {}),
-          [item.id]: item,
-        },
-      },
-    }),
+    add: (context, { item, mapId }: { item: MapResource; mapId: string }) => {
+      return produce(context, (draft) => {
+        draft.items[mapId][item.id] = item;
+      });
+    },
     remove: (context, { id, mapId }: { id: string; mapId: string }) => {
       if (!context.items[mapId]) return context;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { [id]: _, ...rest } = context.items[mapId];
-      return {
-        ...context,
-        items: {
-          ...context.items,
-          [mapId]: rest,
-        },
-      };
+      return produce(context, (draft) => {
+        draft.items[mapId] = rest;
+      });
     },
-    clear: (context, { mapId }: { mapId: string }) => ({
-      ...context,
-      items: {
-        ...context.items,
-        [mapId]: {},
-      },
-    }),
-    restore: (context, { state }: { state: ResourcesContext }) => ({
-      ...context,
-      items: state.items,
-    }),
+    clear: (context, { mapId }: { mapId: string }) => {
+      return produce(context, (draft) => {
+        draft.items[mapId] = {};
+      });
+    },
+    restore: (context, { state }: { state: ResourcesContext }) => {
+      return produce(context, (draft) => {
+        draft.items = state.items;
+      });
+    },
   },
 });
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// resourcesStore.inspect(inspector);
+// resourcesStore.inspect((inspectionEvent) => {
+//   // type: '@xstate.snapshot' or
+//   // type: '@xstate.event'
+//   console.log(inspectionEvent);
+// });

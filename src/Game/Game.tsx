@@ -19,7 +19,6 @@ import { NewGameButton } from "./NewGame";
 const Game = () => {
   //
   const gameContainerRef = useRef<HTMLDivElement>(null);
-
   return (
     <GameProvider>
       <NpcProvider>

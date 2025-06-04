@@ -20,6 +20,7 @@ export const Map = ({
 } & HTMLAttributes<HTMLDivElement>) => {
   const { map } = useGame();
 
+  console.log("resources:: , ", resourcesStore.getSnapshot());
   const selectedItem = useSelector(
     inventory,
     (state) => state.context.selectedItem

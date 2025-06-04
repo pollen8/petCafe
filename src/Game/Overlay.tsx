@@ -9,7 +9,7 @@ export const Overlay = ({ children }: PropsWithChildren) => {
 
         left: 0,
         width: "100%",
-        height: "20rem",
+        height: "10rem",
         zIndex: 1000,
       }}
     >
