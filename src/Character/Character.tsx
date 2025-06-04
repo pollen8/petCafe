@@ -6,24 +6,22 @@ import { shop as shopStore } from "../shop/shop.store";
 import { inventory } from "../Inventory/inventory.store";
 import { resourcesStore, type MapResource } from "../Resources/resources.store";
 import { useSelector } from "@xstate/store/react";
-import { storageStore } from "../Storage/storage.store";
-
+import { storageStore, type StorageStore } from "../Storage/storage.store";
 
 const useResouceItems = () => {
   const { map } = useGame();
-  const foo = useSelector(
-    resourcesStore,
-    (state) => state.context.items
-  );
-  const [resourceItems, setResourceItems] = useState<{ [key: string]: MapResource }>({});
+  const foo = useSelector(resourcesStore, (state) => state.context.items);
+  const [resourceItems, setResourceItems] = useState<{
+    [key: string]: MapResource;
+  }>({});
   useEffect(() => {
     setResourceItems(foo[map.currentMap.id] || {});
   }, [foo, map.currentMap.id]);
-  return resourceItems
-}
+  return resourceItems;
+};
 
 const useCharacter = () => {
-  const { tileSize, mapWidth, mapHeight, map  } = useGame();
+  const { tileSize, mapWidth, mapHeight, map } = useGame();
   const npc = useNpc();
   const [position, setPosition] = useState({
     x: 0,
@@ -69,14 +67,10 @@ const useCharacter = () => {
         case " ":
         case "Enter": {
           const npcItem = npc.findByPosition(position.x, position.y);
-          console.log("npcItem", npcItem);
           if (npcItem) {
             npcItem.interact();
-            console.log("interact with npc");
             return;
           }
-          console.log("position", position);
-          console.log("resourceItems", resourceItems);
           // @todo interact with resource rect (house is larger than tile)
           const resourceItem = Object.values(resourceItems).find(
             (item) =>
@@ -87,12 +81,32 @@ const useCharacter = () => {
             console.log("interact with resource", resourceItem);
             if (resourceItem.type === "portal") {
               // Dynamically import the map module by resource name
-              import(`../maps/${resourceItem.id}.ts`)
+              import(`../maps/${(resourceItem.state as { to: string }).to}.ts`)
                 .then((mod) => {
-                  console.log('loaded map module:', mod); 
+                  console.log("loaded map module:", mod);
                   // The map export could be named after the file or 'map'
                   const newMap = mod[resourceItem.id] || mod.map;
                   if (newMap) {
+                    const s = newMap.resources.filter(
+                      (r: MapResource) => r.type === "storage"
+                    );
+                    console.log("s", s);
+                    s.forEach((r: MapResource) => {
+                      if (r.state) {
+                        storageStore.send({
+                          type: "addStore",
+                          id: r.id,
+                          store: r.state as StorageStore,
+                        });
+                      }
+                    });
+                    console.log("new map ", newMap);
+                    // resourcesStore.send({
+                    //   type: "initialize",
+                    //   mapId: newMap.id ?? "1",
+                    //   items: newMap.resources,
+                    // });
+                    console.log(storageStore.getSnapshot());
                     map.setCurrentMap(newMap);
                     setPosition({ x: 0, y: 0 });
                   } else {
@@ -104,14 +118,15 @@ const useCharacter = () => {
                 });
               return;
             }
-            if (resourceItem.type === 'shop') {
+            if (resourceItem.type === "shop") {
               shopStore.trigger.open();
               return;
             }
-            if (resourceItem.type === 'storage') {
-              // import("../Storage/storage.store").then(({ storageStore }) => {
-                storageStore.send({ type: "open" });
-              // });
+            if (resourceItem.type === "storage") {
+              storageStore.send({
+                type: "open",
+                id: resourceItem.id,
+              });
               return;
             }
             return;
@@ -129,15 +144,7 @@ const useCharacter = () => {
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
     };
-  }, [
-    position,
-    tileSize,
-    mapWidth,
-    mapHeight,
-    npc,
-    map,
-    resourceItems,
-  ]);
+  }, [position, tileSize, mapWidth, mapHeight, npc, map, resourceItems]);
 
   return position;
 };

@@ -1,6 +1,6 @@
 import { createStore } from "@xstate/store";
 
-type ResourceType = 'portal' | 'shop' | 'resource' | 'storage';
+type ResourceType = "portal" | "shop" | "resource" | "storage";
 
 export type MapResource = {
   id: string;
@@ -10,6 +10,8 @@ export type MapResource = {
   width: number;
   height: number;
   type: ResourceType;
+  state?: unknown;
+  image: string;
 };
 
 interface ResourcesContext {
@@ -21,17 +23,20 @@ export const resourcesStore = createStore({
     items: {},
   } as ResourcesContext,
   on: {
-    initialize: (context, { mapId, items }: { mapId: string; items: MapResource[] }) => {
-    console.log("Initializing resources for map:", mapId, items);
-    if (context.items[mapId]) {
-      console.log('resourcesStore: Map already initialized:', mapId);
-      return context
-    }
+    initialize: (
+      context,
+      { mapId, items }: { mapId: string; items: MapResource[] }
+    ) => {
+      console.log("Initializing resources for map:", mapId, items);
+      if (context.items[mapId]) {
+        console.log("resourcesStore: Map already initialized:", mapId);
+        return context;
+      }
       return {
         items: {
-          [mapId]: Object.fromEntries(items.map(item => [item.id, item])),
-        }
-      }
+          [mapId]: Object.fromEntries(items.map((item) => [item.id, item])),
+        },
+      };
     },
     add: (context, { item, mapId }: { item: MapResource; mapId: string }) => ({
       ...context,

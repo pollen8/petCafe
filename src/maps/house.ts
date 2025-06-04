@@ -8,20 +8,30 @@ export const house: Map = {
     {
       id: "portal",
       name: "Portal",
+      image: "Portal",
       x: 4,
       y: 1,
       width: 1,
       height: 1,
       type: "portal",
+      state: {
+        to: "1",
+      },
     },
     {
       id: "storage",
-      name: "Storage",
+      image: "Storage",
+      name: "House Storage",
       x: 4,
       y: 3,
       width: 1,
       height: 1,
-      type: "storage", // or 'storage' if you want to add a new ResourceType
+      type: "storage",
+      state: {
+        capacity: 10,
+        items: [],
+        isOpen: false,
+      },
     },
   ],
   tiles: new Array(100).fill("stone"),

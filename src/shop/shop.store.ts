@@ -1,7 +1,6 @@
 import { createStore } from "@xstate/store";
 import type { Item } from "../Inventory/inventory.store";
 
-
 type ShopContext = {
   items: Item[];
   selectedItem: Item | null;
@@ -9,7 +8,17 @@ type ShopContext = {
 };
 export const shop = createStore({
   context: {
-    items: [{ id: 'house', name: "house", value: 100, quantity: 1, width: 2, height: 2 }],
+    items: [
+      {
+        id: "house",
+        name: "house",
+        value: 100,
+        quantity: 1,
+        width: 2,
+        height: 2,
+        state: { to: "house" },
+      },
+    ],
     isOpen: false,
     selectedItem: null,
   } as ShopContext,

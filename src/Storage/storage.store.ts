@@ -1,59 +1,82 @@
 import { createStore } from "@xstate/store";
 import type { Item } from "../Inventory/inventory.store";
+import { produce } from "immer";
 
-interface StorageContext {
+/**
+ * Storage store.
+ * Contains a record of each storage resource in the game and the
+ * items stored inside them.
+ * E.g. a chest in the player's house.
+ */
+
+export type StorageStore = {
   capacity: number;
   items: Item[];
   isOpen: boolean;
-}
+};
+
+type StorageContext = {
+  currentStorageId: string;
+  stores: Record<string, StorageStore>;
+};
 
 export const storageStore = createStore({
   context: {
-    capacity: 20, // Default capacity
-    items: [],
-    isOpen: false,
+    currentStorageId: "",
+    stores: {},
   } as StorageContext,
+
   on: {
+    setCurrentStorageId: (context, { storageId }: { storageId: string }) => ({
+      ...context,
+      currentStorageId: storageId,
+    }),
+    addStore: (context, { id, store }: { id: string; store: StorageStore }) => {
+      if (context.stores[id]) {
+        console.error("store" + id + "already exists");
+        return;
+      }
+      context.stores[id] = store;
+    },
     add: (context, { item }: { item: Item }) => {
-      const totalQuantity = context.items.reduce((sum, i) => sum + i.quantity, 0) + item.quantity;
-      if (totalQuantity > context.capacity) {
+      const storage = context.stores[context.currentStorageId];
+      const totalQuantity =
+        storage.items.reduce((sum, i) => sum + i.quantity, 0) + item.quantity;
+      if (totalQuantity > storage.capacity) {
         // Exceeds capacity, do not add
         return context;
       }
-      const existingIndex = context.items.findIndex((i) => i.id === item.id);
+      const existingIndex = storage.items.findIndex((i) => i.id === item.id);
       if (existingIndex !== -1) {
         // Update quantity if item exists
-        return {
-          ...context,
-          items: context.items.map((i, idx) =>
-            idx === existingIndex ? { ...i, quantity: i.quantity + item.quantity } : i
-          ),
-        };
+        return produce(context, (draft) => {
+          draft.stores[context.currentStorageId].items[
+            existingIndex
+          ].quantity += item.quantity;
+        });
       }
       // Add new item
-      return {
-        ...context,
-        items: [...context.items, item],
-      };
+      return produce(context, (draft) => {
+        draft.stores[context.currentStorageId].items.push(item);
+      });
     },
     remove: (context, { id, quantity }: { id: string; quantity: number }) => {
-      const idx = context.items.findIndex((i) => i.id === id);
+      const storage = context.stores[context.currentStorageId];
+      const idx = storage.items.findIndex((i) => i.id === id);
       if (idx === -1) return context;
-      const item = context.items[idx];
+      const item = storage.items[idx];
       if (item.quantity <= quantity) {
         // Remove item completely
-        return {
-          ...context,
-          items: context.items.filter((i) => i.id !== id),
-        };
+        return produce(context, (draft) => {
+          draft.stores[context.currentStorageId].items = draft.stores[
+            context.currentStorageId
+          ].items.filter((i) => i.id !== id);
+        });
       }
       // Subtract quantity
-      return {
-        ...context,
-        items: context.items.map((i, iidx) =>
-          iidx === idx ? { ...i, quantity: i.quantity - quantity } : i
-        ),
-      };
+      return produce(context, (draft) => {
+        draft.stores[context.currentStorageId].items[idx].quantity--;
+      });
     },
     setCapacity: (context, { capacity }: { capacity: number }) => ({
       ...context,
@@ -63,13 +86,17 @@ export const storageStore = createStore({
       ...context,
       items: [],
     }),
-    open: (context) => ({
-      ...context,
-      isOpen: true,
-    }),
-    close: (context) => ({
-      ...context,
-      isOpen: false,
-    }),
+    open: (context, { id }: { id: string }) => {
+      return produce(context, (draft) => {
+        draft.currentStorageId = id;
+        draft.stores[id].isOpen = true;
+      });
+    },
+    close: (context) => {
+      return produce(context, (draft) => {
+        draft.stores[draft.currentStorageId].isOpen = false;
+        draft.currentStorageId = "";
+      });
+    },
   },
 });

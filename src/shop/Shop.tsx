@@ -2,30 +2,16 @@ import { useSelector } from "@xstate/store/react";
 import { shop as shopStore } from "./shop.store";
 import styles from "./shop.module.css";
 import { inventory } from "../Inventory/inventory.store";
-// import { useGame } from "../Game/useGame";
 
 export const Shop = () => {
-  // const { shop } = useGame();
   const money = useSelector(inventory, (state) => state.context.money);
   const items = useSelector(inventory, (state) => state.context.items);
   const isOpen = useSelector(shopStore, (state) => state.context.isOpen);
-  console.log('sop open', isOpen)
+  console.log("sop open", isOpen);
   const stock = useSelector(shopStore, (state) => state.context.items);
+  console.log("shop stock", stock);
   return (
     <>
-      {/* <div
-        style={{
-          position: "absolute",
-          left: `${shop.x}px`,
-          top: `${shop.y}px`,
-          width: "32px",
-          height: "32px",
-          backgroundColor: "white",
-          
-        }}
-      >
-        shop
-      </div> */}
       {isOpen && (
         <div className={styles.shop}>
           <h1>shop</h1>
@@ -39,9 +25,9 @@ export const Shop = () => {
                   key={index}
                   onClick={() => {
                     const oneItem = { ...item, quantity: 1 };
-                    shopStore.send({type: 'sellTo', item: oneItem});
-                    inventory.send({type: 'addMoney', amount: item.value });
-                    inventory.send({type: 'remove', item: oneItem});
+                    shopStore.send({ type: "sellTo", item: oneItem });
+                    inventory.send({ type: "addMoney", amount: item.value });
+                    inventory.send({ type: "remove", item: oneItem });
                   }}
                 >
                   <p>{item.name}</p>
@@ -56,9 +42,10 @@ export const Shop = () => {
                   type="button"
                   onClick={() => {
                     const oneItem = { ...item, quantity: 1 };
-                    shopStore.send({type: 'purchase', item: oneItem});
-                    inventory.send({type: 'removeMoney',  amount: item.value});
-                    inventory.send({type: 'add', item: oneItem})
+                    console.log(" buy", oneItem);
+                    shopStore.send({ type: "purchase", item: oneItem });
+                    inventory.send({ type: "removeMoney", amount: item.value });
+                    inventory.send({ type: "add", item: oneItem });
                   }}
                 >
                   <div>{item.name}</div>

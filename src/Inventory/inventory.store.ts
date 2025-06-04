@@ -7,6 +7,7 @@ export type Item = {
   name: string;
   width?: number;
   height?: number;
+  state?: unknown;
 };
 
 type InventoryContext = {
@@ -31,7 +32,7 @@ export const inventory = createStore({
       return {
         ...context,
         selectedItem: null,
-      }
+      };
     },
     setSelected: (context, { name }: { name: string }) => {
       console.log("setSelected x", name);

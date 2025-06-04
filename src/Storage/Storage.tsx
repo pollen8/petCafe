@@ -6,11 +6,14 @@ import { inventory } from "../Inventory/inventory.store";
 import type { Item } from "../Inventory/inventory.store";
 
 export const StorageModal: React.FC = () => {
-  const isOpen = useSelector(storageStore, (state) => state.context.isOpen);
-  const storageItems: Item[] = useSelector(
+  const currentId = useSelector(
     storageStore,
-    (state) => state.context.items
+    (state) => state.context.currentStorageId
   );
+  const stores = useSelector(storageStore, (state) => state.context.stores);
+  const isOpen = stores[currentId]?.isOpen ?? false;
+  const storageItems = stores[currentId]?.items ?? [];
+  const capacity = stores[currentId]?.capacity ?? 0;
   const inventoryItems: Item[] = useSelector(
     inventory,
     (state) => state.context.items
@@ -19,6 +22,10 @@ export const StorageModal: React.FC = () => {
 
   // Add item from inventory to storage
   const handleAddToStorage = (item: Item) => {
+    if (storageItems.length > capacity) {
+      alert("no room left");
+      return;
+    }
     storageStore.send({ type: "add", item: { ...item, quantity: 1 } });
     inventory.send({ type: "remove", item: { ...item, quantity: 1 } });
   };
@@ -75,6 +82,11 @@ export const StorageModal: React.FC = () => {
                   </div>
                 ))
               )}
+              {new Array(capacity - storageItems.length)
+                .fill("")
+                .map((item, i) => (
+                  <div key={i} className={styles.gridItem} />
+                ))}
             </div>
           </div>
         </div>

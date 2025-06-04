@@ -67,11 +67,13 @@ export const Map = ({
         item: {
           id: selectedItem.id ?? "1",
           name: selectedItem.name,
+          image: selectedItem.name,
           x: mousePosition.x / tileSize,
           y: mousePosition.y / tileSize,
           width: selectedItem.width ?? 1,
           height: selectedItem.height ?? 1,
           type: selectedItem.name === "house" ? "portal" : "resource", // Example: house is a portal
+          state: selectedItem.state,
         },
       });
     } else {
@@ -79,9 +81,6 @@ export const Map = ({
     }
   };
 
-  console.log("map", map);
-  const resources = useSelector(resourcesStore, (state) => state.context.items);
-  console.log("resources", resources);
   return (
     <div
       className={styles.map}
@@ -92,36 +91,21 @@ export const Map = ({
       {map.currentMap.tiles.map((type, i) => (
         <Tile type={type} key={i} />
       ))}
-      {Object.values(resources[map.currentMap.id] ?? {}).map((resource) => (
-        <div
-          key={resource.id}
-          className={styles.resource}
-          title={resource.name}
-          style={{
-            background: `url("${resource.name}.png") no-repeat`,
-            left: resource.x * tileSize,
-            top: resource.y * tileSize,
-            width: resource.width * tileSize,
-            height: resource.height * tileSize,
-          }}
-        >
-          {/* {resource.name} */}
-        </div>
-      ))}
+
       {children}
-        {selectedItem && mousePosition && (
-            <div
-              style={{
-                position: "absolute",
-                left: `${mousePosition.x}px`,
-                top: `${mousePosition.y}px`,
-                width: `${(selectedItem.width ?? 1) * tileSize}px`,
-                height: `${(selectedItem.height ?? 1) * tileSize}px`,
-                backgroundColor: "rgba(208, 255, 208, 0.69)", // Semi-transparent green
-                pointerEvents: "none", // Prevent interfering with mouse events
-              }}
-            ></div>
-          )}
+      {selectedItem && mousePosition && (
+        <div
+          style={{
+            position: "absolute",
+            left: `${mousePosition.x}px`,
+            top: `${mousePosition.y}px`,
+            width: `${(selectedItem.width ?? 1) * tileSize}px`,
+            height: `${(selectedItem.height ?? 1) * tileSize}px`,
+            backgroundColor: "rgba(208, 255, 208, 0.69)", // Semi-transparent green
+            pointerEvents: "none", // Prevent interfering with mouse events
+          }}
+        ></div>
+      )}
     </div>
   );
 };

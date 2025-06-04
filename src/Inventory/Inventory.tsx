@@ -7,6 +7,7 @@ export const Inventory = () => {
     inventory,
     (state) => state.context
   );
+  console.log("selecteditem", selectedItem);
   return (
     <div className={style.inventory}>
       {Object.values(items).map((item, index) => (
@@ -15,7 +16,7 @@ export const Inventory = () => {
           type="button"
           className={item.name == selectedItem?.name ? style.selected : ""}
           onClick={() => {
-            inventory.trigger.setSelected({name: item.name});
+            inventory.trigger.setSelected({ name: item.name });
           }}
         >
           <div>{item.name}</div>
