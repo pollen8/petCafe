@@ -81,11 +81,12 @@ const useCharacter = () => {
             console.log("interact with resource", resourceItem);
             if (resourceItem.type === "portal") {
               // Dynamically import the map module by resource name
-              import(`../maps/${(resourceItem.state as { to: string }).to}.ts`)
+              const mapId = (resourceItem.state as { to: string }).to;
+              import(`../maps/${mapId}.ts`)
                 .then((mod) => {
                   console.log("loaded map module:", mod);
                   // The map export could be named after the file or 'map'
-                  const newMap = mod[resourceItem.id] || mod.map;
+                  const newMap = mod[mapId] || mod.map;
                   if (newMap) {
                     const s = newMap.resources.filter(
                       (r: MapResource) => r.type === "storage"
