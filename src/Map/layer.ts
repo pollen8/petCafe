@@ -9,23 +9,30 @@ export type Viewport = {
   height: number; // Height of the viewport
 };
 
+export type MapSize = {
+  width: number; // Width of the map
+  height: number; // Height of the map
+};
 type LayerProps = {
   viewport: Viewport;
   ctx: CanvasRenderingContext2D | null;
   sprites: Sprite[];
+  mapSize: MapSize; // Optional map size for additional context
   isFixed?: boolean; // Whether the viewport is fixed or scrolls with the player
 };
 
 export class Layer {
   viewport: Viewport;
   sprites: Sprite[];
+  mapSize: MapSize; // Optional map size for additional context
   ctx: CanvasRenderingContext2D | null;
   isFixed: boolean; // Whether the viewport is fixed or scrolls with the player
 
-  constructor({ viewport, sprites, ctx, isFixed = true }: LayerProps) {
+  constructor({ viewport, sprites, ctx, isFixed = true, mapSize }: LayerProps) {
     this.viewport = viewport;
     this.sprites = sprites;
     this.ctx = ctx;
+    this.mapSize = mapSize;
     this.isFixed = isFixed; // Default to not fixed
   }
 
@@ -56,7 +63,7 @@ export class Layer {
         continue; // Skip drawing this sprite
       }
       //   console.log("position", position.get());
-      sprite.draw(this.isFixed);
+      sprite.draw(this.ctx, this.mapSize, this.viewport, this.isFixed);
     }
   }
 }
