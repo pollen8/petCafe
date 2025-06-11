@@ -8,7 +8,7 @@ const inspector = createBrowserInspector({
   autoStart: true,
 });
 
-type ResourceType = "portal" | "shop" | "resource" | "storage";
+type ResourceType = "portal" | "shop" | "resource" | "storage" | "bed";
 
 export type MapResource = {
   id: string;

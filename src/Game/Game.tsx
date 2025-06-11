@@ -15,6 +15,7 @@ import { LoadButton } from "./LoadButton";
 import { StorageModal } from "../Storage/Storage";
 import { Resources } from "../Resources/Resources";
 import { NewGameButton } from "./NewGame";
+import { CharacterEnergy } from "./CharacterEnergy";
 
 const Game = () => {
   //
@@ -25,9 +26,9 @@ const Game = () => {
         <div className={style.game}>
           <Map ref={gameContainerRef}>
             <Resources />
-            <Character />
-            <Bobin maxResources={{ wood: 5 }} x={1} y={2} />
-            <NpcGenerator />
+            {/* <Character /> */}
+            {/* <Bobin maxResources={{ wood: 5 }} x={1} y={2} /> */}
+            {/* <NpcGenerator /> */}
             <Shop />
             <StorageModal />
           </Map>
@@ -35,6 +36,7 @@ const Game = () => {
             <Inventory />
             <BobinResources />
             <div className={style.controls}>
+              <CharacterEnergy />
               <NewGameButton />
               <LoadButton />
               <SaveButton />

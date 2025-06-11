@@ -19,6 +19,16 @@ export const house: Map = {
       },
     },
     {
+      id: "bed",
+      image: "Box",
+      name: "Bed",
+      x: 7,
+      y: 3,
+      width: 1,
+      height: 1,
+      type: "bed",
+    },
+    {
       id: "storage",
       image: "Box",
       name: "House Storage",

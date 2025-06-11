@@ -1,4 +1,7 @@
 import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
   useState,
   type HTMLAttributes,
   type PropsWithChildren,
@@ -11,6 +14,67 @@ import { useSelector } from "@xstate/store/react";
 import { resourcesStore } from "../Resources/resources.store";
 import { tileSize } from "../Game/GameContext";
 import { inventory } from "../Inventory/inventory.store";
+import { Sprite } from "./sprite";
+import { createAtom } from "@xstate/store";
+import { Layer } from "./layer";
+
+export const position = createAtom({ x: 0, y: 0 });
+const speed = 16;
+const useKeys = ({ width, height }: { width: number; height: number }) => {
+  console.log("map width:", width, "height:", height);
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case "ArrowUp":
+          if (position.get().y - speed < 0) {
+            return;
+          }
+          position.set((prev) => ({
+            x: prev.x,
+            y: prev.y - speed,
+          }));
+          // Handle up arrow key
+          break;
+        case "ArrowDown":
+          event.preventDefault();
+          if (position.get().y + speed > height) {
+            return;
+          }
+          position.set((prev) => ({
+            x: prev.x,
+            y: prev.y + speed,
+          }));
+          break;
+        case "ArrowLeft":
+          if (position.get().x - speed < 0) {
+            return;
+          }
+          position.set((prev) => ({
+            x: prev.x - speed,
+            y: prev.y,
+          }));
+          break;
+        case "ArrowRight":
+          if (position.get().x + speed > width) {
+            return;
+          }
+          position.set((prev) => ({
+            x: prev.x + speed,
+            y: prev.y,
+          }));
+          console.log("New position:", position.get());
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [width, height]);
+};
 
 export const Map = ({
   children,
@@ -19,8 +83,11 @@ export const Map = ({
   ref: RefObject<HTMLDivElement | null>;
 } & HTMLAttributes<HTMLDivElement>) => {
   const { map } = useGame();
-
-  console.log("resources:: , ", resourcesStore.getSnapshot());
+  useKeys({
+    width: map.currentMap.width * tileSize,
+    height: map.currentMap.height * tileSize,
+  });
+  const canvasRef = useRef(null) as RefObject<HTMLCanvasElement | null>;
   const selectedItem = useSelector(
     inventory,
     (state) => state.context.selectedItem
@@ -82,6 +149,43 @@ export const Map = ({
     }
   };
 
+  // Make map really big
+
+  // then small view port which is what
+  const viewPort = {
+    width: 5,
+    height: 5,
+  };
+
+  console.log("Map tiles:", map.currentMap.tiles);
+
+  useLayoutEffect(() => {
+    const sprites = map.currentMap.tiles.map((tile, i) => {
+      return new Sprite({
+        x: (i % viewPort.width) * tileSize,
+        tile,
+        y: Math.floor(i / viewPort.width) * tileSize,
+        ctx: canvasRef.current?.getContext("2d") ?? null,
+      });
+    });
+
+    const layer = new Layer({
+      ctx: canvasRef.current?.getContext("2d") ?? null,
+      viewport: {
+        x: position.get().x,
+        width: 5 * tileSize,
+        height: 5 * tileSize,
+        y: position.get().y,
+      },
+      sprites,
+    });
+    const animate = () => {
+      layer.draw();
+      requestAnimationFrame(animate);
+    };
+    requestAnimationFrame(animate);
+  }, [canvasRef, map.currentMap.tiles, viewPort.width]);
+
   return (
     <div
       className={styles.map}
@@ -89,9 +193,15 @@ export const Map = ({
       onMouseMove={handleMouseMove}
       onClick={handleMapClick}
     >
-      {map.currentMap.tiles.map((type, i) => (
+      <canvas
+        ref={canvasRef}
+        style={{ position: "absolute", zIndex: 1, top: 0, left: 0 }}
+        width={viewPort.width * tileSize}
+        height={viewPort.height * tileSize}
+      />
+      {/* {map.currentMap.tiles.map((type, i) => (
         <Tile type={type} key={i} />
-      ))}
+      ))} */}
 
       {children}
       {selectedItem && mousePosition && (

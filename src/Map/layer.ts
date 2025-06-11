@@ -1,0 +1,62 @@
+import { tileSize } from "../Game/GameContext";
+import { position } from "./Map";
+import type { Sprite } from "./sprite";
+
+export type Viewport = {
+  x: number; // X coordinate of the viewport
+  y: number; // Y coordinate of the viewport
+  width: number; // Width of the viewport
+  height: number; // Height of the viewport
+};
+
+type LayerProps = {
+  viewport: Viewport;
+  ctx: CanvasRenderingContext2D | null;
+  sprites: Sprite[];
+  isFixed?: boolean; // Whether the viewport is fixed or scrolls with the player
+};
+
+export class Layer {
+  viewport: Viewport;
+  sprites: Sprite[];
+  ctx: CanvasRenderingContext2D | null;
+  isFixed: boolean; // Whether the viewport is fixed or scrolls with the player
+
+  constructor({ viewport, sprites, ctx, isFixed = true }: LayerProps) {
+    this.viewport = viewport;
+    this.sprites = sprites;
+    this.ctx = ctx;
+    this.isFixed = isFixed; // Default to not fixed
+  }
+
+  public draw() {
+    if (!this.ctx) {
+      return;
+    }
+    this.ctx.clearRect(
+      this.viewport.x,
+      this.viewport.y,
+      this.viewport.width,
+      this.viewport.height
+    );
+    for (const sprite of this.sprites) {
+      //   console.log("viewport", this.viewport);
+
+      const spritePosition = sprite.getPosition();
+
+      // if the sprite x + width is less than the viewport postion then don't draw it
+      if (
+        spritePosition.x + tileSize <
+        position.get().x
+        // ||
+        // spritePosition.x > this.viewport.x + this.viewport.width ||
+        // spritePosition.y + tileSize < position.get().y ||
+        // spritePosition.y > this.viewport.y + this.viewport.height
+      ) {
+        continue; // Skip drawing this sprite
+      }
+      //   console.log("position", position.get());
+      sprite.draw(this.isFixed);
+    }
+  }
+}

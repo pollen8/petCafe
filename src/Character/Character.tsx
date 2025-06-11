@@ -7,6 +7,7 @@ import { inventory } from "../Inventory/inventory.store";
 import { resourcesStore, type MapResource } from "../Resources/resources.store";
 import { useSelector } from "@xstate/store/react";
 import { storageStore, type StorageStore } from "../Storage/storage.store";
+import { characterStore } from "./character.store";
 
 const useResouceItems = () => {
   const { map } = useGame();
@@ -119,6 +120,9 @@ const useCharacter = () => {
                 });
               return;
             }
+            if (resourceItem.type === "bed") {
+              characterStore.send({ type: "rest" });
+            }
             if (resourceItem.type === "shop") {
               shopStore.trigger.open();
               return;
@@ -133,9 +137,13 @@ const useCharacter = () => {
             return;
           }
           const tile = map.getCurrentTile(position.x, position.y);
-          inventory.trigger.add({
-            item: { id: tile, name: tile, quantity: 1, value: 10 },
-          });
+          if (characterStore.getSnapshot().context.energy !== 0) {
+            const res = characterStore.send({ type: "useEnergy", amount: 10 });
+            console.log(">>> res", res);
+            inventory.trigger.add({
+              item: { id: tile, name: tile, quantity: 1, value: 10 },
+            });
+          }
           break;
         }
       }
