@@ -37,13 +37,12 @@ const useKeys = ({
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       let nextPosition: number;
+      const yThing = Math.ceil(-viewPort.height / 2 / tileSize) * tileSize;
+      const xThing = Math.ceil(-viewPort.width / 2 / tileSize) * tileSize;
       switch (event.key) {
         case "ArrowUp":
           nextPosition = position.get().y - speed;
-          if (
-            nextPosition <
-            Math.ceil(-viewPort.height / 2 / tileSize) * tileSize
-          ) {
+          if (nextPosition < yThing) {
             console.log("Cannot move up, out of bounds");
             return;
           }
@@ -54,9 +53,10 @@ const useKeys = ({
           break;
         case "ArrowDown":
           event.preventDefault();
-          // if (position.get().y + speed > height) {
-          //   return;
-          // }
+          nextPosition = position.get().y + speed;
+          if (nextPosition > height / 2 - yThing) {
+            return;
+          }
           position.set((prev) => ({
             x: prev.x,
             y: prev.y + speed,
@@ -64,10 +64,7 @@ const useKeys = ({
           break;
         case "ArrowLeft":
           nextPosition = position.get().x - speed;
-          if (
-            nextPosition <
-            Math.ceil(-viewPort.width / 2 / tileSize) * tileSize
-          ) {
+          if (nextPosition < xThing) {
             console.log("Cannot move up, out of bounds");
             return;
           }
@@ -77,14 +74,15 @@ const useKeys = ({
           }));
           break;
         case "ArrowRight":
-          // if (position.get().x + speed > width) {
-          //   return;
-          // }
+          nextPosition = position.get().x + speed;
+          if (nextPosition > width / 2 - xThing) {
+            console.log("Cannot move right, out of bounds");
+            return;
+          }
           position.set((prev) => ({
             x: prev.x + speed,
             y: prev.y,
           }));
-          // console.log("New position:", position.get());
           break;
         default:
           break;
@@ -179,8 +177,8 @@ export const Map = ({
 
   // then small view port which is what
   const viewPort = {
-    width: 5,
-    height: 5,
+    width: 5 * tileSize,
+    height: 5 * tileSize,
   };
 
   console.log("Map tiles:", map.currentMap.tiles);
@@ -204,8 +202,7 @@ export const Map = ({
       ctx,
       viewport: {
         x: position.get().x,
-        width: 5 * tileSize,
-        height: 5 * tileSize,
+        ...viewPort,
         y: position.get().y,
       },
       mapSize,
@@ -213,8 +210,8 @@ export const Map = ({
     });
 
     const character = new Character({
-      x: (viewPort.width * tileSize) / 2 - tileSize / 2,
-      y: (viewPort.height * tileSize) / 2 - tileSize / 2,
+      x: viewPort.width / 2 - tileSize / 2,
+      y: viewPort.height / 2 - tileSize / 2,
       tile: "character", // Assuming you have a character tile
     });
 
@@ -228,8 +225,10 @@ export const Map = ({
     requestAnimationFrame(animate);
   }, [
     canvasRef,
+    map.currentMap.height,
     map.currentMap.tiles,
     map.currentMap.width,
+    viewPort,
     viewPort.height,
     viewPort.width,
   ]);
@@ -244,8 +243,8 @@ export const Map = ({
       <canvas
         ref={canvasRef}
         style={{ position: "absolute", zIndex: 1, top: 0, left: 0 }}
-        width={viewPort.width * tileSize}
-        height={viewPort.height * tileSize}
+        width={viewPort.width}
+        height={viewPort.height}
       />
       {/* {map.currentMap.tiles.map((type, i) => (
         <Tile type={type} key={i} />
