@@ -1,7 +1,8 @@
 import type { TileTypes } from "../maps/1";
-import { position } from "./Map";
+// import { position } from "./Map";
+import type { Viewport } from "./viewport";
 
-type SpriteProps = {
+export type SpriteProps = {
   x: number;
   y: number;
   tile: TileTypes | "character"; // Tile type, e.g., "grass", "water", etc.
@@ -38,31 +39,10 @@ export class Sprite {
     this.tile = tile;
   }
 
-  protected getEdge(
-    map: { width: number; height: number },
-    viewPort: { width: number; height: number }
-  ) {
-    const edges = [];
-    if (position.get().x < 0) {
-      edges.push("left");
-    }
-    if (position.get().y < 0) {
-      edges.push("top");
-    }
-    if (position.get().x + viewPort.width >= map.width) {
-      edges.push("right");
-    }
-    if (position.get().y + viewPort.height >= map.height) {
-      edges.push("bottom");
-    }
-    return edges;
-  }
-
   public draw(
     ctx: CanvasRenderingContext2D,
-    map: { width: number; height: number },
-    viewPort: { width: number; height: number },
-    isFixed: boolean = true
+    viewPort: Viewport
+    // isFixed: boolean = true
   ) {
     ctx.fillStyle = this.x === 0 && this.y == 0 ? "#000" : pallette[this.tile]; // Example color
     if (this.x === 9 * this.tileSize && this.y === 0) {
@@ -71,7 +51,7 @@ export class Sprite {
     let x: number;
     let y: number;
 
-    const edges = this.getEdge(map, viewPort);
+    const edges = viewPort.getEdge();
 
     // background
     if (edges.includes("left") && edges.includes("top")) {
@@ -108,16 +88,16 @@ export class Sprite {
     if (edges.includes("right")) {
       // debugger;
       x = this.lastPosition[0];
-      y = this.y - position.get().y;
+      y = this.y - viewPort.getPosition().y;
       return ctx.fillRect(x, y, this.tileSize, this.tileSize); // Draw a square sprite
     }
     if (edges.includes("bottom")) {
-      x = this.x - position.get().x;
+      x = this.x - viewPort.getPosition().x;
       y = this.lastPosition[1];
       return ctx.fillRect(x, y, this.tileSize, this.tileSize); // Draw a square sprite
     }
-    x = edges.includes("left") ? this.x : this.x - position.get().x;
-    y = edges.includes("top") ? this.y : this.y - position.get().y;
+    x = edges.includes("left") ? this.x : this.x - viewPort.getPosition().x;
+    y = edges.includes("top") ? this.y : this.y - viewPort.getPosition().y;
     ctx.fillRect(x, y, this.tileSize, this.tileSize); // Draw a square sprite
     this.lastPosition = [x, y]; // Update last position
     return;

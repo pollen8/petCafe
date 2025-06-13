@@ -1,13 +1,14 @@
-import { tileSize } from "../Game/GameContext";
-import { position } from "./Map";
+// import { tileSize } from "../Game/GameContext";
+// import { position } from "./Map";
 import type { Sprite } from "./sprite";
+import type { Viewport } from "./viewport";
 
-export type Viewport = {
-  x: number; // X coordinate of the viewport
-  y: number; // Y coordinate of the viewport
-  width: number; // Width of the viewport
-  height: number; // Height of the viewport
-};
+// export type Viewport = {
+//   x: number; // X coordinate of the viewport
+//   y: number; // Y coordinate of the viewport
+//   width: number; // Width of the viewport
+//   height: number; // Height of the viewport
+// };
 
 export type MapSize = {
   width: number; // Width of the map
@@ -40,30 +41,24 @@ export class Layer {
     if (!this.ctx) {
       return;
     }
-    this.ctx.clearRect(
-      this.viewport.x,
-      this.viewport.y,
-      this.viewport.width,
-      this.viewport.height
-    );
-
     for (const sprite of this.sprites) {
       //   console.log("viewport", this.viewport);
 
-      const spritePosition = sprite.getPosition();
+      //   const spritePosition = sprite.getPosition();
 
       // Check if the sprite is within the viewport bounds
-      if (
-        spritePosition.x + tileSize + this.viewport.width / 2 <
-          position.get().x ||
-        spritePosition.x > position.get().x + this.viewport.width + tileSize ||
-        spritePosition.y + tileSize + this.viewport.height / 2 <
-          position.get().y ||
-        spritePosition.y > position.get().y + this.viewport.height + tileSize
-      ) {
-        continue; // Skip drawing this sprite
-      }
-      sprite.draw(this.ctx, this.mapSize, this.viewport);
+      //   if (
+      //     spritePosition.x + tileSize + this.viewport.width / 2 <
+      //       position.get().x ||
+      //     spritePosition.x > position.get().x + this.viewport.width + tileSize ||
+      //     spritePosition.y + tileSize + this.viewport.height / 2 <
+      //       position.get().y ||
+      //     spritePosition.y > position.get().y + this.viewport.height + tileSize
+      //   ) {
+      //     continue; // Skip drawing this sprite
+      //   }
+      console.log(this.viewport.map);
+      sprite.draw(this.ctx, this.viewport);
     }
   }
 }
