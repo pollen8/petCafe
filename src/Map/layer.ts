@@ -46,24 +46,24 @@ export class Layer {
       this.viewport.width,
       this.viewport.height
     );
+
     for (const sprite of this.sprites) {
       //   console.log("viewport", this.viewport);
 
       const spritePosition = sprite.getPosition();
 
-      // if the sprite x + width is less than the viewport postion then don't draw it
+      // Check if the sprite is within the viewport bounds
       if (
-        spritePosition.x + tileSize <
-        position.get().x
-        // ||
-        // spritePosition.x > this.viewport.x + this.viewport.width ||
-        // spritePosition.y + tileSize < position.get().y ||
-        // spritePosition.y > this.viewport.y + this.viewport.height
+        spritePosition.x + tileSize + this.viewport.width / 2 <
+          position.get().x ||
+        spritePosition.x > position.get().x + this.viewport.width + tileSize ||
+        spritePosition.y + tileSize + this.viewport.height / 2 <
+          position.get().y ||
+        spritePosition.y > position.get().y + this.viewport.height + tileSize
       ) {
         continue; // Skip drawing this sprite
       }
-      //   console.log("position", position.get());
-      sprite.draw(this.ctx, this.mapSize, this.viewport, this.isFixed);
+      sprite.draw(this.ctx, this.mapSize, this.viewport);
     }
   }
 }
