@@ -114,6 +114,13 @@ export const Map = ({
       });
     });
 
+    const collisionBlocks = map.currentMap.collision.map((tile) => {
+      return new Sprite({
+        x: tile[0] * tileSize,
+        y: tile[1] * tileSize,
+        tile: "character",
+      });
+    });
     const ctx = canvasRef.current?.getContext("2d") ?? null;
     if (ctx) ctx.imageSmoothingEnabled = false;
     const mapSize = {
@@ -135,12 +142,20 @@ export const Map = ({
       isFixed: false,
     });
 
+    const collisionLayer = new Layer({
+      ctx,
+      viewport,
+      mapSize,
+      sprites: collisionBlocks,
+    });
+
     const animate = () => {
       if (!ctx) {
         return;
       }
       ctx.clearRect(0, 0, viewport.getWidth(), viewport.getHeight());
       layer.draw();
+      collisionLayer.draw();
       characterLayer.draw();
       thisLoop = new Date();
       const thisFrameTime = thisLoop.getTime() - lastLoop.getTime();

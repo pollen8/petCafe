@@ -8,6 +8,7 @@ export type Map = {
   width: number;
   height: number;
   tiles: TileTypes[];
+  collision: [number, number][];
   resources: MapResource[];
 };
 
@@ -49,6 +50,12 @@ export const map: Map = {
       height: 1,
       type: "resource",
     },
+  ],
+  collision: [
+    [5, 5],
+    [6, 5],
+    [7, 5],
+    [8, 8],
   ],
   tiles: new Array(100000)
     .fill("")
