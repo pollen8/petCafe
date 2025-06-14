@@ -6,7 +6,8 @@
 ~~ draw layers of sprites ~~
 ~~ draw character ~~
 ~~ move fixed layers when pressing keys ~~
-move character from center to edges of map so that map stops moving when its at the edge of the view port.
+~~ move character from center to edges of map so that map stops moving when its at the edge of the view port ~~.
+with viewport 10 tile wide when you move right to the end the last column tears and repeat itself.
 scale map to fit screen
 collision detection layer
 

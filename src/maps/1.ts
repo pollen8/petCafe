@@ -13,7 +13,7 @@ export type Map = {
 
 export const map: Map = {
   id: "1",
-  width: 10,
+  width: 50,
   height: 10,
   resources: [
     {
@@ -50,7 +50,7 @@ export const map: Map = {
       type: "resource",
     },
   ],
-  tiles: new Array(100)
+  tiles: new Array(10000)
     .fill("")
     .map(() => tiles[Math.floor(Math.random() * 4)]),
 };

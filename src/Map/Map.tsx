@@ -1,5 +1,4 @@
 import {
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
@@ -27,62 +26,6 @@ const character = new Character({
 // Character movement speed
 export const speed = 16;
 
-const useKeys = ({
-  width,
-  height,
-}: // viewPort,
-{
-  width: number;
-  height: number;
-}) => {
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case "ArrowUp":
-          // nextPosition = viewPort.getPosition().y - speed;
-          // if (nextPosition < yThing) {
-          //   console.log("Cannot move up, out of bounds");
-          //   return;
-          // }
-          viewport.move(0, -speed);
-          break;
-        case "ArrowDown":
-          event.preventDefault();
-          // nextPosition = viewPort.getPosition().y + speed;
-          // if (nextPosition > height / 2 - yThing) {
-          //   return;
-          // }
-          viewport.move(0, speed);
-          break;
-        case "ArrowLeft":
-          // nextPosition = viewPort.getPosition().x - speed;
-          // if (nextPosition < xThing) {
-          //   console.log("Cannot move up, out of bounds");
-          //   return;
-          // }
-          viewport.move(-speed, 0);
-          break;
-        case "ArrowRight":
-          // nextPosition = viewPort.getPosition().x + speed;
-          // if (nextPosition > width / 2 - xThing) {
-          //   console.log("Cannot move right, out of bounds");
-          //   return;
-          // }
-          viewport.move(speed, 0);
-          // character.move(speed, 0);
-          break;
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [width, height]);
-};
-
 export const Map = ({
   children,
   ref,
@@ -90,10 +33,6 @@ export const Map = ({
   ref: RefObject<HTMLDivElement | null>;
 } & HTMLAttributes<HTMLDivElement>) => {
   const { map } = useGame();
-  useKeys({
-    width: map.currentMap.width * tileSize,
-    height: map.currentMap.height * tileSize,
-  });
   const canvasRef = useRef(null) as RefObject<HTMLCanvasElement | null>;
   const selectedItem = useSelector(
     inventory,

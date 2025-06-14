@@ -89,11 +89,13 @@ export class Sprite {
       // debugger;
       x = this.lastPosition[0];
       y = this.y - viewPort.getPosition().y;
+      this.lastPosition = [x, y]; // Update last position
       return ctx.fillRect(x, y, this.tileSize, this.tileSize); // Draw a square sprite
     }
     if (edges.includes("bottom")) {
       x = this.x - viewPort.getPosition().x;
       y = this.lastPosition[1];
+      this.lastPosition = [x, y]; // Update last position
       return ctx.fillRect(x, y, this.tileSize, this.tileSize); // Draw a square sprite
     }
     x = edges.includes("left") ? this.x : this.x - viewPort.getPosition().x;

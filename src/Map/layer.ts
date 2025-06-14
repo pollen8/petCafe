@@ -42,8 +42,6 @@ export class Layer {
       return;
     }
     for (const sprite of this.sprites) {
-      //   console.log("viewport", this.viewport);
-
       //   const spritePosition = sprite.getPosition();
 
       // Check if the sprite is within the viewport bounds
@@ -57,7 +55,6 @@ export class Layer {
       //   ) {
       //     continue; // Skip drawing this sprite
       //   }
-      console.log(this.viewport.map);
       sprite.draw(this.ctx, this.viewport);
     }
   }
