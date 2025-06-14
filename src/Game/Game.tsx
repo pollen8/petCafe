@@ -4,7 +4,6 @@ import { Inventory } from "../Inventory/Inventory";
 import { GameProvider } from "./GameContext";
 import { NpcGenerator } from "../npc/NpcGenerator";
 import style from "./game.module.css";
-import { Character } from "../Character/Character";
 import { NpcProvider } from "../context/NpcContext";
 import { Shop } from "../shop/Shop";
 import { Bobin } from "../npc/Bobin/Bobin";
@@ -16,6 +15,7 @@ import { StorageModal } from "../Storage/Storage";
 import { Resources } from "../Resources/Resources";
 import { NewGameButton } from "./NewGame";
 import { CharacterEnergy } from "./CharacterEnergy";
+import { FPS } from "../Dev/FPS";
 
 const Game = () => {
   //
@@ -26,7 +26,6 @@ const Game = () => {
         <div className={style.game}>
           <Map ref={gameContainerRef}>
             <Resources />
-            {/* <Character /> */}
             {/* <Bobin maxResources={{ wood: 5 }} x={1} y={2} /> */}
             {/* <NpcGenerator /> */}
             <Shop />
@@ -36,6 +35,7 @@ const Game = () => {
             <Inventory />
             <BobinResources />
             <div className={style.controls}>
+              <FPS />
               <CharacterEnergy />
               <NewGameButton />
               <LoadButton />

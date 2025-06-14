@@ -16,6 +16,7 @@ import { Sprite } from "./sprite";
 import { Layer } from "./layer";
 import { Character } from "./character";
 import { viewport } from "./viewport";
+import { createAtom } from "@xstate/store";
 
 const character = new Character({
   x: viewport.getWidth() / 2 - tileSize / 2,
@@ -23,9 +24,15 @@ const character = new Character({
   tile: "character",
 });
 
+// The higher this value, the less the fps will reflect temporary variations
+// A value of 1 will only keep the last value
+const filterStrength = 20;
+let lastLoop = new Date(),
+  thisLoop;
 // Character movement speed
-export const speed = 16;
+export const speed = 8;
 
+export const frameTime = createAtom(0);
 export const Map = ({
   children,
   ref,
@@ -130,6 +137,13 @@ export const Map = ({
     const animate = () => {
       layer.draw();
       characterLayer.draw();
+      thisLoop = new Date();
+      const thisFrameTime = thisLoop.getTime() - lastLoop.getTime();
+      frameTime.set((prev) => {
+        return prev + (thisFrameTime - frameTime.get()) / filterStrength;
+      });
+      lastLoop = thisLoop;
+
       requestAnimationFrame(animate);
     };
     requestAnimationFrame(animate);
