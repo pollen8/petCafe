@@ -42,20 +42,9 @@ export class Layer {
       return;
     }
     for (const sprite of this.sprites) {
-      //   const spritePosition = sprite.getPosition();
-
-      // Check if the sprite is within the viewport bounds
-      //   if (
-      //     spritePosition.x + tileSize + this.viewport.width / 2 <
-      //       position.get().x ||
-      //     spritePosition.x > position.get().x + this.viewport.width + tileSize ||
-      //     spritePosition.y + tileSize + this.viewport.height / 2 <
-      //       position.get().y ||
-      //     spritePosition.y > position.get().y + this.viewport.height + tileSize
-      //   ) {
-      //     continue; // Skip drawing this sprite
-      //   }
-      sprite.draw(this.ctx, this.viewport);
+      if (!this.isFixed || sprite.inside(this.viewport)) {
+        sprite.draw(this.ctx, this.viewport);
+      }
     }
   }
 }

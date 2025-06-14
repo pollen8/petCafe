@@ -31,23 +31,24 @@ export class Sprite {
   private lastPosition: [number, number] = [0, 0]; // Last position to check if sprite has moved
   protected tileSize: number;
   private tile: TileTypes | "character"; // Tile type, e.g., "grass", "water", etc.
-  private start: { x: number; y: number };
+
   constructor({ x, y, tileSize = 32, tile }: SpriteProps) {
     this.x = x;
     this.y = y;
     this.tileSize = tileSize;
     this.tile = tile;
-    this.start = { x, y };
   }
   public inside(viewport: Viewport) {
     const w = viewport.getWidth();
     const h = viewport.getHeight();
     const { x, y } = viewport.getPosition();
+    const offsetX = Math.max(0, viewport.offset.x);
+    const offsetY = Math.max(0, viewport.offset.y);
     if (
-      this.start.x + this.tileSize >= x &&
-      this.start.x <= x + w + this.tileSize &&
-      this.start.y + this.tileSize >= y &&
-      this.start.y <= h + this.tileSize
+      this.x + this.tileSize + offsetX >= x &&
+      this.x <= x + w + this.tileSize + offsetX &&
+      this.y + this.tileSize + offsetY >= y &&
+      this.y <= h + this.tileSize + offsetY
     ) {
       return true;
     }

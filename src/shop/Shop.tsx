@@ -7,9 +7,7 @@ export const Shop = () => {
   const money = useSelector(inventory, (state) => state.context.money);
   const items = useSelector(inventory, (state) => state.context.items);
   const isOpen = useSelector(shopStore, (state) => state.context.isOpen);
-  console.log("sop open", isOpen);
   const stock = useSelector(shopStore, (state) => state.context.items);
-  console.log("shop stock", stock);
   return (
     <>
       {isOpen && (

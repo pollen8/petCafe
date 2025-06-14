@@ -87,8 +87,6 @@ export class Viewport {
     // Prevent moving out of bounds when moving right
     if (dx > 0) {
       if (this.x + dx + viewport.getWidth() / 2 > xEnd) {
-        console.log("Cannot move right, out of bounds");
-
         if (this.offset.x + dx + this.x < this.map.width) {
           this.offset.x += dx; // Reset offset
         } else {
@@ -107,7 +105,6 @@ export class Viewport {
     if (dx < 0) {
       if (this.x + dx + this.width / 2 < xStart) {
         // Point at which the viewport stops moving left and offsets start
-        console.log("Cannot move left, out of bounds, xstart", xStart);
         if (this.offset.x + dx + this.x + this.getWidth() / 2 > 0) {
           this.offset.x += dx; // Reset offset
         } else {
@@ -124,7 +121,6 @@ export class Viewport {
     if (dy < 0) {
       const yStart = this.height / 2;
       if (this.y + dy + this.height / 2 < yStart) {
-        console.log("Cannot move up, out of bounds, ystart", yStart);
         if (this.offset.y + dy + this.y + this.getHeight() / 2 > 0) {
           this.offset.y += dy; // Reset offset
         } else {
@@ -136,13 +132,11 @@ export class Viewport {
           this.offset.y += dy; // Reset offset
         }
       }
-      console.log("Moving up", dy, this.y + dy);
     }
 
     if (dy > 0) {
       const yEnd = this.map.height - this.height / 2;
       if (this.y + dy + this.height / 2 > yEnd) {
-        console.log("Cannot move down, out of bounds, yend", yEnd);
         if (this.offset.y + dy + this.y < this.map.height) {
           this.offset.y += dy; // Reset offset
         } else {

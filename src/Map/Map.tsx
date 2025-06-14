@@ -132,9 +132,14 @@ export const Map = ({
       viewport,
       mapSize,
       sprites: [character],
+      isFixed: false,
     });
 
     const animate = () => {
+      if (!ctx) {
+        return;
+      }
+      ctx.clearRect(0, 0, viewport.getWidth(), viewport.getHeight());
       layer.draw();
       characterLayer.draw();
       thisLoop = new Date();
