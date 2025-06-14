@@ -18,7 +18,7 @@ import { Character } from "./character";
 import { viewport } from "./viewport";
 import { createAtom } from "@xstate/store";
 
-const character = new Character({
+export const character = new Character({
   x: viewport.getWidth() / 2 - tileSize / 2,
   y: viewport.getHeight() / 2 - tileSize / 2,
   tile: "character",
@@ -148,7 +148,7 @@ export const Map = ({
       mapSize,
       sprites: collisionBlocks,
     });
-
+    viewport.setCollisionLayer(collisionLayer);
     const animate = () => {
       if (!ctx) {
         return;
@@ -169,6 +169,7 @@ export const Map = ({
     requestAnimationFrame(animate);
   }, [
     canvasRef,
+    map.currentMap.collision,
     map.currentMap.height,
     map.currentMap.tiles,
     map.currentMap.width,

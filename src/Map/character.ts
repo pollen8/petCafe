@@ -5,6 +5,7 @@ export class Character extends Sprite {
   constructor(props: SpriteProps) {
     super(props);
   }
+
   public draw(ctx: CanvasRenderingContext2D, viewPort: Viewport) {
     ctx.fillStyle = "#000";
     const x = this.x + viewPort.offset.x;

@@ -1,4 +1,5 @@
 import { tileSize } from "../Game/GameContext";
+import type { Layer } from "./layer";
 import { speed } from "./Map";
 
 export class Viewport {
@@ -7,6 +8,7 @@ export class Viewport {
   private x: number;
   private y: number;
   public map: { width: number; height: number };
+  private collisionLayer?: Layer;
   public offset: { x: number; y: number }; // Character offset
 
   constructor({
@@ -30,23 +32,51 @@ export class Viewport {
   }
 
   private handleKeyDown(event: KeyboardEvent) {
+    event.preventDefault();
+    let dx = 0;
+    let dy = 0;
     switch (event.key) {
       case "ArrowUp":
-        this.move(0, -speed);
+        dy = -speed;
         break;
       case "ArrowDown":
-        event.preventDefault();
-        this.move(0, speed);
+        dy = speed;
         break;
       case "ArrowLeft":
-        this.move(-speed, 0);
+        dx = -speed;
         break;
       case "ArrowRight":
-        this.move(speed, 0);
+        dx = speed;
         break;
       default:
         break;
     }
+    const nextX = Math.max(0, Math.min(this.map.width, this.x + dx));
+    const nextY = Math.max(0, Math.min(this.map.height, this.y + dy));
+    if (
+      !this.canEnter(
+        nextX + this.offset.x + this.width / 2 - tileSize / 2,
+        nextY + this.offset.y + this.height / 2 - tileSize / 2
+      )
+    ) {
+      return;
+    }
+    this.move(dx, dy);
+  }
+
+  canEnter(nextX: number, nextY: number) {
+    return !this.collisionLayer?.sprites.some((block) => {
+      const { x, y } = block.getPosition();
+      return (
+        nextX < x + tileSize &&
+        nextX + tileSize > x &&
+        nextY < y + tileSize &&
+        nextY + tileSize > y
+      );
+    });
+  }
+  public setCollisionLayer(layer: Layer) {
+    this.collisionLayer = layer;
   }
 
   public setMap(map: { width: number; height: number }) {

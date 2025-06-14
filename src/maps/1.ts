@@ -52,7 +52,6 @@ export const map: Map = {
     },
   ],
   collision: [
-    [5, 5],
     [6, 5],
     [7, 5],
     [8, 8],
