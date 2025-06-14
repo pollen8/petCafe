@@ -49,14 +49,6 @@ export class Viewport {
     }
   }
 
-  public intersect(other: Viewport): boolean {
-    return (
-      this.x < other.x + other.width &&
-      this.x + this.width > other.x &&
-      this.y < other.y + other.height &&
-      this.y + this.height > other.y
-    );
-  }
   public setMap(map: { width: number; height: number }) {
     if (map.width < this.width) {
       console.warn("map too small for viewport width");
@@ -191,7 +183,7 @@ export class Viewport {
 
 export const viewport = new Viewport({
   width: 10 * tileSize, //window.innerWidth,
-  height: 5 * tileSize, //window.innerHeight,
+  height: 10 * tileSize, //window.innerHeight,
   x: 0,
   y: 0,
 });

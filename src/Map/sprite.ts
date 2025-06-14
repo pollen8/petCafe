@@ -31,19 +31,29 @@ export class Sprite {
   private lastPosition: [number, number] = [0, 0]; // Last position to check if sprite has moved
   protected tileSize: number;
   private tile: TileTypes | "character"; // Tile type, e.g., "grass", "water", etc.
-
+  private start: { x: number; y: number };
   constructor({ x, y, tileSize = 32, tile }: SpriteProps) {
     this.x = x;
     this.y = y;
     this.tileSize = tileSize;
     this.tile = tile;
+    this.start = { x, y };
   }
-
-  public draw(
-    ctx: CanvasRenderingContext2D,
-    viewPort: Viewport
-    // isFixed: boolean = true
-  ) {
+  public inside(viewport: Viewport) {
+    const w = viewport.getWidth();
+    const h = viewport.getHeight();
+    const { x, y } = viewport.getPosition();
+    if (
+      this.start.x + this.tileSize >= x &&
+      this.start.x <= x + w + this.tileSize &&
+      this.start.y + this.tileSize >= y &&
+      this.start.y <= h + this.tileSize
+    ) {
+      return true;
+    }
+    return false;
+  }
+  public draw(ctx: CanvasRenderingContext2D, viewPort: Viewport) {
     ctx.fillStyle = this.x === 0 && this.y == 0 ? "#000" : pallette[this.tile]; // Example color
     if (this.x === 9 * this.tileSize && this.y === 0) {
       ctx.fillStyle = "#000"; // Special case for character sprite
