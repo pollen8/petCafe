@@ -9,11 +9,11 @@
 ~~ move character from center to edges of map so that map stops moving when its at the edge of the view port ~~.
 with viewport 10 tile wide when you move right to the end the last column tears and repeat itself.
 scale map to fit screen
-collision detection layer
+~~ collision detection layer ~~
 
-- ~~ Move shop to be a resource on a map ~~
-- ~~ add portal out of house ~~
-- ~~ Add cupboard to house ~~.
+- Move shop to be a resource on a map
+- add portal out of house
+- Add cupboard to house
 - Style house.
 - Add energy to character
 - associate NPC with map

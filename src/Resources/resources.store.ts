@@ -1,14 +1,7 @@
 import { createStore } from "@xstate/store";
-
-import { createBrowserInspector } from "@statelyai/inspect";
 import { produce } from "immer";
 
-const inspector = createBrowserInspector({
-  // ...
-  autoStart: true,
-});
-
-type ResourceType = "portal" | "shop" | "resource" | "storage" | "bed";
+export type ResourceType = "portal" | "shop" | "resource" | "storage" | "bed";
 
 export type MapResource = {
   id: string;

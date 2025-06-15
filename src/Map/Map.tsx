@@ -17,6 +17,7 @@ import { Layer } from "./layer";
 import { Character } from "./character";
 import { viewport } from "./viewport";
 import { createAtom } from "@xstate/store";
+import { GameLoop } from "../Game/GameLoop";
 
 export const character = new Character({
   x: viewport.getWidth() / 2 - tileSize / 2,
@@ -40,6 +41,7 @@ export const Map = ({
   ref: RefObject<HTMLDivElement | null>;
 } & HTMLAttributes<HTMLDivElement>) => {
   const { map } = useGame();
+  const resources = useSelector(resourcesStore, (state) => state.context.items);
   const canvasRef = useRef(null) as RefObject<HTMLCanvasElement | null>;
   const selectedItem = useSelector(
     inventory,
@@ -121,6 +123,15 @@ export const Map = ({
         tile: "character",
       });
     });
+    const resourceSprites = Object.values(resources[map.currentMap.id]).map(
+      (resource) => {
+        return new Sprite({
+          x: resource.x * tileSize,
+          y: resource.y * tileSize,
+          tile: resource.type,
+        });
+      }
+    );
     const ctx = canvasRef.current?.getContext("2d") ?? null;
     if (ctx) ctx.imageSmoothingEnabled = false;
     const mapSize = {
@@ -148,14 +159,23 @@ export const Map = ({
       mapSize,
       sprites: collisionBlocks,
     });
+
+    const resourcesLayer = new Layer({
+      ctx,
+      viewport,
+      mapSize,
+      sprites: resourceSprites,
+    });
     viewport.setCollisionLayer(collisionLayer);
     const animate = () => {
       if (!ctx) {
         return;
       }
+      console.log("aminage");
       ctx.clearRect(0, 0, viewport.getWidth(), viewport.getHeight());
       layer.draw();
       collisionLayer.draw();
+      resourcesLayer.draw();
       characterLayer.draw();
       thisLoop = new Date();
       const thisFrameTime = thisLoop.getTime() - lastLoop.getTime();
@@ -164,15 +184,22 @@ export const Map = ({
       });
       lastLoop = thisLoop;
 
-      requestAnimationFrame(animate);
+      // requestAnimationFrame(animate);
     };
-    requestAnimationFrame(animate);
+    const update = () => {
+      console.log("update");
+    };
+    const gameLoop = new GameLoop(update, animate);
+    gameLoop.start();
+    // requestAnimationFrame(animate);
   }, [
     canvasRef,
     map.currentMap.collision,
     map.currentMap.height,
+    map.currentMap.id,
     map.currentMap.tiles,
     map.currentMap.width,
+    resources,
   ]);
 
   return (

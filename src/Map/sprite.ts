@@ -1,20 +1,27 @@
 import type { TileTypes } from "../maps/1";
+import type { ResourceType } from "../Resources/resources.store";
 // import { position } from "./Map";
 import type { Viewport } from "./viewport";
 
+type AllTileTypes = TileTypes | ResourceType | "character";
 export type SpriteProps = {
   x: number;
   y: number;
-  tile: TileTypes | "character"; // Tile type, e.g., "grass", "water", etc.
+  tile: AllTileTypes; // Tile type, e.g., "grass", "water", etc.
   tileSize?: number; // Optional tile size, default is 32
 };
 
-const pallette: Record<TileTypes | "character", string> = {
+const pallette: Record<AllTileTypes, string> = {
   forest: "#fbb954",
   grass: "#d625d5",
   stone: "#dc4cc7",
   water: "#f1b08d",
   character: "#000",
+  portal: "red",
+  bed: "blue",
+  resource: "grey",
+  shop: "pink",
+  storage: "brown",
   //   character: "#edab9f",
   //   "#ea9aa8",
   //   "#e786b0",
@@ -30,7 +37,7 @@ export class Sprite {
   protected y: number;
   private lastPosition: [number, number] = [0, 0]; // Last position to check if sprite has moved
   protected tileSize: number;
-  private tile: TileTypes | "character"; // Tile type, e.g., "grass", "water", etc.
+  private tile: AllTileTypes;
 
   constructor({ x, y, tileSize = 32, tile }: SpriteProps) {
     this.x = x;
