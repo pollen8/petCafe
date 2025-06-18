@@ -7,7 +7,7 @@ export class Animations {
     this.patterns = patterns;
     this.activeKey = Object.keys(patterns)[0];
   }
-  get frame() {
+  public getFrame() {
     return this.patterns[this.activeKey].frame;
   }
 

@@ -5,7 +5,7 @@ import { Vector2 } from "./Vector2";
 
 type SpriteProps = {
   resource: ResourceState;
-  frameSize: Vector2;
+  frameSize?: Vector2;
   hFrames?: number;
   vFrames?: number;
   frame?: number;
@@ -36,7 +36,7 @@ export class Sprite extends GameObject {
   }: SpriteProps) {
     super({});
     this.resource = resource;
-    this.frameSize = frameSize;
+    this.frameSize = frameSize ?? new Vector2(16, 16);
     this.hFrames = hFrames ?? 1;
     this.vFrames = vFrames ?? 1;
     this.frame = frame ?? 0;
@@ -44,6 +44,7 @@ export class Sprite extends GameObject {
     this.position = position ?? new Vector2(0, 0);
     this.frameMap = new Map();
     this.animations = animations;
+
     this.buildFrameMap();
   }
 
@@ -64,7 +65,7 @@ export class Sprite extends GameObject {
       return;
     }
     this.animations.step(delta);
-    this.frame = this.animations.frame;
+    this.frame = this.animations.getFrame();
   }
 
   public drawImage(ctx: CanvasRenderingContext2D, x: number, y: number) {
