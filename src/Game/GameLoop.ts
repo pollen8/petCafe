@@ -1,3 +1,13 @@
+// The higher this value, the less the fps will reflect temporary variations
+
+import { createAtom } from "@xstate/store";
+
+// A value of 1 will only keep the last value
+const filterStrength = 20;
+let lastLoop = new Date(),
+  thisLoop;
+export const frameTime = createAtom(0);
+
 export class GameLoop {
   // Draw to canvas
   private render: () => void;
@@ -18,16 +28,25 @@ export class GameLoop {
   }
 
   private mainLoop(timeStamp: number) {
+    console.log(timeStamp);
     this.rfaId = requestAnimationFrame(this.mainLoop.bind(this));
     if (!this.isRunning) {
       return;
     }
+
+    thisLoop = new Date();
+    const thisFrameTime = thisLoop.getTime() - lastLoop.getTime();
+    frameTime.set((prev) => {
+      return prev + (thisFrameTime - frameTime.get()) / filterStrength;
+    });
+    lastLoop = thisLoop;
+
     const deltaTimeStamp = timeStamp - this.lastFrameTime;
     this.accumulatedTime += deltaTimeStamp;
 
     while (this.accumulatedTime >= this.timeStep) {
-      console.log(this);
-      //   this.update(this.timeStep);
+      //   console.log(this);
+      this.update(this.timeStep);
       this.accumulatedTime -= this.timeStep;
     }
     this.render();

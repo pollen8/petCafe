@@ -16,7 +16,6 @@ import { Sprite } from "./sprite";
 import { Layer } from "./layer";
 import { Character } from "./character";
 import { viewport } from "./viewport";
-import { createAtom } from "@xstate/store";
 import { GameLoop } from "../Game/GameLoop";
 
 export const character = new Character({
@@ -25,15 +24,13 @@ export const character = new Character({
   tile: "character",
 });
 
-// The higher this value, the less the fps will reflect temporary variations
-// A value of 1 will only keep the last value
-const filterStrength = 20;
-let lastLoop = new Date(),
-  thisLoop;
+const update = () => {
+  console.log("update");
+};
+
 // Character movement speed
 export const speed = 8;
 
-export const frameTime = createAtom(0);
 export const Map = ({
   children,
   ref,
@@ -171,34 +168,26 @@ export const Map = ({
       if (!ctx) {
         return;
       }
-      console.log("aminage");
       ctx.clearRect(0, 0, viewport.getWidth(), viewport.getHeight());
       layer.draw();
       collisionLayer.draw();
       resourcesLayer.draw();
       characterLayer.draw();
-      thisLoop = new Date();
-      const thisFrameTime = thisLoop.getTime() - lastLoop.getTime();
-      frameTime.set((prev) => {
-        return prev + (thisFrameTime - frameTime.get()) / filterStrength;
-      });
-      lastLoop = thisLoop;
 
       // requestAnimationFrame(animate);
     };
-    const update = () => {
-      console.log("update");
-    };
-    const gameLoop = new GameLoop(update, animate);
-    gameLoop.start();
+    console.log("make loop", canvasRef, map);
+    const gameloop = new GameLoop(update, animate);
+    gameloop.start();
+    // gameloop.start();
     // requestAnimationFrame(animate);
   }, [
     canvasRef,
     map.currentMap.collision,
     map.currentMap.height,
-    map.currentMap.id,
     map.currentMap.tiles,
     map.currentMap.width,
+    map,
     resources,
   ]);
 

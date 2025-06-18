@@ -53,6 +53,7 @@ export class Viewport {
     }
     const nextX = Math.max(0, Math.min(this.map.width, this.x + dx));
     const nextY = Math.max(0, Math.min(this.map.height, this.y + dy));
+    console.log(nextX, nextY);
     if (
       !this.canEnter(
         nextX + this.offset.x + this.width / 2 - tileSize / 2,
