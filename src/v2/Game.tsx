@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { Vector2 } from "./Vector2";
 import { GameLoop } from "./GameLoop";
 import { Main } from "./objects/Main/Main";
-import { OutdoorLevel1 } from "./levels/OutdoorLevel";
 import { CaveLevel1 } from "./levels/CaveLevel1";
 import { gridCells } from "./helpers/grid";
 
@@ -51,7 +50,13 @@ const Game = () => {
   return (
     <canvas
       ref={ref}
-      style={{ position: "absolute", zIndex: 1, top: 0, left: 0 }}
+      style={{
+        position: "absolute",
+        imageRendering: "crisp-edges",
+        zIndex: 1,
+        top: 0,
+        left: 0,
+      }}
       width="300px"
       height="180px"
     />

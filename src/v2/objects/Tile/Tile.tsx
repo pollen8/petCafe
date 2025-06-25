@@ -1,5 +1,4 @@
 import { GameObject } from "../../GameObject";
-import { type ResourceState } from "../../Resoources";
 import { Sprite } from "../../Sprite";
 import { Vector2 } from "../../Vector2";
 

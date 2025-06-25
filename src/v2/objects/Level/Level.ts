@@ -6,7 +6,8 @@ import { Vector2 } from "../../Vector2";
 import { Tile } from "../Tile/Tile";
 
 // const map = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
-const map = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+// const map = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];
+const map = new Array(1000).fill("").map((c, i) => i + 1);
 export type LevelProps = GameObjectProps & {
   heroPosition?: Vector2;
   size?: Vector2;
@@ -43,7 +44,9 @@ export class Level extends GameObject {
               resource: resoures.images.plains,
               hFrames: 6,
               vFrames: 12,
-              frame: map[i],
+              frame: map[i + j * 6],
+              // frame: i + j * 7,
+              // frame: c,
             })
           )
         );
