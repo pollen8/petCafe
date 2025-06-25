@@ -14,6 +14,7 @@ export class Exit extends GameObject {
         resource: resoures.images.exit,
       })
     );
+    this.drawLayer = "FLOOR";
   }
 
   ready() {

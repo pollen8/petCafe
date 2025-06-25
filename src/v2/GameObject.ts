@@ -13,7 +13,7 @@ export class GameObject {
   protected parent: GameObject | null = null;
   private hasReadyBeenCalled = false;
   public isSolid = false;
-  private drawLayer = null;
+  public drawLayer: string | null = null;
 
   children: GameObject[];
 
@@ -41,12 +41,14 @@ export class GameObject {
     const drawPosX = x + this.position.x + this.drawOffset.x;
     const drawPosY = y + this.position.y + this.drawOffset.y;
     this.drawImage(ctx, drawPosX, drawPosY);
-
     this.getDrawOrder().forEach((child) => child.draw(ctx, drawPosX, drawPosY));
   }
   protected getDrawOrder() {
     return this.children.toSorted((a, b) => {
-      return a.position.y > b.position.y ? 1 : -1;
+      if (a.drawLayer === "FLOOR") {
+        return -1;
+      }
+      return a.position.y >= b.position.y ? 1 : -1;
     });
   }
 

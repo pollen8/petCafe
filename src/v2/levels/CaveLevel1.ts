@@ -25,6 +25,7 @@ export class CaveLevel1 extends Level {
       resource: resoures.images.caveGround,
       frameSize: new Vector2(320, 180),
     });
+    groudSprite.drawLayer = "FLOOR";
     this.addChild(groudSprite);
 
     const hero = new Hero(this.heroPosition.x, this.heroPosition.y);
