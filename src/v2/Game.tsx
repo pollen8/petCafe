@@ -31,7 +31,6 @@ const Game = () => {
     }
     const draw = () => {
       ctx.clearRect(0, 0, canvas?.width ?? 0, canvas?.height ?? 0);
-      // skySprite.drawImage(ctx, 0, 0);
       mainScene.drawBackground(ctx);
       //save current state
       ctx.save();
