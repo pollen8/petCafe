@@ -4,10 +4,10 @@ import { FrameIndexPattern } from "../../FrameIndexPattern";
 import { GameObject } from "../../GameObject";
 import { isSpaceFee } from "../../helpers/grid";
 import { moveTowards } from "../../helpers/moveTowards";
-import { walls } from "../../levels/level1";
 import { resoures, type ResourceState } from "../../Resoources";
 import { Sprite } from "../../Sprite";
 import { Vector2 } from "../../Vector2";
+import type { Main } from "../Main/Main";
 import {
   PICK_UP_DOWN,
   STAND_DOWN,
@@ -19,7 +19,6 @@ import {
   WALK_RIGHT,
   WALK_UP,
 } from "./heroAnimations";
-import type { MainScene } from "./MainScene/MainScene";
 
 export class Hero extends GameObject {
   private heroFacing: "up" | "down" | "right" | "left" = "down";
@@ -72,7 +71,7 @@ export class Hero extends GameObject {
     });
   }
 
-  step(delta: number, root: MainScene) {
+  step(delta: number, root: Main) {
     if (this.itemPickupTime > 0) {
       this.workOnItemPickup(delta);
       return;
@@ -94,7 +93,7 @@ export class Hero extends GameObject {
     events.emit("HERO_POSITION", this.position);
   }
 
-  tryMove(root: MainScene) {
+  tryMove(root: Main) {
     const { input } = root;
     if (!input.direction) {
       if (this.heroFacing === "down") {
@@ -132,8 +131,14 @@ export class Hero extends GameObject {
     }
 
     this.heroFacing = input.direction ?? this.heroFacing;
+
+    const spaceIsFree =
+      root.level?.walls && isSpaceFee(root.level?.walls, nextX, nextY);
+    const solidBodyAtSpace = this.parent?.children.find(
+      (c) => c.isSolid && c.position.x === nextX && c.position.y === nextY
+    );
     // @todo check collisions
-    if (isSpaceFee(walls, nextX, nextY)) {
+    if (spaceIsFree && !solidBodyAtSpace) {
       this.destinationPosition.x = nextX;
       this.destinationPosition.y = nextY;
     }

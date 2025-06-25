@@ -10,6 +10,10 @@ class Resources {
       hero: "/sprites/hero-sheet.png",
       shadow: "/sprites/shadow.png",
       rod: "/sprites/rod.png",
+      exit: "/sprites/exit.png",
+      cave: "/sprites/cave.png",
+      caveGround: "/sprites/cave-ground.png",
+      knight: "/sprites/knight-sheet-1.png",
     };
 
     Object.keys(this.toLoad).forEach((key) => {

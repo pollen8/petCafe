@@ -1,6 +1,10 @@
 import type { GameObject } from "./GameObject";
 
-export type EventName = "HERO_POSITION" | "HERO_PICKS_UP_ITEM";
+export type EventName =
+  | "HERO_POSITION"
+  | "HERO_PICKS_UP_ITEM"
+  | "HERO_EXITS"
+  | "CHANGE_LEVEL";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CallBackFunction = (argg?: any) => void;
 type CallBackItem = {
@@ -13,7 +17,7 @@ class Events {
   private callbacks: CallBackItem[] = [];
   private nextId = 0;
 
-  emit(eventName: EventName, values: unknown) {
+  emit(eventName: EventName, values?: unknown) {
     this.callbacks
       .filter((c) => c.eventName === eventName)
       .forEach((c) => c.callback(values));

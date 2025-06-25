@@ -2,7 +2,7 @@
 import { events } from "./Events";
 import { Vector2 } from "./Vector2";
 
-type GameObjectProps = {
+export type GameObjectProps = {
   position?: Vector2;
   drawOffset?: Vector2;
 };
@@ -10,8 +10,11 @@ type GameObjectProps = {
 export class GameObject {
   public position: Vector2;
   private drawOffset: Vector2;
-  private parent: GameObject | null = null;
+  protected parent: GameObject | null = null;
   private hasReadyBeenCalled = false;
+  public isSolid = false;
+  private drawLayer = null;
+
   children: GameObject[];
 
   constructor({ position, drawOffset }: GameObjectProps) {
@@ -22,6 +25,7 @@ export class GameObject {
 
   // Called before the first step
   ready() {}
+
   stepEntry(delta: number, root: GameObject) {
     this.children.forEach((child) => child.stepEntry(delta, root));
     if (!this.hasReadyBeenCalled) {
@@ -38,7 +42,12 @@ export class GameObject {
     const drawPosY = y + this.position.y + this.drawOffset.y;
     this.drawImage(ctx, drawPosX, drawPosY);
 
-    this.children.forEach((child) => child.draw(ctx, drawPosX, drawPosY));
+    this.getDrawOrder().forEach((child) => child.draw(ctx, drawPosX, drawPosY));
+  }
+  protected getDrawOrder() {
+    return this.children.toSorted((a, b) => {
+      return a.position.y > b.position.y ? 1 : -1;
+    });
   }
 
   public drawImage(
@@ -53,7 +62,6 @@ export class GameObject {
   }
 
   removeChild(gameObject: GameObject) {
-    console.log("remove chid", gameObject);
     events.unsubscribe(gameObject);
     this.children = this.children.filter((child) => child !== gameObject);
   }
