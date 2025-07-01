@@ -37,6 +37,7 @@ export class GameObject {
     }
     this.step(delta, root);
   }
+
   public step(_delta: number, root: GameObject) {
     // this.c
   }
@@ -46,6 +47,7 @@ export class GameObject {
     this.drawImage(ctx, drawPosX, drawPosY);
     this.getDrawOrder().forEach((child) => child.draw(ctx, drawPosX, drawPosY));
   }
+
   protected getDrawOrder() {
     return this.children.toSorted((a, b) => {
       if (a.drawLayer === "FLOOR") {

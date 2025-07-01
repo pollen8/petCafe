@@ -6,8 +6,6 @@ import { Exit } from "../objects/Exit/Exit";
 import { Hero } from "../objects/Hero/Hero";
 import { Level, type LevelProps } from "../objects/Level/Level";
 import { Rod } from "../objects/Rod/Rod";
-import { resoures } from "../Resoources";
-import { Sprite } from "../Sprite";
 import { Vector2 } from "../Vector2";
 import { CaveLevel1 } from "./CaveLevel1";
 
@@ -15,18 +13,13 @@ const DEFAULT_HERO_POS = new Vector2(gridCells(13), gridCells(4));
 
 export class OutdoorLevel1 extends Level {
   constructor(props: LevelProps) {
-    super(props);
-    this.background = new Sprite({
-      resource: resoures.images.sky,
-      frameSize: new Vector2(320, 180),
+    super({
+      ...props,
+      id: "level.cave",
+      size: new Vector2(10, 10),
     });
 
     this.heroPosition = props.heroPosition ?? DEFAULT_HERO_POS;
-    const groudSprite = new Sprite({
-      resource: resoures.images.ground,
-      frameSize: new Vector2(320, 180),
-    });
-    this.addChild(groudSprite);
 
     const hero = new Hero(this.heroPosition.x, this.heroPosition.y);
     this.addChild(hero);
