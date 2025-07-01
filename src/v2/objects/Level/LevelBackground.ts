@@ -7,7 +7,6 @@ import { Sprite } from "../../Sprite";
 import { Vector2 } from "../../Vector2";
 import { Tile } from "../Tile/Tile";
 
-let first = true;
 export type LevelBackgroundProps = GameObjectProps & {
   heroPosition?: Vector2;
   size: Vector2;
@@ -76,23 +75,15 @@ export class LevelBackground extends GameObject {
     );
 
     toDraw.forEach((child) => child.draw(ctx, drawPosX, drawPosY));
-    first = false;
   }
 
   isInCameraViewPort(tile: GameObject) {
-    const left = 0;
-    const right = 100;
-    const top = 0;
-    const bottom = 200;
-    if (first) {
-      // console.log(tile);
-    }
+    const { left, right, bottom, top } = this.viewPort;
     return (
-      tile.position.x >= left &&
-      tile.position.x <= right &&
-      tile.position.y >= top &&
-      tile.position.y <= bottom
+      tile.position.x + 16 >= left &&
+      tile.position.x - 16 <= right &&
+      tile.position.y + 16 >= top &&
+      tile.position.y - 16 <= bottom
     );
-    return true;
   }
 }
