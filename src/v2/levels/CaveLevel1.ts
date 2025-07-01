@@ -16,21 +16,10 @@ export class CaveLevel1 extends Level {
   constructor(props: LevelProps) {
     super({
       ...props,
-      size: new Vector2(6, 12),
+      id: "level.cave",
+      size: new Vector2(10, 10),
     });
-    // this.background = new Sprite({
-    //   resource: resoures.images.sky,
-    //   frameSize: new Vector2(320, 180),
-    // });
     this.heroPosition = props.heroPosition ?? DEFAULT_HERO_POS;
-    // const groudSprite = new Sprite({
-    //   resource: resoures.images.caveGround,
-    //   frameSize: new Vector2(320, 180),
-    // });
-    // groudSprite.drawLayer = "FLOOR";
-    // this.addChild(groudSprite);
-
-    this.drawTiles();
 
     const hero = new Hero(this.heroPosition.x, this.heroPosition.y);
     this.addChild(hero);
@@ -46,6 +35,7 @@ export class CaveLevel1 extends Level {
   }
 
   ready() {
+    super.ready();
     events.on("HERO_EXITS", this, () => {
       events.emit(
         "CHANGE_LEVEL",

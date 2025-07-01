@@ -32,11 +32,10 @@ export class Main extends GameObject {
   }
 
   drawBackground(ctx: CanvasRenderingContext2D) {
-    this.level?.background?.drawImage(ctx, 0, 0);
+    this.level?.background?.drawTiles(ctx, this.camera);
   }
 
   drawForeground(ctx: CanvasRenderingContext2D) {
-    // this.level?.foreground?.drawImage(ctx, 0, 0);
     this.inventory.draw(
       ctx,
       this.inventory.position.x,

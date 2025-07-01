@@ -36,11 +36,11 @@ const Game = () => {
 
       //offset by camera position
 
-      ctx.translate(mainScene.camera.position.x, mainScene.camera.position.y);
+      // ctx.translate(mainScene.camera.position.x, mainScene.camera.position.y);
       mainScene.draw(ctx, 0, 0);
-      ctx.restore();
+      // ctx.restore();
       // inventory.draw(ctx, 0, 0);
-      mainScene.drawForeground(ctx);
+      // mainScene.drawForeground(ctx);
     };
 
     const loop = new GameLoop(update, draw);

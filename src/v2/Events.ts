@@ -4,7 +4,9 @@ export type EventName =
   | "HERO_POSITION"
   | "HERO_PICKS_UP_ITEM"
   | "HERO_EXITS"
-  | "CHANGE_LEVEL";
+  | "CHANGE_LEVEL"
+  | "CAMERA_VIEWPORT";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CallBackFunction = (argg?: any) => void;
 type CallBackItem = {

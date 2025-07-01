@@ -26,6 +26,14 @@ export class Camera extends GameObject {
       -position.x + halfWidth,
       -position.y + halfHeight
     );
+    const viewPort = {
+      left: position.x - halfWidth,
+      right: position.x + halfWidth,
+      top: position.y - halfHeight,
+      bottom: position.y + halfHeight,
+    };
+    console.log(viewPort);
+    events.emit("CAMERA_VIEWPORT", viewPort);
   }
 }
 

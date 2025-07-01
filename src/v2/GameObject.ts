@@ -5,11 +5,13 @@ import { Vector2 } from "./Vector2";
 export type GameObjectProps = {
   position?: Vector2;
   drawOffset?: Vector2;
+  id?: string;
 };
 
 export class GameObject {
+  public id: string;
   public position: Vector2;
-  private drawOffset: Vector2;
+  protected drawOffset: Vector2;
   protected parent: GameObject | null = null;
   private hasReadyBeenCalled = false;
   public isSolid = false;
@@ -17,7 +19,8 @@ export class GameObject {
 
   children: GameObject[];
 
-  constructor({ position, drawOffset }: GameObjectProps) {
+  constructor({ position, drawOffset, id }: GameObjectProps) {
+    this.id = id ?? "na";
     this.position = position ?? new Vector2(0, 0);
     this.drawOffset = drawOffset ?? new Vector2(0, 0);
     this.children = [];
