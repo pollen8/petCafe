@@ -73,7 +73,6 @@ export class LevelBackground extends GameObject {
     const toDraw = this.getDrawOrder().filter(
       this.isInCameraViewPort.bind(this)
     );
-
     toDraw.forEach((child) => child.draw(ctx, drawPosX, drawPosY));
   }
 

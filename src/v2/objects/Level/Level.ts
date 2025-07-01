@@ -8,11 +8,10 @@ export type LevelProps = GameObjectProps & {
 };
 
 export class Level extends GameObject {
-  // public background: GameObject | null = null;
   public background: LevelBackground | null = null;
   public heroPosition: Vector2;
 
-  protected size: Vector2;
+  public size: Vector2;
 
   public walls = new Set<string>();
 
@@ -22,7 +21,5 @@ export class Level extends GameObject {
     this.size = props.size ?? new Vector2(8, 6);
     console.log(this.size);
     this.background = new LevelBackground({ size: this.size });
-    // this.addChild(this.background);
-    // this.prependChild());
   }
 }

@@ -6,8 +6,9 @@
 ~~ draw layers of sprites ~~
 ~~ draw character ~~
 ~~ move fixed layers when pressing keys ~~
-~~ move character from center to edges of map so that map stops moving when its at the edge of the view port ~~.
-with viewport 10 tile wide when you move right to the end the last column tears and repeat itself.
+~~ move character from center to edges of map so that map stops moving when its at the edge of the view port ~~
+Stop scrolling when map reaches y = 0 or y >= level height
+stop scrolling when map reaches x = 0 or x >= level width
 scale map to fit screen
 ~~ collision detection layer ~~
 
@@ -21,7 +22,7 @@ scale map to fit screen
 ### Infra
 
 - set up Eleanor with git and show her how to use it.
-- Check asprite works for her laptop
+- ~~ Check asprite works for her laptop~~
 
 Story line
 NPC desgin

@@ -2,7 +2,7 @@ import { Animations } from "../../Animations";
 import { events } from "../../Events";
 import { FrameIndexPattern } from "../../FrameIndexPattern";
 import { GameObject } from "../../GameObject";
-import { isSpaceFee } from "../../helpers/grid";
+import { gridCells, isSpaceFee } from "../../helpers/grid";
 import { moveTowards } from "../../helpers/moveTowards";
 import { resoures, type ResourceState } from "../../Resoources";
 import { Sprite } from "../../Sprite";
@@ -137,11 +137,23 @@ export class Hero extends GameObject {
     const solidBodyAtSpace = this.parent?.children.find(
       (c) => c.isSolid && c.position.x === nextX && c.position.y === nextY
     );
+
+    if (this.atLevelBound(nextX, nextY, root)) {
+      return;
+    }
     // @todo check collisions
     if (spaceIsFree && !solidBodyAtSpace) {
       this.destinationPosition.x = nextX;
       this.destinationPosition.y = nextY;
     }
+  }
+
+  // Deterime if the hero will walk outside of the map.
+  // retun true to stop him from walking out.
+  atLevelBound(nextX: number, nextY: number, root: Main) {
+    const levelWidth = gridCells(root.level?.size.x ?? 0);
+    const levelHeight = gridCells(root.level?.size.y ?? 0);
+    return nextX < 0 || nextY < 0 || nextX > levelWidth || nextY > levelHeight;
   }
 
   onPickUpItem(data: { image: ResourceState; position: Vector2 }) {
