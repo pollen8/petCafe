@@ -9,13 +9,12 @@ const mainScene = new Main({
   position: new Vector2(0, 0),
 });
 
-// mainScene.setLevel(new OutdoorLevel1());
 mainScene.setLevel(
   new CaveLevel1({
     heroPosition: new Vector2(gridCells(5), gridCells(6)),
   })
 );
-// mainScene.addChild(camera);
+
 const update = (delta: number) => {
   mainScene.stepEntry(delta, mainScene);
 };
@@ -31,16 +30,9 @@ const Game = () => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas?.width ?? 0, canvas?.height ?? 0);
       mainScene.drawBackground(ctx);
-      //save current state
-      ctx.save();
 
-      //offset by camera position
-
-      // ctx.translate(mainScene.camera.position.x, mainScene.camera.position.y);
       mainScene.draw(ctx, 0, 0);
-      // ctx.restore();
-      // inventory.draw(ctx, 0, 0);
-      // mainScene.drawForeground(ctx);
+      mainScene.drawForeground(ctx);
     };
 
     const loop = new GameLoop(update, draw);

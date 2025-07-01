@@ -25,7 +25,5 @@ export class NPC extends GameObject {
 
     body.addChild(shadow);
     this.addChild(body);
-
-    // this.addChild(shadow);
   }
 }

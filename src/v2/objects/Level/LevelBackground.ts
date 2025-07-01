@@ -75,8 +75,6 @@ export class LevelBackground extends GameObject {
       this.isInCameraViewPort.bind(this)
     );
 
-    // console.log(this.viewPort);
-    console.log("draw # ", toDraw.length);
     toDraw.forEach((child) => child.draw(ctx, drawPosX, drawPosY));
     first = false;
   }

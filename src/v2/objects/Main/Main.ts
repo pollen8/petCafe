@@ -31,6 +31,11 @@ export class Main extends GameObject {
     this.addChild(this.level);
   }
 
+  // Draw everything offst by the curent camera position
+  public draw(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    super.draw(ctx, x + this.camera.position.x, y + this.camera.position.y);
+  }
+
   drawBackground(ctx: CanvasRenderingContext2D) {
     this.level?.background?.drawTiles(ctx, this.camera);
   }
