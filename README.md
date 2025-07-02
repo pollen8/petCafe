@@ -21,7 +21,7 @@ scale map to fit screen
 
 ### Infra
 
-- set up Eleanor with git and show her how to use it.
+- ~~ set up Eleanor with git ~~ and show her how to use it.
 - ~~ Check asprite works for her laptop~~
 
 Story line
