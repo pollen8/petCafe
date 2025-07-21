@@ -31,6 +31,9 @@ class Resources {
       image.onload = () => {
         this.images[key].isLoaded = true;
       };
+      image.onerror = () => {
+        console.error(`Failed to load image: ${this.toLoad[key]}`);
+      };
     });
   }
 }

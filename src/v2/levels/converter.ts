@@ -107,7 +107,6 @@ async function main() {
       return (a.firstgid as number) < (b.firstgid as number) ? 1 : -1;
     }),
   };
-  console.log("tilesets", mapObj.tilesets);
   writeMapTsFile(tmjPath, mapObj);
 }
 

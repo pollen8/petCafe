@@ -50,11 +50,19 @@ export class LevelLayer extends GameObject {
     });
   }
 
-  private findResource(tileset?: Map["tilesets"][number]) {
-    if (!tileset) {
-      return resoures.images.grass; // Default fallback
-    }
+  private findResource(tileset: Map["tilesets"][number]) {
     return resoures.images[tileset.source];
+  }
+
+  private getTilesetSprite(tileset: Map["tilesets"][number], tile: number) {
+    const resource = this.findResource(tileset);
+    const props = {
+      resource,
+      hFrames: tileset.columns,
+      vFrames: Math.ceil(tileset.tilecount / tileset.columns),
+      frame: tile - (tileset.firstgid ?? 0),
+    };
+    return new Sprite(props);
   }
 
   buildTiles() {
@@ -64,20 +72,13 @@ export class LevelLayer extends GameObject {
       const x = i % this.size.x;
       const y = Math.floor(i / this.size.x);
       const tileset = this.findTileset(tile);
-      const resource = this.findResource(tileset);
-      console.log("tile", tile, x, y, resource.image);
 
-      if (tile === 0) return; // Skip empty tiles
+      if (tile === 0 || !tileset) return; // Skip empty tiles
       this.addChild(
         new Tile(
           gridCells(x),
           gridCells(y),
-          new Sprite({
-            resource: this.findResource(tileset), // Todo use tileset info
-            hFrames: 6,
-            vFrames: 12,
-            frame: tile - (tileset?.firstgid ?? 0),
-          })
+          this.getTilesetSprite(tileset, tile)
         )
       );
     });

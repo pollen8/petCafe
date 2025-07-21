@@ -16,7 +16,14 @@ export type Map = {
     foreground: number[];
     objects: Item[];
   };
-  tilesets: { source: string; firstgid: number }[];
+  tilesets: {
+    source: string;
+    firstgid: number;
+    tilewidth: number;
+    tileheight: number;
+    tilecount: number;
+    columns: number;
+  }[];
 
   collision: [number, number][];
 };
