@@ -1,7 +1,7 @@
 import { GameObject, type GameObjectProps } from "../../GameObject";
 import type { Map } from "../../levels/types";
 import { Vector2 } from "../../Vector2";
-import { LevelBackground } from "./LevelBackground";
+import { LevelLayer } from "./LevelLayer";
 
 export type LevelProps = GameObjectProps & {
   heroPosition?: Vector2;
@@ -9,7 +9,7 @@ export type LevelProps = GameObjectProps & {
 };
 
 export class Level extends GameObject {
-  public layers: Record<string, LevelBackground>;
+  public layers: Record<string, LevelLayer>;
   public heroPosition: Vector2;
 
   public size: Vector2;
@@ -25,12 +25,12 @@ export class Level extends GameObject {
     this.map = props.map;
     // this.map.layers
     this.layers = {
-      background: new LevelBackground({
+      background: new LevelLayer({
         size: this.size,
         layer: "background",
         map: props.map,
       }),
-      foreground: new LevelBackground({
+      foreground: new LevelLayer({
         size: this.size,
         layer: "foreground",
         map: props.map,

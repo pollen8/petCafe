@@ -22,7 +22,7 @@ type ViewPort = {
   bottom: number;
 };
 
-export class LevelBackground extends GameObject {
+export class LevelLayer extends GameObject {
   protected size: Vector2;
   private viewPort: ViewPort;
 
@@ -44,22 +44,39 @@ export class LevelBackground extends GameObject {
 
   ready() {}
 
+  private findTileset(tile: number) {
+    return this.map.tilesets.find((ts) => {
+      return tile >= ts.firstgid;
+    });
+  }
+
+  private findResource(tileset?: Map["tilesets"][number]) {
+    if (!tileset) {
+      return resoures.images.grass; // Default fallback
+    }
+    return resoures.images[tileset.source];
+  }
+
   buildTiles() {
     console.log("map", this.map, this.layer);
+    console.log("tileset", this.map.tilesets);
     this.map.layers[this.layer].forEach((tile, i) => {
       const x = i % this.size.x;
       const y = Math.floor(i / this.size.x);
-      console.log("tile", tile, x, y);
+      const tileset = this.findTileset(tile);
+      const resource = this.findResource(tileset);
+      console.log("tile", tile, x, y, resource.image);
+
       if (tile === 0) return; // Skip empty tiles
       this.addChild(
         new Tile(
           gridCells(x),
           gridCells(y),
           new Sprite({
-            resource: resoures.images.grass, // Todo use tileset info
+            resource: this.findResource(tileset), // Todo use tileset info
             hFrames: 6,
             vFrames: 12,
-            frame: tile,
+            frame: tile - (tileset?.firstgid ?? 0),
           })
         )
       );

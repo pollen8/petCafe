@@ -2,9 +2,7 @@ import * as fs from "fs";
 import * as path from "path";
 import type { Map } from "./types";
 
-type JSONMap = Omit<Map, "size"> & { width: number; height: number };
-
-function writeMapTsFile(tmjPath: string, mapObj: JSONMap) {
+function writeMapTsFile(tmjPath: string, mapObj: Map) {
   const tsPath = tmjPath.replace(/\.tmj$/, ".ts");
   const out = `// Auto-generated from ${path.basename(tmjPath)}
   import type { Map } from "../types";
@@ -35,6 +33,7 @@ async function main() {
   const layers: Map["layers"] = {
     foreground: [],
     background: [],
+    objects: [],
   };
 
   const collision: Map["collision"] = [];
@@ -50,21 +49,40 @@ async function main() {
         collision.push([x, y]);
       }
     }
+    if (layer.name === "objects") {
+      // Handle objects layer if needed
+      // For now, we will just log it
+      layers.objects = layer.objects.map((item: any) => ({
+        name: item.name,
+        type: item.type,
+        x: item.x,
+        y: item.y,
+        width: item.width,
+        height: item.height,
+      }));
+      console.log("Objects layer found:", JSON.stringify(layer));
+    }
   }
 
-  const mapObj: JSONMap = {
+  const mapObj: Map = {
     id: path.basename(tmjPath, ".tmj"),
     width: tmj.width,
     height: tmj.height,
     layers,
     collision,
-    tilesets: tmj.tilesets.map((ts) => ({
-      source: ts.source.replace(/\.tsx$/, ""),
-      firstgid: ts.firstgid,
-    })),
-    // resources: [],
+    tilesets: tmj.tilesets
+      .map((ts) => ({
+        source: ts.source
+          .split("/")
+          .pop()
+          .replace(/\.tsx$/, ""),
+        firstgid: ts.firstgid,
+      }))
+      .toSorted((a, b) => {
+        return a.firstgid < b.firstgid ? 1 : -1;
+      }),
   };
-
+  console.log("tilesets", mapObj.tilesets);
   writeMapTsFile(tmjPath, mapObj);
 }
 
