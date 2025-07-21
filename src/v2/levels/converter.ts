@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import * as xml2js from "xml2js";
 import type { Map } from "./types";
 
 function writeMapTsFile(tmjPath: string, mapObj: Map) {
@@ -11,6 +12,20 @@ export const map: Map = ${JSON.stringify(mapObj, null, 2)} as const;
 `;
   fs.writeFileSync(tsPath, out, "utf-8");
   console.log(`Wrote: ${tsPath}`);
+}
+
+async function getTilesetInfo(
+  tsPath: string
+): Promise<Record<string, unknown>> {
+  const xml = fs.readFileSync(tsPath, "utf-8");
+  const parsed = await xml2js.parseStringPromise(xml);
+  const attrs = parsed.tileset.$;
+  return {
+    tilewidth: Number(attrs.tilewidth),
+    tileheight: Number(attrs.tileheight),
+    tilecount: Number(attrs.tilecount),
+    columns: Number(attrs.columns),
+  };
 }
 
 async function main() {
@@ -52,16 +67,34 @@ async function main() {
     if (layer.name === "objects") {
       // Handle objects layer if needed
       // For now, we will just log it
-      layers.objects = layer.objects.map((item: any) => ({
-        name: item.name,
-        type: item.type,
-        x: item.x,
-        y: item.y,
-        width: item.width,
-        height: item.height,
-      }));
+      layers.objects = layer.objects.map((item: unknown) => {
+        const obj = item as Record<string, unknown>;
+        return {
+          name: obj.name,
+          type: obj.type,
+          x: obj.x,
+          y: obj.y,
+          width: obj.width,
+          height: obj.height,
+        };
+      });
       console.log("Objects layer found:", JSON.stringify(layer));
     }
+  }
+
+  // Read tileset XMLs and enrich tileset info
+  const tilesets: Record<string, unknown>[] = [];
+  for (const ts of tmj.tilesets) {
+    const tsFile = path.resolve(path.dirname(tmjPath), ts.source);
+    const info = await getTilesetInfo(tsFile);
+    tilesets.push({
+      source: ts.source
+        .split("/")
+        .pop()
+        .replace(/\.tsx$/, ""),
+      firstgid: ts.firstgid,
+      ...info,
+    });
   }
 
   const mapObj: Map = {
@@ -70,17 +103,9 @@ async function main() {
     height: tmj.height,
     layers,
     collision,
-    tilesets: tmj.tilesets
-      .map((ts) => ({
-        source: ts.source
-          .split("/")
-          .pop()
-          .replace(/\.tsx$/, ""),
-        firstgid: ts.firstgid,
-      }))
-      .toSorted((a, b) => {
-        return a.firstgid < b.firstgid ? 1 : -1;
-      }),
+    tilesets: tilesets.toSorted((a, b) => {
+      return (a.firstgid as number) < (b.firstgid as number) ? 1 : -1;
+    }),
   };
   console.log("tilesets", mapObj.tilesets);
   writeMapTsFile(tmjPath, mapObj);

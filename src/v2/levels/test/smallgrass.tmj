@@ -84,7 +84,7 @@
  "tilesets":[
         {
          "firstgid":1,
-         "source":"..\/..\/..\/maps\/test\/grass.tsx"
+         "source":"grass.tsx"
         }, 
         {
          "firstgid":10,
