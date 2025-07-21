@@ -1,0 +1,15 @@
+{ "columns":3,
+ "image":"..\/..\/..\/public\/tiles\/grass.png",
+ "imageheight":48,
+ "imagewidth":48,
+ "margin":0,
+ "name":"grass",
+ "spacing":0,
+ "tilecount":9,
+ "tiledversion":"1.11.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "transparentcolor":"#ff00ff",
+ "type":"tileset",
+ "version":"1.10"
+}

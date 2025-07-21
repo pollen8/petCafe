@@ -5,6 +5,7 @@ import { Vector2 } from "./Vector2";
 
 type SpriteProps = {
   resource: ResourceState;
+  /** Sprite resource size in px */
   frameSize?: Vector2;
   hFrames?: number;
   vFrames?: number;

@@ -49,12 +49,23 @@ export class GameObject {
   }
 
   protected getDrawOrder() {
-    return this.children.toSorted((a, b) => {
+    const ids = new Set<string>();
+    const bids = new Set<string>();
+    const a = this.children.toSorted((a, b) => {
+      // ids.add(a.id);
+      // bids.add(b.id);
       if (a.drawLayer === "FLOOR") {
         return -1;
       }
+      if (a.id === "hero" && b.id === "house.level") {
+        console.log("hero", a.position.y, "house", b.position.y);
+      }
       return a.position.y >= b.position.y ? 1 : -1;
     });
+    // if (ids.size > 0) {
+    //   console.log(ids, bids);
+    // }
+    return a;
   }
 
   public drawImage(

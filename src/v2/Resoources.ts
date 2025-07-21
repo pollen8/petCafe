@@ -14,8 +14,10 @@ class Resources {
       cave: "/sprites/cave.png",
       caveGround: "/sprites/cave-ground.png",
       knight: "/sprites/knight-sheet-1.png",
-      grass: "/tiles/grass.png",
       plains: "tiles/plains.png",
+      house: "sprites/house.png",
+      // tilee imports
+      grass: "/tiles/grass.png",
     };
 
     Object.keys(this.toLoad).forEach((key) => {

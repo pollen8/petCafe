@@ -1,17 +1,5 @@
-import type { MapResource } from "../Resources/resources.store";
-
-export type TileTypes = "grass" | "water" | "stone" | "forest";
+import type { Map, TileTypes } from "./types";
 const tiles: TileTypes[] = ["grass", "water", "stone", "forest"];
-
-export type Map = {
-  id: string;
-  width: number;
-  height: number;
-  tiles: TileTypes[];
-  collision: [number, number][];
-  resources: MapResource[];
-};
-
 export const map: Map = {
   id: "1",
   width: 20,
@@ -27,7 +15,7 @@ export const map: Map = {
       height: 1,
       type: "portal",
       state: {
-        to: "house",
+        to: "smallgrass",
       },
     },
     {
@@ -56,7 +44,10 @@ export const map: Map = {
     [7, 5],
     [8, 8],
   ],
-  tiles: new Array(100000)
-    .fill("")
-    .map(() => tiles[Math.floor(Math.random() * 4)]),
+  layers: {
+    background: new Array(100000)
+      .fill("")
+      .map(() => tiles[Math.floor(Math.random() * 4)]),
+    foreground: [],
+  },
 };

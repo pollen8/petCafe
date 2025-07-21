@@ -29,7 +29,7 @@ const Game = () => {
     }
     const draw = () => {
       ctx.clearRect(0, 0, canvas?.width ?? 0, canvas?.height ?? 0);
-      mainScene.drawBackground(ctx);
+      mainScene.drawLayers(ctx);
 
       mainScene.draw(ctx, 0, 0);
       mainScene.drawForeground(ctx);
