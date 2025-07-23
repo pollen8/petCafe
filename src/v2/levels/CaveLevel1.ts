@@ -1,12 +1,6 @@
 import { events } from "../Events";
-import { gridCells } from "../helpers/grid";
-import { Exit } from "../objects/Exit/Exit";
-import { Hero } from "../objects/Hero/Hero";
 import { Level } from "../objects/Level/Level";
-import { Rod } from "../objects/Rod/Rod";
-import { Vector2 } from "../Vector2";
 import { OutdoorLevel1 } from "./OutdoorLevel";
-import { House } from "../objects/House/House";
 import { map } from "./test/beach";
 
 export class CaveLevel1 extends Level {
@@ -17,33 +11,6 @@ export class CaveLevel1 extends Level {
     });
     console.log("cave level map", map);
 
-    this.map.layers.objects.forEach((item) => {
-      if (item.type === "Hero") {
-        const heroPosition = new Vector2(
-          Math.floor(item.x / 16),
-          Math.floor(item.y / 16)
-        );
-        console.log("heroPosition", heroPosition);
-        const hero = new Hero(
-          gridCells(heroPosition.x),
-          gridCells(heroPosition.y)
-        );
-        this.addChild(hero);
-      }
-      if (item.type === "Exit") {
-        this.addChild(new Exit(item.x, item.y));
-      }
-      if (item.type === "Rod") {
-        this.addChild(new Rod(item.x, item.y));
-      }
-      if (item.type === "House") {
-        this.addChild(new House(item.x, item.y));
-      }
-    });
-    this.map.collision.forEach((pos) => {
-      this.walls.add(`${gridCells(pos[0])},${gridCells(pos[1])}`);
-    });
-    console.log("walls", this.walls);
     // const house = new House(gridCells(0), gridCells(7));
     // this.addChild(house);
     // const exit = new Exit(gridCells(1), gridCells(7));
@@ -88,6 +55,7 @@ export class CaveLevel1 extends Level {
               background: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
               objects: [],
               foreground: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              backgroundDecoration: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             },
             collision: [],
             tilesets: [],

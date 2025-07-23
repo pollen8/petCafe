@@ -14,6 +14,7 @@ export type Map = {
   layers: {
     background: number[];
     foreground: number[];
+    backgroundDecoration: number[];
     objects: Item[];
   };
   tilesets: {

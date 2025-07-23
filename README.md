@@ -23,7 +23,7 @@ scale map to fit screen
 
 - check if exit object works
 - load in complex objects
-- load in tilesets
+- ~ load in tilesets ~
 
 ### Infra
 

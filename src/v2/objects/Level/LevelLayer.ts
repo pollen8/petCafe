@@ -12,7 +12,7 @@ export type LevelBackgroundProps = GameObjectProps & {
   heroPosition?: Vector2;
   size: Vector2;
   map: Map;
-  layer: "background" | "foreground";
+  layer: "background" | "foreground" | "backgroundDecoration";
 };
 
 type ViewPort = {
@@ -27,7 +27,7 @@ export class LevelLayer extends GameObject {
   private viewPort: ViewPort;
 
   private map: Map;
-  private layer: "background" | "foreground";
+  private layer: "background" | "foreground" | "backgroundDecoration";
   constructor(props: LevelBackgroundProps) {
     super(props);
     this.viewPort = { left: 0, right: 0, top: 0, bottom: 0 };
@@ -93,7 +93,6 @@ export class LevelLayer extends GameObject {
     const toDraw = this.getDrawOrder().filter(
       this.isInCameraViewPort.bind(this)
     );
-    console.log("toDraw", toDraw.length, this.children.length);
     toDraw.forEach((child) => child.draw(ctx, drawPosX, drawPosY));
   }
 

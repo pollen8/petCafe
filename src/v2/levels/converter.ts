@@ -51,12 +51,17 @@ async function main() {
   const layers: Map["layers"] = {
     foreground: [],
     background: [],
+    backgroundDecoration: [],
     objects: [],
   };
 
   const collision: Map["collision"] = [];
   for (const layer of tmj.layers) {
-    if (layer.name === "foreground" || layer.name === "background") {
+    if (
+      layer.name === "foreground" ||
+      layer.name === "background" ||
+      layer.name === "backgroundDecoration"
+    ) {
       layers[layer.name] = layer.data;
     }
     if (layer.name === "collision") {
