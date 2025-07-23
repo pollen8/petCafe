@@ -70,6 +70,7 @@ export class Sprite extends GameObject {
   }
 
   public drawImage(ctx: CanvasRenderingContext2D, x: number, y: number) {
+    // console.log("draw", x, y);
     if (!this.resource.isLoaded) {
       return;
     }

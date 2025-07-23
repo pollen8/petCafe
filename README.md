@@ -19,6 +19,12 @@ scale map to fit screen
 - Add energy to character
 - associate NPC with map
 
+### Map loading
+
+- check if exit object works
+- load in complex objects
+- load in tilesets
+
 ### Infra
 
 - ~~ set up Eleanor with git ~~ and show her how to use it.

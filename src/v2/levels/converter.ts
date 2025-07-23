@@ -31,11 +31,14 @@ async function getTilesetInfo(
 async function main() {
   // Parse -file option from command line args
   const fileArgIndex = process.argv.indexOf("-file");
-  let filePath: string;
+  let filePath: string = "";
   if (fileArgIndex !== -1 && process.argv[fileArgIndex + 1]) {
     filePath = process.argv[fileArgIndex + 1];
   } else {
-    filePath = "test/smallgrass.tmj";
+    console.log("not found", fileArgIndex, process.argv);
+    // return;
+    process.exit(1);
+    // filePath = "test/smallgrass.tmj";
   }
 
   const tmjPath = path.resolve(filePath);

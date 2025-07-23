@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <tileset version="1.10" tiledversion="1.11.2" name="outdoors" tilewidth="16" tileheight="16" tilecount="64" columns="8">
- <image source="../../../public/tiles/outdoors.png" trans="ff00ff" width="128" height="128"/>
+ <image source="../../../../public/tiles/outdoors.png" trans="ff00ff" width="128" height="128"/>
  <wangsets>
   <wangset name="outdoors terrain set" type="corner" tile="9">
    <wangcolor name="water" color="#ff0000" tile="36" probability="1"/>

@@ -66,13 +66,11 @@ export class LevelLayer extends GameObject {
   }
 
   buildTiles() {
-    console.log("map", this.map, this.layer);
-    console.log("tileset", this.map.tilesets);
     this.map.layers[this.layer].forEach((tile, i) => {
       const x = i % this.size.x;
       const y = Math.floor(i / this.size.x);
       const tileset = this.findTileset(tile);
-
+      // console.log("tileset", tileset, tile, x, y);
       if (tile === 0 || !tileset) return; // Skip empty tiles
       this.addChild(
         new Tile(
@@ -95,6 +93,7 @@ export class LevelLayer extends GameObject {
     const toDraw = this.getDrawOrder().filter(
       this.isInCameraViewPort.bind(this)
     );
+    console.log("toDraw", toDraw.length, this.children.length);
     toDraw.forEach((child) => child.draw(ctx, drawPosX, drawPosY));
   }
 

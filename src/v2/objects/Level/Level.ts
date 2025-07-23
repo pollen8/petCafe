@@ -1,6 +1,7 @@
 import { GameObject, type GameObjectProps } from "../../GameObject";
 import type { Map } from "../../levels/types";
 import { Vector2 } from "../../Vector2";
+import { Hero } from "../Hero/Hero";
 import { LevelLayer } from "./LevelLayer";
 
 export type LevelProps = GameObjectProps & {
@@ -10,7 +11,6 @@ export type LevelProps = GameObjectProps & {
 
 export class Level extends GameObject {
   public layers: Record<string, LevelLayer>;
-  public heroPosition: Vector2;
 
   public size: Vector2;
 
@@ -20,10 +20,10 @@ export class Level extends GameObject {
 
   constructor(props: LevelProps) {
     super(props);
-    this.heroPosition = props.heroPosition ?? new Vector2(0, 0);
     this.size = new Vector2(props.map.width, props.map.height);
     this.map = props.map;
     // this.map.layers
+    console.log("size", this.size, props.map.width, props.map.height);
     this.layers = {
       background: new LevelLayer({
         size: this.size,
@@ -36,5 +36,11 @@ export class Level extends GameObject {
         map: props.map,
       }),
     };
+  }
+
+  public getHero() {
+    return this.children.find((child) => child instanceof Hero) as
+      | Hero
+      | undefined;
   }
 }

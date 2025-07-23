@@ -7,7 +7,7 @@ import { Rod } from "../objects/Rod/Rod";
 import { Vector2 } from "../Vector2";
 import { OutdoorLevel1 } from "./OutdoorLevel";
 import { House } from "../objects/House/House";
-import { map } from "./test/smallgrass";
+import { map } from "./test/beach";
 
 export class CaveLevel1 extends Level {
   constructor() {
@@ -19,8 +19,15 @@ export class CaveLevel1 extends Level {
 
     this.map.layers.objects.forEach((item) => {
       if (item.type === "Hero") {
-        this.heroPosition = new Vector2(item.x / 16, item.y / 16);
-        const hero = new Hero(this.heroPosition.x, this.heroPosition.y);
+        const heroPosition = new Vector2(
+          Math.floor(item.x / 16),
+          Math.floor(item.y / 16)
+        );
+        console.log("heroPosition", heroPosition);
+        const hero = new Hero(
+          gridCells(heroPosition.x),
+          gridCells(heroPosition.y)
+        );
         this.addChild(hero);
       }
       if (item.type === "Exit") {
@@ -72,7 +79,7 @@ export class CaveLevel1 extends Level {
       events.emit(
         "CHANGE_LEVEL",
         new OutdoorLevel1({
-          heroPosition: new Vector2(gridCells(4), gridCells(3)),
+          // heroPosition: new Vector2(gridCells(4), gridCells(3)),
           map: {
             id: "outdoor1",
             width: 15,

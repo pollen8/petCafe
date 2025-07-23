@@ -23,7 +23,6 @@ export class Exit extends GameObject {
         Math.round(heroPosition.x) === this.position.x &&
         Math.round(heroPosition.y) === this.position.y
       ) {
-        // this.onCollideWithHero();
         events.emit("HERO_EXITS");
       }
     });
