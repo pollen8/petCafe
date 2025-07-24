@@ -7,7 +7,6 @@ export const Inventory = () => {
     inventory,
     (state) => state.context
   );
-  console.log("selecteditem", selectedItem);
   return (
     <div className={style.inventory}>
       {Object.values(items).map((item, index) => (

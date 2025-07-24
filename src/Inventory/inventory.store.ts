@@ -36,7 +36,6 @@ export const inventory = createStore({
       };
     },
     setSelected: (context, { name }: { name: string }) => {
-      console.log("setSelected x", name);
       return {
         ...context,
         selectedItem: context.items.find((item) => item.name === name) ?? null,
@@ -53,8 +52,6 @@ export const inventory = createStore({
       });
     },
     addMoney: (context, { amount }: { amount: number }) => {
-      console.log(amount);
-      console.log(`Adding money: ${amount}`);
       return {
         ...context,
         money: context.money + amount,
@@ -62,10 +59,8 @@ export const inventory = createStore({
     },
     removeMoney: (context, { amount }: { amount: number }) => {
       if (context.money < amount) {
-        console.log(`Not enough money to remove: ${amount}`);
         return context; // Return the same context if there's not enough money
       }
-      console.log(`Removing money: ${amount}`);
       return {
         ...context,
         money: context.money - amount,
@@ -74,7 +69,6 @@ export const inventory = createStore({
     remove: (context, { item: { quantity, name } }: { item: Item }) => {
       const i = context.items.findIndex((i) => i.name === name);
       if (i === -1) {
-        console.log(`Item ${name} not found in inventory.`);
         return context; // Return the same context if the item doesn't exist
       }
 

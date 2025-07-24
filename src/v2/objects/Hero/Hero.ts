@@ -69,7 +69,6 @@ export class Hero extends GameObject {
     events.on("HERO_PICKS_UP_ITEM", this, (data) => {
       this.onPickUpItem(data);
     });
-    console.log("hero", this);
   }
 
   step(delta: number, root: Main) {

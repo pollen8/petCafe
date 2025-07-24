@@ -70,13 +70,13 @@ export class LevelLayer extends GameObject {
       const x = i % this.size.x;
       const y = Math.floor(i / this.size.x);
       const tileset = this.findTileset(tile);
-      // console.log("tileset", tileset, tile, x, y);
       if (tile === 0 || !tileset) return; // Skip empty tiles
       this.addChild(
         new Tile(
           gridCells(x),
           gridCells(y),
-          this.getTilesetSprite(tileset, tile)
+          this.getTilesetSprite(tileset, tile),
+          this.layer
         )
       );
     });

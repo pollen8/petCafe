@@ -16,7 +16,7 @@ class Resources {
       knight: "/sprites/knight-sheet-1.png",
       plains: "tiles/plains.png",
       house: "sprites/house.png",
-      // tilee imports
+      // tile imports
       grass: "/tiles/grass.png",
       dirt_path: "/tiles/dirt_path.png",
       sand_water: "/tiles/sand_water.png",

@@ -36,14 +36,16 @@ export class Main extends GameObject {
     super.draw(ctx, x + this.camera.position.x, y + this.camera.position.y);
   }
 
-  drawLayers(ctx: CanvasRenderingContext2D) {
+  drawLayers(ctx: CanvasRenderingContext2D, layers: string[]) {
     if (!this.level) return;
-    Object.values(this.level.layers).forEach((layer) => {
-      layer.drawTiles(ctx, this.camera);
+    Object.entries(this.level.layers).forEach(([layerName, layer]) => {
+      if (layers.includes(layerName)) {
+        layer.drawTiles(ctx, this.camera);
+      }
     });
   }
 
-  drawForeground(ctx: CanvasRenderingContext2D) {
+  drawUI(ctx: CanvasRenderingContext2D) {
     this.inventory.draw(
       ctx,
       this.inventory.position.x,

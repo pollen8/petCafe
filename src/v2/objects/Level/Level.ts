@@ -26,8 +26,6 @@ export class Level extends GameObject {
     super(props);
     this.size = new Vector2(props.map.width, props.map.height);
     this.map = props.map;
-    // this.map.layers
-    console.log("size", this.size, props.map.width, props.map.height);
     this.layers = {
       background: new LevelLayer({
         size: this.size,
@@ -51,7 +49,6 @@ export class Level extends GameObject {
           Math.floor(item.x / 16),
           Math.floor(item.y / 16)
         );
-        console.log("heroPosition", heroPosition);
         const hero = new Hero(
           gridCells(heroPosition.x),
           gridCells(heroPosition.y)

@@ -69,7 +69,6 @@ export const shop = createStore({
         return context;
       }
       if (context.items[i].quantity < quantity) {
-        console.log(`Not enough ${name} in stock`);
         return context;
       }
       if (context.items[i].quantity - quantity <= 0) {

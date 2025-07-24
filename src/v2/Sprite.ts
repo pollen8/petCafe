@@ -74,7 +74,6 @@ export class Sprite extends GameObject {
       console.warn("Sprite resource is not defined");
       return;
     }
-    // console.log("draw", x, y);
     if (!this.resource.isLoaded) {
       return;
     }

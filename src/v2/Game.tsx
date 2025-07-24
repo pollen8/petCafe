@@ -24,10 +24,11 @@ const Game = () => {
     }
     const draw = () => {
       ctx.clearRect(0, 0, canvas?.width ?? 0, canvas?.height ?? 0);
-      mainScene.drawLayers(ctx);
+      mainScene.drawLayers(ctx, ["background", "backgroundDecoration"]);
 
       mainScene.draw(ctx, 0, 0);
-      mainScene.drawForeground(ctx);
+      mainScene.drawLayers(ctx, ["foreground"]);
+      mainScene.drawUI(ctx);
     };
 
     const loop = new GameLoop(update, draw);

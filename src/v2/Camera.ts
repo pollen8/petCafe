@@ -7,7 +7,6 @@ export class Camera extends GameObject {
   constructor() {
     super({});
     events.on("HERO_POSITION", this, (heroPostion: Vector2) => {
-      console.log(" camera heroPostion", heroPostion);
       this.centerPositionOnTarget(heroPostion);
     });
     events.on("CHANGE_LEVEL", this, (newLevel: Level) => {

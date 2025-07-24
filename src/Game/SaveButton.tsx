@@ -16,7 +16,6 @@ export const SaveButton = () => {
       currentMapId: map.currentMap.id ?? "1", // Only store the map id
     };
     localStorage.setItem("gameState", JSON.stringify(gameState));
-    console.log("Game saved!");
   };
   return <button onClick={() => saveGame()}>Save Game</button>;
 };

@@ -11,7 +11,6 @@ function loadGame(map: GameContextType["map"]) {
   const savedState = localStorage.getItem("gameState");
   if (savedState) {
     const gameState = JSON.parse(savedState);
-    console.log("game state resources", gameState.resources);
     resourcesStore.send({
       type: "restore",
       state: gameState.resources,
@@ -38,7 +37,6 @@ function loadGame(map: GameContextType["map"]) {
           });
         });
       });
-      console.log("Game loaded!");
     } else {
       console.log("No saved game found.");
     }

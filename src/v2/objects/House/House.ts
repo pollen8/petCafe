@@ -24,7 +24,7 @@ export class House extends GameObject {
 
   ready() {
     events.on("HERO_POSITION", this, (heroPosition: Vector2) => {
-      console.log(heroPosition, this.position);
+      // console.log(heroPosition, this.position);
       if (
         Math.round(heroPosition.x) === this.position.x + 32 &&
         Math.round(heroPosition.y) === this.position.y + 96

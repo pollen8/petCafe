@@ -23,7 +23,6 @@ export class Inventory extends GameObject {
       this,
       (data: { image: ResourceState; position: Vector2 }) => {
         this.nextId++;
-        console.log("inveotry add", data);
 
         this.items.push({ id: this.nextId, resource: data.image });
         this.renderInventory();
