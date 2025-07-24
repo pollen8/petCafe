@@ -10,7 +10,6 @@ export class Camera extends GameObject {
       this.centerPositionOnTarget(heroPostion);
     });
     events.on("CHANGE_LEVEL", this, (newLevel: Level) => {
-      console.log(newLevel.heroPosition);
       this.centerPositionOnTarget(newLevel.heroPosition);
     });
   }
@@ -32,7 +31,6 @@ export class Camera extends GameObject {
       top: position.y - halfHeight,
       bottom: position.y + halfHeight,
     };
-    console.log(viewPort);
     events.emit("CAMERA_VIEWPORT", viewPort);
   }
 }

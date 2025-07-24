@@ -33,6 +33,7 @@ export class Hero extends GameObject {
     super({
       position: new Vector2(x, y),
     });
+    this.id = "hero";
     this.heroFacing = "down";
     this.destinationPosition = this.position.duplicate();
 
@@ -66,9 +67,9 @@ export class Hero extends GameObject {
     this.addChild(this.body);
 
     events.on("HERO_PICKS_UP_ITEM", this, (data) => {
-      console.log("pickup", data);
       this.onPickUpItem(data);
     });
+    console.log("hero", this);
   }
 
   step(delta: number, root: Main) {

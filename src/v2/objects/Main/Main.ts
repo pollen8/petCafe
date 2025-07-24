@@ -36,8 +36,11 @@ export class Main extends GameObject {
     super.draw(ctx, x + this.camera.position.x, y + this.camera.position.y);
   }
 
-  drawBackground(ctx: CanvasRenderingContext2D) {
-    this.level?.background?.drawTiles(ctx, this.camera);
+  drawLayers(ctx: CanvasRenderingContext2D) {
+    if (!this.level) return;
+    Object.values(this.level.layers).forEach((layer) => {
+      layer.drawTiles(ctx, this.camera);
+    });
   }
 
   drawForeground(ctx: CanvasRenderingContext2D) {

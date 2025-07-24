@@ -14,8 +14,11 @@ class Resources {
       cave: "/sprites/cave.png",
       caveGround: "/sprites/cave-ground.png",
       knight: "/sprites/knight-sheet-1.png",
-      grass: "/tiles/grass.png",
       plains: "tiles/plains.png",
+      house: "sprites/house.png",
+      // tilee imports
+      grass: "/tiles/grass.png",
+      dirt_path: "/tiles/dirt_path.png",
     };
 
     Object.keys(this.toLoad).forEach((key) => {
@@ -27,6 +30,9 @@ class Resources {
       };
       image.onload = () => {
         this.images[key].isLoaded = true;
+      };
+      image.onerror = () => {
+        console.error(`Failed to load image: ${this.toLoad[key]}`);
       };
     });
   }

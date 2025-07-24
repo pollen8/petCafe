@@ -2,6 +2,7 @@ import type { Camera } from "../../Camera";
 import { events } from "../../Events";
 import { GameObject, type GameObjectProps } from "../../GameObject";
 import { gridCells } from "../../helpers/grid";
+import type { Map } from "../../levels/types";
 import { resoures } from "../../Resoources";
 import { Sprite } from "../../Sprite";
 import { Vector2 } from "../../Vector2";
@@ -10,6 +11,8 @@ import { Tile } from "../Tile/Tile";
 export type LevelBackgroundProps = GameObjectProps & {
   heroPosition?: Vector2;
   size: Vector2;
+  map: Map;
+  layer: "background" | "foreground";
 };
 
 type ViewPort = {
@@ -19,13 +22,18 @@ type ViewPort = {
   bottom: number;
 };
 
-export class LevelBackground extends GameObject {
+export class LevelLayer extends GameObject {
   protected size: Vector2;
   private viewPort: ViewPort;
+
+  private map: Map;
+  private layer: "background" | "foreground";
   constructor(props: LevelBackgroundProps) {
     super(props);
     this.viewPort = { left: 0, right: 0, top: 0, bottom: 0 };
     this.size = props.size;
+    this.map = props.map;
+    this.layer = props.layer;
     this.buildTiles();
     events.on(
       "CAMERA_VIEWPORT",
@@ -36,30 +44,44 @@ export class LevelBackground extends GameObject {
 
   ready() {}
 
+  private findTileset(tile: number) {
+    return this.map.tilesets.find((ts) => {
+      return tile >= ts.firstgid;
+    });
+  }
+
+  private findResource(tileset: Map["tilesets"][number]) {
+    return resoures.images[tileset.source];
+  }
+
+  private getTilesetSprite(tileset: Map["tilesets"][number], tile: number) {
+    const resource = this.findResource(tileset);
+    const props = {
+      resource,
+      hFrames: tileset.columns,
+      vFrames: Math.ceil(tileset.tilecount / tileset.columns),
+      frame: tile - (tileset.firstgid ?? 0),
+    };
+    return new Sprite(props);
+  }
+
   buildTiles() {
-    let c = 0;
-    for (let j = 0; j < this.size.y; j++) {
-      for (let i = 0; i < this.size.x; i++) {
-        c++;
-        this.addChild(
-          new Tile(
-            gridCells(i),
-            gridCells(j),
-            // new Sprite({
-            //   resource: r,
-            // })
-            new Sprite({
-              resource: resoures.images.plains,
-              hFrames: 6,
-              vFrames: 12,
-              // frame: map[i + j * 6],
-              // frame: i + j * 7,
-              frame: c % 10,
-            })
-          )
-        );
-      }
-    }
+    console.log("map", this.map, this.layer);
+    console.log("tileset", this.map.tilesets);
+    this.map.layers[this.layer].forEach((tile, i) => {
+      const x = i % this.size.x;
+      const y = Math.floor(i / this.size.x);
+      const tileset = this.findTileset(tile);
+
+      if (tile === 0 || !tileset) return; // Skip empty tiles
+      this.addChild(
+        new Tile(
+          gridCells(x),
+          gridCells(y),
+          this.getTilesetSprite(tileset, tile)
+        )
+      );
+    });
   }
   drawTiles(ctx: CanvasRenderingContext2D, camera: Camera) {
     this.draw(ctx, camera.position.x, camera.position.y);
