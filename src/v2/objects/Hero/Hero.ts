@@ -4,7 +4,7 @@ import { FrameIndexPattern } from "../../FrameIndexPattern";
 import { GameObject } from "../../GameObject";
 import { gridCells, isSpaceFee } from "../../helpers/grid";
 import { moveTowards } from "../../helpers/moveTowards";
-import { resoures, type ResourceState } from "../../Resoources";
+import { resoures, type ResourceState } from "../../Resources";
 import { Sprite } from "../../Sprite";
 import { Vector2 } from "../../Vector2";
 import type { Main } from "../Main/Main";

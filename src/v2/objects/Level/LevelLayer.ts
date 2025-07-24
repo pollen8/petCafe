@@ -3,7 +3,7 @@ import { events } from "../../Events";
 import { GameObject, type GameObjectProps } from "../../GameObject";
 import { gridCells } from "../../helpers/grid";
 import type { Map } from "../../levels/types";
-import { resoures } from "../../Resoources";
+import { resoures } from "../../Resources";
 import { Sprite } from "../../Sprite";
 import { Vector2 } from "../../Vector2";
 import { Tile } from "../Tile/Tile";

@@ -2,7 +2,7 @@ import { events } from "../../Events";
 import { GameObject } from "../../GameObject";
 import { gridCells } from "../../helpers/grid";
 import { HouseLevel } from "../../levels/HouseLevel";
-import { resoures } from "../../Resoources";
+import { resoures } from "../../Resources";
 import { Sprite } from "../../Sprite";
 import { Vector2 } from "../../Vector2";
 

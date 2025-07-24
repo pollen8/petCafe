@@ -1,7 +1,7 @@
 import { GameObject } from "../../GameObject";
 import { Sprite } from "../../Sprite";
 import { Vector2 } from "../../Vector2";
-import { resoures } from "../../Resoources";
+import { resoures } from "../../Resources";
 
 export class NPC extends GameObject {
   constructor(x: number, y: number) {

@@ -1,6 +1,6 @@
 import { events } from "../../Events";
 import { GameObject } from "../../GameObject";
-import { resoures, type ResourceState } from "../../Resoources";
+import { resoures, type ResourceState } from "../../Resources";
 import { Sprite } from "../../Sprite";
 import { Vector2 } from "../../Vector2";
 

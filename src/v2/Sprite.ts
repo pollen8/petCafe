@@ -1,6 +1,6 @@
 import type { Animations } from "./Animations";
 import { GameObject } from "./GameObject";
-import type { ResourceState } from "./Resoources";
+import type { ResourceState } from "./Resources";
 import { Vector2 } from "./Vector2";
 
 type SpriteProps = {
