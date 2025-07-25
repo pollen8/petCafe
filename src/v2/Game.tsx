@@ -35,6 +35,7 @@ const Game = () => {
       events.emit("RESIZE_WINDOW", {
         width: canvas.width,
         height: canvas.height,
+        scale,
       });
     };
 

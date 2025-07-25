@@ -1,9 +1,10 @@
 import type { Animations } from "./Animations";
+import { events } from "./Events";
 import { GameObject } from "./GameObject";
 import type { ResourceState } from "./Resources";
 import { Vector2 } from "./Vector2";
 
-type SpriteProps = {
+export type SpriteProps = {
   resource: ResourceState;
   /** Sprite resource size in px */
   frameSize?: Vector2;
@@ -25,6 +26,7 @@ export class Sprite extends GameObject {
   public position: Vector2;
   private frameMap: Map<number, Vector2>;
   public animations?: Animations | undefined;
+  private windowScale = 1;
   constructor({
     resource, // Image we weant
     frameSize, // size of the crop image
@@ -47,6 +49,9 @@ export class Sprite extends GameObject {
     this.animations = animations;
 
     this.buildFrameMap();
+    events.on("RESIZE_WINDOW", this, (data: { scale: number }) => {
+      this.windowScale = data.scale;
+    });
   }
 
   public buildFrameMap() {
@@ -97,6 +102,25 @@ export class Sprite extends GameObject {
       y, //y
       frameSizeX * this.scale, // scale
       frameSizeY * this.scale
+    );
+  }
+
+  protected pointInItem(data: { x: number; y: number }) {
+    const y = this.absoluteY(0);
+    const x = this.absoluteYX(0);
+    // x / y are the top left corner of the sprite
+    // data.x / data.y are the mouse position in the canvas
+    // We need to descaled the mouse position to match the sprite size
+    // this.windowScale is the scale of the canvas
+    const descaledX = data.x / this.windowScale;
+    const descaledY = data.y / this.windowScale;
+    const mousePosition = new Vector2(descaledX, descaledY);
+
+    return (
+      mousePosition.x >= x &&
+      mousePosition.x <= x + this.frameSize.x &&
+      mousePosition.y >= y &&
+      mousePosition.y <= y + this.frameSize.y
     );
   }
 }

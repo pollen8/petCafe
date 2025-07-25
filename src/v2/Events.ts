@@ -1,6 +1,9 @@
 import type { GameObject } from "./GameObject";
 
 export type EventName =
+  | "RESIZE_WINDOW"
+  | "MOUSE_CLICKED"
+  | "MOUSE_MOVED"
   | "HERO_POSITION"
   | "HERO_PICKS_UP_ITEM"
   | "HERO_EXITS"

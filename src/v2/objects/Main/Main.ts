@@ -3,6 +3,7 @@ import { events } from "../../Events";
 import { GameObject } from "../../GameObject";
 import { Input } from "../../Input";
 import type { Vector2 } from "../../Vector2";
+import { Mouse } from "../../Mouse";
 import { Inventory } from "../Inventory/Inventory";
 import type { Level } from "../Level/Level";
 
@@ -11,12 +12,14 @@ export class Main extends GameObject {
   public level: Level | null = null;
   public camera: Camera;
   private inventory: Inventory;
+  private mouse: Mouse;
   constructor({ position }: { position: Vector2 }) {
     super({ position });
     this.level = null;
     this.input = new Input();
     this.camera = new Camera();
     this.inventory = new Inventory();
+    this.mouse = new Mouse();
   }
   ready() {
     events.on("CHANGE_LEVEL", this, (level: Level) => {

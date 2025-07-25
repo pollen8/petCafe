@@ -1,25 +1,31 @@
 import { events } from "./Events";
 import { GameObject } from "./GameObject";
-import type { Level } from "./objects/Level/Level";
 import { Vector2 } from "./Vector2";
 
 export class Camera extends GameObject {
+  private canvasWidth = 300;
+  private canvasHeight = 180;
   constructor() {
     super({});
     events.on("HERO_POSITION", this, (heroPostion: Vector2) => {
       this.centerPositionOnTarget(heroPostion);
     });
-    events.on("CHANGE_LEVEL", this, (newLevel: Level) => {
-      this.centerPositionOnTarget(newLevel.heroPosition);
-    });
+    // events.on(
+    //   "RESIZE_WINDOW",
+    //   this,
+    //   (size: { width: number; height: number }) => {
+    //     console.log("Camera resize", size);
+    //     // this.canvasWidth = size.width;
+    //     // this.canvasHeight = size.height;
+    //     // this.centerPositionOnTarget(new Vector2(0, 0)); // Recenter camera
+    //   }
+    // );
   }
 
   centerPositionOnTarget(position: Vector2) {
     const personHalf = 8;
-    const canvasWidth = 300;
-    const canvasHeight = 180;
-    const halfWidth = canvasWidth / 2 - personHalf;
-    const halfHeight = canvasHeight / 2 - personHalf;
+    const halfWidth = this.canvasWidth / 2 - personHalf;
+    const halfHeight = this.canvasHeight / 2 - personHalf;
 
     this.position = new Vector2(
       -position.x + halfWidth,

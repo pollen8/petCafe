@@ -3,21 +3,26 @@ import { GameObject } from "../../GameObject";
 import { resoures, type ResourceState } from "../../Resources";
 import { Sprite } from "../../Sprite";
 import { Vector2 } from "../../Vector2";
+import { Button } from "./Button";
+import { InventoryItem } from "./InventoryItem";
 
 export class Inventory extends GameObject {
   private items: { id: number; resource: ResourceState }[] = [
-    { id: 0, resource: resoures.images.rod },
+    // { id: 0, resource: resoures.images.rod },
   ];
   private nextId = 0;
   constructor() {
     super({
       position: new Vector2(0, 3),
     });
+    const button = new Button({
+      resource: resoures.images.rod,
+      position: new Vector2(0, 0),
+      onClick: () => console.log("Button clicked!"),
+    });
 
-    // setTimeout(() => {
-    //   this.removeFromInventory(0);
-    // }, 200);
-    this.renderInventory();
+    this.addChild(button);
+    // this.renderInventory();
     events.on(
       "HERO_PICKS_UP_ITEM",
       this,
@@ -32,7 +37,7 @@ export class Inventory extends GameObject {
   renderInventory() {
     this.children.forEach((c) => c.destroy());
     this.items.forEach((item, index) => {
-      const sprite = new Sprite({
+      const sprite = new InventoryItem({
         resource: item.resource,
         position: new Vector2(index * 12, 0),
       });

@@ -78,4 +78,20 @@ export class GameObject {
     this.children.forEach((c) => c.destroy());
     this.parent?.removeChild(this);
   }
+
+  protected absoluteY(y: number) {
+    y = y + this.position.y;
+    if (this.parent) {
+      y = this.parent.absoluteY(y);
+    }
+    return y;
+  }
+
+  protected absoluteYX(x: number) {
+    x = x + this.position.x;
+    if (this.parent) {
+      x = this.parent.absoluteYX(x);
+    }
+    return x;
+  }
 }
