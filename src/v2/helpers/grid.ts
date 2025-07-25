@@ -1,3 +1,4 @@
+/** Converts a grid index to px  */
 export const gridCells = (n: number) => {
   return n * 16;
 };
